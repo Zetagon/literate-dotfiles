@@ -167,6 +167,7 @@ folder_blacklist = sekreterare/bak.alla_mail sekreterare/bak.skickat sekreterare
 # folder_explicit_list = relevant-info
 
 [Filter.00]
+query = 'tag:unread'
 tags = +notdone
 message = "Mark unread messages as notdone"
 
@@ -696,6 +697,14 @@ I want to use ~Dd~ as avy delete line.
 :n "r" #'avy-kill-ring-save-region)
 #+END_SRC
 
+I have mapped tab to both tab and super, so it becomes clunky to use for keybindings.
+#+BEGIN_SRC emacs-lisp
+(:leader
+ "\\n" #'+workspace/new
+ "\\." #'+workspace/switch-to
+ "\\r" #'+workspace/rename)
+#+END_SRC
+
 ** Org-mode
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (use-package! org-ql
@@ -730,7 +739,7 @@ This packages allows org-ref notes to be org-roam files
 (use-package! org-roam-bibtex
   :hook (org-roam-mode . org-roam-bibtex-mode))
 #+END_SRC
-**** Org-ref
+*** Org-ref
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-packages
 (package! org-ref)
 (package! helm-bibtex)
