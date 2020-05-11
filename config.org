@@ -1,4 +1,8 @@
 #+PROPERTY: header-args :comments no :mkdirp yes :noweb yes :tangle no
+Here are the files I'm using
+#+BEGIN_SRC bash :tangle ~/.bashrc
+<<bashrc>>
+#+END_SRC
 * Email
 :LOGBOOK:
 CLOCK: [2020-05-10 Sun 19:08]--[2020-05-10 Sun 19:16] =>  0:08
@@ -694,8 +698,12 @@ I want to use ~Dd~ as avy delete line.
          :immediate-finish t)))
 (setq org-roam-directory "~/Documents/notes/")
 #+END_SRC
-*** Bibliography managment
-**** Org-roam bibtex
+** Bibliography managment
+I apparently need to set this in my bashrc
+#+BEGIN_SRC bash :noweb-ref bashrc
+export BIBINPUTS="~/Dropbox/org/references/Zotero_articles.bib"
+#+END_SRC
+*** Org-roam bibtex
 This packages allows org-ref notes to be org-roam files
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-packages
 (package! org-roam-bibtex)
@@ -960,4 +968,200 @@ The Last column is the % of 40hours
 ** Latex
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (setq +latex-viewers '(okular))
+#+END_SRC
+* Bash
+:PROPERTIES:
+:header-args: :noweb-ref bashrc
+:END:
+Non-personal part.
+#+BEGIN_SRC bash
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
+case $- in
+    ,*i*) ;;
+      ,*) return;;
+esac
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
+
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+#force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
+    else
+	color_prompt=
+    fi
+fi
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+unset color_prompt force_color_prompt
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+,*)
+    ;;
+esac
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+#+END_SRC
+Make bash use vim and use emacs as default editor.
+#+BEGIN_SRC bash
+set -o vi
+export VISUAL="emacsclient -n"
+export EDITOR="$VISUAL"
+export CARGO_HOME="/home/leo/.cargo"
+#+END_SRC
+My aliases
+#+BEGIN_SRC bash
+alias tmux='tmux -2'
+alias o='xdg-open'
+alias en='emacsclient -n'
+alias et='emacsclient -t'
+alias ec='emacsclient -cn'
+alias r="ranger"
+alias erik='sshfs leo@perpetuality.hexeye.se:/ /home/leo/Hexeye-Server'
+alias erikssh='ssh leo@perpetuality.hexeye.se'
+alias ls='ls -l --color=auto'
+alias ll='ls -la --color=auto'
+alias ..='cd ..'
+alias ...='ls ../..'
+alias svim='sudo vim'
+alias apt-get="sudo apt-get"
+alias irl='systemctl suspend'
+
+# do not delete / or prompt if deleting more than 3 files at a time #
+# alias rm='rm -I --preserve-root'
+alias rm='echo "This is not the command you are looking for."; false'
+
+alias trm='trash-put'
+ # confirmation #
+ alias mv='mv -i'
+ alias cp='cp -i'
+ alias ln='ln -i'
+
+  # Parenting changing perms on / #
+  alias chown='chown --preserve-root'
+  alias chmod='chmod --preserve-root'
+  alias chgrp='chgrp --preserve-root'
+
+# For ibus language stuff
+export GTK_IM_MODULE=ibus
+export XMODIFIERS=@im=ibus
+export QT_IM_MODULE=ibus
+# For opam
+export OPAMROOT=~/opam-coq.8.8.1
+eval `opam config env`
+#+END_SRC
+I use fzf to as fuzzy finding in bash
+#+BEGIN_SRC bash
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*" --max-count 20'
+bind -x '"\C-p": emacsclient -t $(fzf);'
+#+END_SRC
+I don't want to have ms spy on me.
+#+BEGIN_SRC bash
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+
+# Make npm install local
+
+NPM_PACKAGES="$HOME/.npm-packages"
+
+# Tell our environment about user-installed node tools
+PATH="$NPM_PACKAGES/bin:$PATH"
+# Unset manpath so we can inherit from /etc/manpath via the `manpath` command
+unset MANPATH  # delete if you already modified MANPATH elsewhere in your configuration
+MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
+
+# Tell Node about these packages
+NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
+
 #+END_SRC
