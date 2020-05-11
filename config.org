@@ -484,6 +484,24 @@ Here are the files of my emacs config:
   )
 #+END_SRC
 ** Doom modules
+
+Put the doom CLI:s in my path.
+
+#+BEGIN_SRC bash :noweb-ref bashrc
+PATH=$HOME$/.emacs.d/bin:$PATH$
+#+END_SRC
+
+Every time I change this file I have to invoke ~doom sync~.
+
+There is an issue with the doom CLI, where it ignores my noweb stuff. The
+solution so far is to apply this patch.
+#+BEGIN_SRC diff :tangle no
+- "--eval" (format "(org-babel-tangle-file %S %S)"
+- org dest)))
++ "--eval" (format "(org-babel-tangle-file %S)"
++ org)))
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/init.el
 (doom! :input
        ;;chinese
