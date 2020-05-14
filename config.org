@@ -694,8 +694,8 @@ Here are the files of my emacs config:
 
 Put the doom CLI:s in my path.
 
-#+BEGIN_SRC bash :noweb-ref bashrc
-PATH=$HOME$/.emacs.d/bin:$PATH$
+#+BEGIN_SRC bash :noweb-ref bashprofile
+export PATH="$PATH:$HOME/.emacs.d/bin"
 #+END_SRC
 
 Every time I change this file I have to invoke ~doom sync~.
