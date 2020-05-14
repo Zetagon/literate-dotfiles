@@ -907,6 +907,16 @@ I have mapped tab to both tab and super, so it becomes clunky to use for keybind
  "\\r" #'+workspace/rename)
 #+END_SRC
 
+Expand region seems very nice so I will try to bind it to visual mode ~v~
+#+BEGIN_SRC emacs-lisp
+:v "v" #'er/expand-region
+#+END_SRC
+
+~C-x C-s~ is hard to reach so I will rebind it to an easier binding.
+
+#+BEGIN_SRC emacs-lisp
+:i "C-s C-s" #'company-yasnippet
+#+END_SRC
 ** Org-mode
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (use-package! org-ql
@@ -939,6 +949,15 @@ first 8 lines of the buffer.
 (require 'time-stamp)
 (add-hook 'write-file-functions 'time-stamp)
 (setq time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")
+#+END_SRC
+** Org-noter
+:PROPERTIES:
+:header-args: :noweb-ref emacs-org-noter
+:END:
+#+BEGIN_SRC emacs-lisp
+(map!
+ :map org-noter-doc-mode-map
+ :n "i" #'org-noter-insert-note-toggle-no-questions)
 #+END_SRC
 ** Bibliography managment
 I apparently need to set this in my bashrc
