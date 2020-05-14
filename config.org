@@ -1058,14 +1058,14 @@ items that are releveant to today.
            '(("l" "Today"
               ((agenda "" ((org-agenda-view-columns-initially nil)
                            (org-super-agenda-groups
-                            '(;; (:name "Habits"
-                              ;;        :habit t
-                              ;;        :order 100)
-                              (:discard (:and (:scheduled past
+                            '((:discard (:and (:scheduled past
                                                :not (:habit t))))
+                              (:name "Meeting"
+                               :tag ("@meeting")
+                               :order 20)
                               (:name "Today"
-                                     :time-grid t
-                                     :date today)
+                               :time-grid t
+                               :date today)
                               (:discard
                                (:deadline t))
                               ))))))))
