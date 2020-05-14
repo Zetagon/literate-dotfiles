@@ -260,6 +260,12 @@ TODO There is an issue where the notmuch command and the afew commands won't run
 (setq sendmail-program "/usr/bin/msmtp")
 #+END_SRC
 
+The fcc header controls wherer sent in which folders sent mails go.
+#+BEGIN_SRC emacs-lisp
+(setq notmuch-fcc-dirs '(("dv-ordf@utn.se" . "gmail/Sent")
+                         ("leo@relevant-information.com" . "relevant-info/Sent")))
+#+END_SRC
+
 I want to see more of cited lines and set it to a better colour (grey is hard to read).
 #+BEGIN_SRC emacs-lisp
 (setq notmuch-wash-citation-lines-prefix 10)
