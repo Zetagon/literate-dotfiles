@@ -916,16 +916,29 @@ I have mapped tab to both tab and super, so it becomes clunky to use for keybind
 (after! org
   <<emacs-org-mode>>
   )
+(after! org-roam
+  <<emacs-org-roam>>
+  )
 #+END_SRC
-*** Roam
+** Org-Roam
+:PROPERTIES:
+:header-args: :noweb-ref emacs-org-roam
+:END:
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (setq org-roam-capture-templates
       '(("d" "default" plain #'org-roam--capture-get-point "%?"
          :file-name "%<%Y%m%d%H%M%S>"
-         :head "#+TITLE: ${title}\n"
-         :unnarrowed t
-         :immediate-finish t)))
+         :head "#+TITLE: ${title}\n#+Created: %t\n#+Time-stamp: <>\n"
+         :unnarrowed t)))
 (setq org-roam-directory "~/Documents/notes/")
+#+END_SRC
+I want to have a timestamp that updates when I last edited a file. ~time-stamp~
+will write a time-stamp between if it finds a string: "Time-stamp: <>" in the
+first 8 lines of the buffer.
+#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
+(require 'time-stamp)
+(add-hook 'write-file-functions 'time-stamp)
+(setq time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")
 #+END_SRC
 ** Bibliography managment
 I apparently need to set this in my bashrc
