@@ -685,6 +685,10 @@ Here are the files of my emacs config:
   (require 'ol-notmuch)
   <<emacs-notmuch>>
   )
+(after! org-noter
+<<emacs-org-noter>
+)
+<<emacs-misc>>
 #+END_SRC
 ** Doom modules
 
