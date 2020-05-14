@@ -259,6 +259,16 @@ TODO There is an issue where the notmuch command and the afew commands won't run
 (setq +notmuch-sync-backend 'mbsync)
 (setq sendmail-program "/usr/bin/msmtp")
 #+END_SRC
+
+I want to see more of cited lines and set it to a better colour (grey is hard to read).
+#+BEGIN_SRC emacs-lisp
+(setq notmuch-wash-citation-lines-prefix 10)
+(custom-theme-set-faces 'doom-one
+                        '(notmuch-wash-cited-text
+                          ((t (:background "#434a59" :foreground "#8fb3f7"))))
+                        '(notmuch-message-summary-face
+                          ((t (:foreground "#50b1c9")))))
+#+END_SRC
 ** Notmuch Program
 #+BEGIN_SRC conf :tangle ~/.notmuch-config
 # .notmuch-config - Configuration file for the notmuch mail system
