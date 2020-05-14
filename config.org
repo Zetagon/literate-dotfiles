@@ -301,7 +301,7 @@ other_email=dv-ordf@utn.se
 #		in the mail store.
 #
 [new]
-tags=unread;inbox;new;notdone
+tags=unread;inbox;new;notdone;
 ignore=
 
 # Search configuration
@@ -353,12 +353,12 @@ synchronize_flags=true
 gpg_path=gpg
 #+END_SRC
 ** afew
+Afew is my tagging script
 #+BEGIN_SRC conf :tangle ~/.config/afew/config
 # This is the default filter chain
 [SpamFilter]
 [KillThreadsFilter]
 [ArchiveSentMailsFilter]
-[InboxFilter]
 
 [FolderNameFilter.1]
 folder_transforms = relevant-info/INBOX:main sekreterare/inbox:sekreterare
@@ -367,11 +367,6 @@ folder_blacklist = sekreterare/bak.alla_mail sekreterare/bak.skickat sekreterare
 [ListMailsFilter]
 # [FolderNameFilter.2]
 # folder_explicit_list = relevant-info
-
-[Filter.00]
-query = 'tag:unread'
-tags = +notdone
-message = "Mark unread messages as notdone"
 
 [Filter.0]
 query = 'tag:relevant-info/Trash'
