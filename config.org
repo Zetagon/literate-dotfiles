@@ -929,7 +929,7 @@ I have mapped tab to both tab and super, so it becomes clunky to use for keybind
 #+END_SRC
 ** Bibliography managment
 I apparently need to set this in my bashrc
-#+BEGIN_SRC bash :noweb-ref bashrc
+#+BEGIN_SRC bash :noweb-ref bashprofile
 export BIBINPUTS="~/Dropbox/org/references/Zotero_articles.bib"
 #+END_SRC
 *** Org-roam bibtex
