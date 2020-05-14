@@ -1202,4 +1202,7 @@ The Last column is the % of 40hours
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
 :END:
+I want the prompt for when I unlock my gpg key
+#+BEGIN_SRC emacs-lisp
+(after! epa (setq epa-pinentry-mode 'ask))
 #+END_SRC
