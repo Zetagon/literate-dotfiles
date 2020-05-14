@@ -210,6 +210,9 @@ NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 CLOCK: [2020-05-10 Sun 19:08]--[2020-05-10 Sun 19:16] =>  0:08
 :END:
 ** Notmuch Emacs
+:PROPERTIES:
+:header-args: :noweb-ref emacs-notmuch
+:END:
 
 These are my saved searches. Any mail that is not deleted and ~notdone~ is in a inbox.
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-notmuch
@@ -233,6 +236,7 @@ When I have read a mail there are three cases:
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (map!
  :n "<f1>" #'=notmuch
+ :after notmuch
  (:map notmuch-show-mode-map
    :n "D" #'evil-collection-notmuch-show-toggle-delete
 
@@ -242,7 +246,13 @@ When I have read a mail there are three cases:
   :n "d" (λ! (notmuch-tree-tag-thread '("-notdone")))))
 #+END_SRC
 
-#+RESULTS:
+I want to run the following command when syncing:
+
+TODO There is an issue where the notmuch command and the afew commands won't run.
+
+#+BEGIN_SRC emacs-lisp
+(setq +notmuch-sync-command "mbsync -a ; notmuch new; afew --tag --new")
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-notmuch
 (setq +notmuch-mail-folder "~/.mail")
