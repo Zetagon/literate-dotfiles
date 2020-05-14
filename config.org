@@ -886,8 +886,8 @@ CLOCK: [2020-05-11 Mon 10:48]--[2020-05-11 Mon 11:05] =>  0:17
 
 I want ~j~ and ~k~ to treat soft-wrapped lines like normal lines.
 #+BEGIN_SRC emacs-lisp
-:n "k" #'evil-previous-visual-line
-:n "j" #'evil-next-visual-line
+:nv "k" #'evil-previous-visual-line
+:nv "j" #'evil-next-visual-line
 #+END_SRC
 
 I want to use ~Dd~ as avy delete line.
