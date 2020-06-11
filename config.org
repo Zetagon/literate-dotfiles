@@ -1263,6 +1263,41 @@ The Last column is the % of 40hours
            "* %?
 %(cfw:org-capture-day)")))
 #+END_SRC
+*** Clocking
+The default volume is way too loud.
+#+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
+(after! org-pomodoro
+  (setq org-pomodoro-finished-sound-args "--volume=30000")
+  (setq org-pomodoro-short-break-sound-args "--volume=30000")
+  (setq org-pomodoro-killed-sound-args "--volume=30000")
+  (setq org-pomodoro-ticking-sound-args "--volume=30000")
+  (setq org-pomodoro-start-sound-args "--volume=30000")
+  (setq org-pomodoro-long-break-sound-args "--volume=30000")
+  (setq org-pomodoro-overtime-sound-args "--volume=30000"))
+#+END_SRC
+
+I want to still count the break as worktime, because the breaks are neccesary
+for work.
+#+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
+    (after! org-pomodoro
+      (setq org-pomodoro-clock-break t)
+      (setq org-pomodoro-keep-killed-pomodoro-time t))
+#+END_SRC
+
+**** TODO Kan vara bra att sätta upp kategorier
+ALla tasks och projekt hamnar under kategorier
+
++ kategori
+  + task
+  + projekt
+    + task
+
+Detta är bra för att då kan jag ha capture templates för att klocka in en misc. event i en kategori, ex. ordf
+**** TODO Man kan klocka det som finns i arkiven också.
+
+#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 2
+#+CAPTION: Clock summary at [2020-05-16 Sat 19:44]
+#+END:
 ** Latex
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (setq +latex-viewers '(okular))
