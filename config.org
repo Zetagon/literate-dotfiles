@@ -722,12 +722,25 @@ Here are the files of my emacs config:
   (require 'ol-notmuch)
   <<emacs-notmuch>>
   )
+(use-package! org-ql
+  :defer t)
+(use-package! org-super-agenda
+  :config (org-super-agenda-mode))
+(after! org
+  <<emacs-org-mode>>
+  )
+(after! org-roam
+  <<emacs-org-roam>>
+  )
 (after! org-noter
-<<emacs-org-noter>
+<<emacs-org-noter>>
 )
 <<emacs-misc>>
 #+END_SRC
 ** Doom modules
+:PROPERTIES:
+:ID:       2e858646-92c4-49ed-ae54-ffff5cf3c217
+:END:
 
 Put the doom CLI:s in my path.
 
@@ -752,7 +765,7 @@ solution so far is to apply this patch.
        ;;japanese
 
        :completion
-       company           ; the ultimate code completion backend
+       (company)           ; the ultimate code completion backend
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ivy               ; a search engine for love and life
@@ -805,12 +818,12 @@ solution so far is to apply this patch.
        :term
        eshell            ; the elisp shell that works everywhere
        ;;shell             ; simple shell REPL for Emacs
-       ;;term              ; basic terminal emulator for Emacs
+       term              ; basic terminal emulator for Emacs
        ;; vterm             ; the best terminal emulation in Emacs
 
        :checkers
        syntax              ; tasing you for every semicolon you forget
-       ;;spell             ; tasing you for misspelling mispelling
+       spell             ; tasing you for misspelling mispelling
        ;;grammar           ; tasing grammar mistake every you make
 
        :tools
@@ -822,12 +835,12 @@ solution so far is to apply this patch.
        ;;ein               ; tame Jupyter notebooks with emacs
        (eval +overlay)     ; run code, run (also, repls)
        ;;gist              ; interacting with github gists
-       lookup              ; navigate your code and its documentation
+       (lookup +dictionary +offline)              ; navigate your code and its documentation
        ;;lsp
        ;;macos             ; MacOS-specific commands
        (magit +forge)             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
-       ;;pass              ; password manager for nerds
+       pass              ; password manager for nerds
        pdf               ; pdf enhancements
        ;;prodigy           ; FIXME managing external services & code builders
        ;;rgb               ; creating color strings
@@ -854,7 +867,7 @@ solution so far is to apply this patch.
        ;;fsharp           ; ML stands for Microsoft's Language
        ;;fstar             ; (dependent) types and (monadic) effects and Z3
        ;;(go +lsp)         ; the hipster dialect
-       ;;(haskell +dante)  ; a language that's lazier than I am
+       (haskell)  ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ;
        ;;json              ; At least it ain't XML
@@ -871,7 +884,7 @@ solution so far is to apply this patch.
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       (org +roam +pomodoro +journal noter)               ; organize your plain life in plain text
+       (org +roam +pomodoro +journal noter +gnuplot)               ; organize your plain life in plain text
        ;;perl              ; write code no one else can comprehend
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
@@ -900,7 +913,7 @@ solution so far is to apply this patch.
 
        :app
        ;;calendar
-       ;;irc               ; how neckbeards socialize
+       irc               ; how neckbeards socialize
        ;;(rss +org)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
 
