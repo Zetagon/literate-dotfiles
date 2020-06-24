@@ -1652,3 +1652,44 @@ I want ~j~ and ~k~ and other evil movements to treat soft-wrapped lines like nor
 #+BEGIN_SRC emacs-lisp
 (setq evil-respect-visual-line-mode t)
 #+END_SRC
+** Erlang
+:PROPERTIES:
+:header-args: :noweb-ref emacs-misc
+:ID:       736efea6-84b6-4951-afb1-65d772cf7c93
+:END:
+This function allows me to extract logs in the format I used in the cacofonix project
+#+BEGIN_SRC emacs-lisp
+(defun my/extract-erlang-log (query)
+  (interactive "sQuery pls: ")
+  (save-excursion)
+  (goto-char (point-min))
+  (let* ((beg (point-min))
+         (end)
+         (continue t)
+         pos)
+    (while continue
+      (setq pos (point))
+      (setq continue (search-forward query nil t))
+      (setq end (or (re-search-backward "\n\n" nil t) (- (line-beginning-position) 1)))
+      (delete-region beg end)
+      (setq beg (search-forward "\n\n" nil t))
+      (message "Position: %d" pos))
+    (delete-region pos (point-max))))
+#+END_SRC
+This is the log configuration for the above function
+#+BEGIN_SRC erlang :tangle no :noweb-ref no
+[{
+  kernel, [{
+   logger, [{
+     handler, default, logger_std_h,
+       #{
+         level => debug,
+         formatter => {logger_formatter,
+                       #{template => [time, " ",  level,":", pid, "\n",file, ":", line, "\n", msg, "\n\n"],
+                         single_line => false}}
+        }
+    }]},
+    {logger_level, debug}
+ ]}
+].
+#+END_SRC
