@@ -1311,22 +1311,49 @@ items that are releveant to today.
     (let ((org-agenda-custom-commands
            '(("l" "Today"
               ((agenda "" ((org-agenda-view-columns-initially nil)
+                           (org-habit-scheduled-past-days 10000)
+                           (org-scheduled-past-days 7)
+                           (org-habit-preceding-days 200)
+                           (org-habit-following-days 3)
+                           (org-deadline-warning-days 1)
                            (org-super-agenda-groups
-                            '((:discard (:and (:scheduled past
-                                               :not (:habit t))))
+                            '((:name "Done Today"
+                               :order 100
+                               :and (:date today
+                                     :todo "DONE"))
+                              ;; (:name "Today"
+                              ;;  :time-grid t
+                              ;;  :date today
+                              ;;  )
+                              ;; (:discard (:and (:scheduled past
+                              ;;                  :not (:habit t)
+                              ;;                  :not (:date today))))
+                              (:name "Städa"
+                               :category "clean")
                               (:name "Meeting"
                                :tag ("@meeting")
                                :order 20)
-                              (:name "Today"
-                               :time-grid t
-                               :date today)
-                              (:discard
-                               (:deadline t))
-                              ))))))))
+                              (:name "Finish Today"
+                               :scheduled today)
+                              (:name "Schedule"
+                               :time-grid t)
+                              (:auto-priority t)
+                              (:name "Todos"
+                               :todo t
+                               )
+                              ;; (:discard
+                              ;;  (:deadline t))
+                              ))
+                           ))
+               (tags "active" ((org-agenda-dim-blocked-tasks 'invisible)
+                               (org-agenda-overriding-header "Active tasks")))))))
           (org-agenda-start-day "0d")
           (org-agenda-span 1))
       (org-agenda nil "l")))
 #+END_SRC
+
+#+RESULTS:
+: my/today
 
 And this function is my way of deciding what to do when I have free time.
 
@@ -1397,6 +1424,35 @@ set this variable with some fixed preset.
   - Manualy replace monthly tags with weekly tags on things that should be considered this month, from todos marked with monthly
 
 https://github.com/zaeph/.emacs.d Maybe this can be some inspiration
+
+#+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
+(defun my/push-dailies-to-weekly ()
+  "Puts the tag weeklyreview on all TODOs without any review tags or are scheduled today."
+  (interactive)
+  (org-ql-query
+    :select (λ!  (org-set-tags (cons "weeklyreview" (org-get-tags nil local))))
+    :from (current-buffer)
+    :where '(and (todo)
+                 (not (org-entry-blocked-p))
+                 (not (tags "weeklyreview" "dailyreview" "monthlyreview"))
+                 (not (and
+                       (property "BLOCKED" "")
+                       (descendants (todo))))
+                 (not (ts :from today :to 7)))))
+    ;; :where '(and (todo)
+    ;;              (not (tags "dailyreview" "yearlyreview" "monthlyreview" "weeklyreview"))
+    ;;              (not (ts :on today)))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
+(defun my/reset-active-projects ()
+  "Removes the active tag from all projects"
+  (interactive)
+  (org-ql-query
+    :select (λ!  (org-set-tags (-remove (string= "active") (org-get-tags nil t))))
+    :from (current-buffer)
+    :where (tags "active")))
+#+END_SRC
 *** Capturing
 
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-org-mode
