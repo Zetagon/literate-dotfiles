@@ -268,14 +268,28 @@ The fcc header controls wherer sent in which folders sent mails go.
 
 I want to see more of cited lines and set it to a better colour (grey is hard to read).
 #+BEGIN_SRC emacs-lisp
-(setq notmuch-wash-citation-lines-prefix 10)
-(custom-theme-set-faces 'doom-one
-                        '(notmuch-wash-cited-text
-                          ((t (:background "#434a59" :foreground "#8fb3f7"))))
-                        '(notmuch-message-summary-face
-                          ((t (:foreground "#50b1c9")))))
+(after! (:and ui notmuch)
+  (setq notmuch-wash-citation-lines-prefix 10)
+  (custom-theme-set-faces 'doom-one
+                          '(notmuch-wash-cited-text
+                            ((t (:background "#434a59" :foreground "#8fb3f7"))))
+                          '(notmuch-message-summary-face
+                            ((t (:foreground "#50b1c9"))))))
+#+END_SRC
+
+I don't want to have ~auto-fill-mode~ när jag skriver mail. Det blir för det
+mesta jobbigt för den som läser det då. I also want flyspell-mode to be on.
+#+BEGIN_SRC emacs-lisp
+(add-hook! 'notmuch-message-mode
+  (auto-fill-mode -1)
+  (visual-line-mode)
+  (flyspell-mode)
+  (ispell-change-dictionary "swedish"))
 #+END_SRC
 ** Notmuch Program
+:PROPERTIES:
+:ID:       2c28b3d0-6410-4ff4-a0f4-d1b8b2ac3bfc
+:END:
 #+BEGIN_SRC conf :tangle ~/.notmuch-config
 # .notmuch-config - Configuration file for the notmuch mail system
 #
@@ -379,12 +393,14 @@ synchronize_flags=true
 gpg_path=gpg
 #+END_SRC
 ** afew
+:PROPERTIES:
+:ID:       3f3e84c6-ba87-406c-adc1-f4ecffb92da4
+:END:
 Afew is my tagging script
 #+BEGIN_SRC conf :tangle ~/.config/afew/config
 # This is the default filter chain
 [SpamFilter]
 [KillThreadsFilter]
-[ArchiveSentMailsFilter]
 
 [FolderNameFilter.1]
 folder_transforms = relevant-info/INBOX:main sekreterare/inbox:sekreterare
