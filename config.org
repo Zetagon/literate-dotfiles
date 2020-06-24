@@ -1468,7 +1468,7 @@ https://github.com/zaeph/.emacs.d Maybe this can be some inspiration
           ("X" "Scrapbook" entry (file+datetree "~/Documents/notes/scrapbook.org")
            "* %?
 ")
-          ("d" "Daily Summary" entry (file+datetree "~/Dropbox/org/reviews.org")
+          ("d" "Daily Summary" entry (file+datetree "~/org/reviews.org")
            "* Daily Summary :daily:
 :PROPERTIES:
 :STRESS: %?
@@ -1478,7 +1478,7 @@ https://github.com/zaeph/.emacs.d Maybe this can be some inspiration
 Summary: "
            :jump-to-captured t
            )
-          ("w" "Weekly Summary" entry (file+datetree "~/Dropbox/org/reviews.org")
+          ("w" "Weekly Summary" entry (file+datetree "~/org/reviews.org")
            "* Weekly summary :weekly:
 \** What went well :good:
 \** What can be improved :improve:
@@ -1491,45 +1491,53 @@ The Last column is the % of 40hours
 ,#+END:
 "
            :jump-to-captured t)
-          ("t" "Todo" entry (file "~/Dropbox/org/orgzly/InboxComputer.org")
+          ("t" "Todo" entry (file "~/org/orgzly/InboxComputer.org")
            "* TODO %? ")
-          ("f" "Todo" entry (file "~/Dropbox/org/orgzly/InboxComputer.org")
+          ("f" "Todo" entry (file "~/org/orgzly/InboxComputer.org")
            "* TODO %?\n %a "
            :created t)
-          ("T" "clipboard" entry (file "~/Dropbox/org/orgzly/InboxComputer.org")
+          ("T" "clipboard" entry (file "~/org/orgzly/InboxComputer.org")
            "* %?
 %T
 %x")
           ("z" "Gather info for clocked task" item (clock)
            "%x")
-          ("o" "Clock in a other task" entry (file+olp+datetree "~/Dropbox/org/orgzly/Log.org" "Log")
+          ("o" "Clock in a other task" entry (file+olp+datetree "~/org/orgzly/Log.org" "Log")
            "* %?"
            :clock-in t
            :clock-resume t)
-          ("ce" "Clock in emacs confing" entry (file+headline "~/Dropbox/org/orgzly/Log.org" "Emacs Config")
+          ("ce" "Clock in emacs confing" entry (file+headline "~/org/orgzly/Log.org" "Emacs Config")
            "* %?"
            :clock-in t
            :clock-resume t)
-          ("cx" "Clock in xmonad confing" entry (file+headline "~/Dropbox/org/orgzly/Log.org" "XMonad Config")
+          ("cx" "Clock in xmonad confing" entry (file+headline "~/org/orgzly/Log.org" "XMonad Config")
            "* %?"
            :clock-in t
            :clock-resume t)
-          ("co" "Clock in general confing" entry (file+headline "~/Dropbox/org/orgzly/Log.org" "Config")
+          ("co" "Clock in general confing" entry (file+headline "~/org/orgzly/Log.org" "Config")
            "* %?"
            :clock-in t
            :clock-resume t)
-          ("l" "Learning Log" table-line (file+headline "~/Dropbox/org/orgzly/Log.org" "Learning")
+          ("l" "Learning Log" table-line (file+headline "~/org/orgzly/Log.org" "Learning")
            "| %t | %K %? | | |")
           ("s" "Clock in subtask" entry (clock)
            "* %?"
            :clock-in t
            :clock-resume t
            )
-          ("p" "Plan" entry (file  "~/Dropbox/org/orgzly/plan.org")
+          ("p" "Plan" entry (file  "~/org/orgzly/plan.org")
            "* %?
 %(cfw:org-capture-day)")))
 #+END_SRC
 *** Clocking
+:PROPERTIES:
+:ID:       e6e33def-ae4c-4bed-8993-ab7683b8d6d0
+:END:
+
+#+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
+(setq org-clock-out-remove-zero-time-clocks t)
+#+END_SRC
+
 The default volume is way too loud.
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
 (after! org-pomodoro
