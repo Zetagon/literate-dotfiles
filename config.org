@@ -1632,11 +1632,23 @@ Detta är bra för att då kan jag ha capture templates för att klocka in en mi
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (setq +latex-viewers '(okular))
 #+END_SRC
+** PDF
+Use the same theme in pdfs as in the rest of emacs
+#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
+(add-hook 'pdf-tools-enabled-hook #'pdf-view-midnight-minor-mode)
+#+END_SRC
 ** Misc.
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
+:ID:       dc4b5876-482c-4057-b0cb-d391f1feed05
 :END:
 I want the prompt for when I unlock my gpg key
 #+BEGIN_SRC emacs-lisp
 (after! epa (setq epa-pinentry-mode 'ask))
+#+END_SRC
+
+
+I want ~j~ and ~k~ and other evil movements to treat soft-wrapped lines like normal lines.
+#+BEGIN_SRC emacs-lisp
+(setq evil-respect-visual-line-mode t)
 #+END_SRC
