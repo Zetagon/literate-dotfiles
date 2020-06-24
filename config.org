@@ -1550,14 +1550,28 @@ The default volume is way too loud.
   (setq org-pomodoro-overtime-sound-args "--volume=30000"))
 #+END_SRC
 
-I want to still count the break as worktime, because the breaks are neccesary
-for work.
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
     (after! org-pomodoro
-      (setq org-pomodoro-clock-break t)
+      (setq org-pomodoro-clock-break nil)
       (setq org-pomodoro-keep-killed-pomodoro-time t))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp :noweb-ref emacs-packages
+(package! org-mru-clock)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
+(use-package! org-mru-clock
+  :config
+  (map!
+   :leader
+   "n O" #'org-mru-clock-in)
+  (setq org-mru-clock-capture-if-no-match '((".*" . "o"))
+        org-mru-clock-completing-read #'ivy-completing-read))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :noweb-ref emacs-org-mode
+(setq org-clock-mode-line-total 'today)
+#+END_SRC
 **** TODO Kan vara bra att sätta upp kategorier
 ALla tasks och projekt hamnar under kategorier
 
