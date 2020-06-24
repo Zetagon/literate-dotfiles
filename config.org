@@ -924,7 +924,12 @@ solution so far is to apply this patch.
 
 #+END_SRC
 ** Keybindings
+:PROPERTIES:
+:ID:       35c66993-c662-499d-a103-4e9355855aee
+:END:
+I want to use "," as my localleader key
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
+(setq doom-localleader-key ",")
 (map!
 ;; I need these maps to be able to use jk in the agenda buffer properly
 <<emacs-keybinds>>
@@ -933,16 +938,12 @@ solution so far is to apply this patch.
 *** Actual keybindings
 :PROPERTIES:
 :header-args: :noweb-ref emacs-keybinds
+:ID:       fc66f6f3-e3c7-4190-a8e9-a1bdede6b308
 :END:
 :LOGBOOK:
 CLOCK: [2020-05-11 Mon 10:48]--[2020-05-11 Mon 11:05] =>  0:17
 :END:
 
-I want ~j~ and ~k~ to treat soft-wrapped lines like normal lines.
-#+BEGIN_SRC emacs-lisp
-:nv "k" #'evil-previous-visual-line
-:nv "j" #'evil-next-visual-line
-#+END_SRC
 
 I want to use ~Dd~ as avy delete line.
 
@@ -971,29 +972,131 @@ Expand region seems very nice so I will try to bind it to visual mode ~v~
 #+BEGIN_SRC emacs-lisp
 :i "C-s C-s" #'company-yasnippet
 #+END_SRC
+
+I want some alt tab functionality
+#+BEGIN_SRC emacs-lisp
+:n "C-M-i" #'+workspace/other
+#+END_SRC
+** Completion
+:PROPERTIES:
+:header-args: :noweb-ref emacs-misc
+:ID:       1467765f-7c45-4a97-961d-07bb162eb512
+:END:
+
+This is the way I want to interact with company
+#+BEGIN_SRC emacs-lisp
+(map! :map company-active-map
+      "C-SPC" #'company-other-backend
+      [return] nil
+      "TAB" nil
+      [tab] nil
+      "C-j" #'company-select-next
+      "C-k" #'company-select-previous
+      [backtab] nil
+      [return] #'company-complete-selection)
+#+END_SRC
+** Ivy
+:PROPERTIES:
+:header-args: :noweb-ref emacs-misc
+:ID:       c3b3a98d-5744-47cd-a72d-795164ed5a45
+:END:
+#+BEGIN_SRC emacs-lisp
+(after! ivy
+  (setq ivy-read-action-function #'ivy-hydra-read-action)
+  (setq +ivy-buffer-preview t))
+#+END_SRC
+
 ** Org-mode
-#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
-(use-package! org-ql
-  :defer t)
-(use-package! org-super-agenda
-  :config (org-super-agenda-mode))
-(after! org
-  <<emacs-org-mode>>
-  )
-(after! org-roam
-  <<emacs-org-roam>>
-  )
+:PROPERTIES:
+:header-args: :noweb-ref emacs-org-mode
+:ID:       e8c0936d-4815-4823-a6ea-6fab916e929c
+:END:
+I want to use unique ID:s for linking to org notes. The default heading scheme
+is error prone, especially when editing headlines.
+#+BEGIN_SRC emacs-lisp
+(require 'org-id)
+(setq org-id-link-to-org-use-id t)
+#+END_SRC
+very lucky
+
+#+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
+(set-company-backend! 'org-mode
+  'my/company-org
+  'company-capf
+  'company-org-roam
+  'company-ispell
+  'company-dabbrev
+  'company-yasnippet
+)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-clockreport-parameter-plist
+      '(:link t :maxlevel 5))
+#+END_SRC
+*** TODO Completion for noweb-ref
+This is a sorta working company backend that can complete noweb-ref style header
+arguments in src blocks. It completes all links enclosed with << >>
+#+BEGIN_SRC emacs-lisp
+(defun my/company-org (command &optional arg &rest _)
+  "Complete :noweb-ref links in org-mode src blocks"
+  (interactive (list 'interactive))
+  (cl-case command
+    (interactive (company-begin-backend #'my/company-org))
+    (prefix
+     (let ((on-begin-src)
+           (on-colon))
+       (save-excursion
+         (goto-char (line-beginning-position))
+         (setq on-begin-src (search-forward "#+BEGIN_SRC" (line-end-position) t)))
+       (when on-begin-src
+         (save-excursion
+           (search-backward " " nil t)
+           (forward-char)
+           (setq on-colon
+                 (string= ":"
+                          (buffer-substring-no-properties
+                           (point)
+                           (+ 1 (point))))))
+         (when on-colon
+           (thing-at-point 'symbol 'no-properties)))))
+    (candidates
+     (my/company-org--candidates arg))
+    (post-completion
+     (insert
+      (ivy-read ":noweb "
+                (-map
+                 (lambda (x) (concat " " (car (cdr  x))))
+                 (s-match-strings-all "<<\\(.+?\\)>>"
+                                      (buffer-substring-no-properties
+                                       (point-min)
+                                       (point-max)))))))))
+
+(defun my/company-org--candidates (arg)
+  (-filter (lambda (x) (s-prefix? arg x)) '("noweb-ref")))
+#+END_SRC
+*** Writing
+:PROPERTIES:
+:ID:       938140cf-2a39-41bf-a59d-5b14d7cedbe0
+:END:
+This setting makes just the headings tagged with :ignore: ignored when
+exporting(the contents are kept.) On the other hand, all headlines tagged with
+\:noexport: with subtrees are ignored when exporting.
+#+BEGIN_SRC emacs-lisp
+(require 'ox-extra)
+(ox-extras-activate '(ignore-headlines))
 #+END_SRC
 ** Org-Roam
 :PROPERTIES:
 :header-args: :noweb-ref emacs-org-roam
+:ID:       37471411-1f5f-4767-9588-6a47b2070075
 :END:
-#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
+#+BEGIN_SRC emacs-lisp
 (setq org-roam-capture-templates
       '(("d" "default" plain #'org-roam--capture-get-point "%?"
          :file-name "%<%Y%m%d%H%M%S>"
          :head "#+TITLE: ${title}\n#+Created: %t\n#+Time-stamp: <>\n"
-         :unnarrowed t)))
+         :unnarrowed t)
+        ))
 (setq org-roam-directory "~/Documents/notes/")
 #+END_SRC
 I want to have a timestamp that updates when I last edited a file. ~time-stamp~
