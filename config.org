@@ -1733,3 +1733,39 @@ I want to pin these packages myself
 (when (featurep! :completion helm)
   (package! helm-pass :pin "ed5798f2d83937575e8f23fde33323bca9e85131"))
 #+END_SRC
+* Further improvements
+** TODO Multiple org-files for config
+It's possible to have multiple source files for org.
+
+#+caption: included.org
+#+BEGIN_SRC org-mode
+\#+BEGIN_SRC :noweb-ref test
+
+\#+END_SRC
+#+END_SRC
+
+then in this file:
+#+BEGIN_SRC org-mode
+\#+include ./included.org
+#+END_SRC
+
+Lastly call ~org-org-export-to-org~ to get the final org document to tangle
+
+** TODO göra en hydra för mina agendaviews
+** TODO göra en hydra för när jag är i mina agendaviews
+typ för att navigera och byta.
+** TODO Fixa en hydra för att läsa mail och rss feeds
+SCHEDULED: <2020-05-23 Sat>
+det ska vara exakt samma interface för båda
+** TODO Fixa journal agenda
+:PROPERTIES:
+:ORDERED:  t
+:END:
+*** TODO Fixa så att journal hamnar i agenda
+SCHEDULED: <2020-05-23 Sat>
+*** TODO Fixa så att todos i journal går över till nästa dag
+SCHEDULED: <2020-05-23 Sat>
+*** TODO Fixa en capture template för att lägga saker jag vill läsa i min journal
+SCHEDULED: <2020-05-23 Sat>
+då kan jag lätt skriva anteckningar för det och länka mot org-roam
+* TODO göra en arkiveringsfunktion som tar hänsyn till breadcrumbs
