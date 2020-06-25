@@ -1279,7 +1279,7 @@ Here are my todo-keywords. NEXT is mostly there for legacy reasons.
 
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-org-mode
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "WAITING" "|" "DONE(d!)" "CANCELLED(c@)")))
+      '((sequence "TODO(t)" "NEXT(n)" "WAITING" "PROJ(p)" "|" "DONE(d!)" "CANCELLED(c@)")))
 #+END_SRC
 
 *** Keymaps
@@ -1388,11 +1388,11 @@ These functions are used to decide what to do this day, week or month.
         (org-agenda-view-columns-initially 't))
     (org-ql-search (append '("~/org/orgzly/InboxComputer.org" "~/org/orgzly/Inbox.org") (org-agenda-files))
                    `(and (todo)
-                         (not (org-entry-blocked-p))
-                         ,tags
-                         (not (and
-                               (property "BLOCKED" "")
-                               (descendants (todo)))))
+                         (or (todo "PROJ")
+                             (not (org-entry-blocked-p)))
+                         (not (and (ancestors (todo "PROJ"))
+                                   (not (todo "WAITING"))))
+                         ,tags)
                    :super-groups
                    '((:name "Today"
                       :scheduled today)
@@ -1437,7 +1437,8 @@ https://github.com/zaeph/.emacs.d Maybe this can be some inspiration
                  (not (tags "weeklyreview" "dailyreview" "monthlyreview"))
                  (not (and
                        (property "BLOCKED" "")
-                       (descendants (todo))))
+                       (descendants (todo))
+                       (not (todo "PROJ"))))
                  (not (ts :from today :to 7)))))
     ;; :where '(and (todo)
     ;;              (not (tags "dailyreview" "yearlyreview" "monthlyreview" "weeklyreview"))
