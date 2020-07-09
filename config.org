@@ -1366,7 +1366,35 @@ And this function is my way of deciding what to do when I have free time.
       :super-groups
       '((:auto-category))))
 #+END_SRC
+
+View only items from parent in the agenda
+
+#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
+(map! :map org-agenda-mode-map
+      "<" #'my/org-agenda-set-restriction-lock-from-agenda
+      ">" #'org-agenda-remove-restriction-lock)
+(defun my/org-agenda-set-restriction-lock-from-agenda (arg)
+  "Set the restriction lock to the parent of agenda item at point from within the agenda.
+When called with a `\\[universal-argument]' prefix, restrict to
+the file which contains the item.
+Argument ARG is the prefix argument."
+  (interactive "P")
+  (unless  (derived-mode-p 'org-agenda-mode)
+    (user-error "Not in an Org agenda buffer"))
+  (let* ((marker (or (org-get-at-bol 'org-marker)
+                     (org-agenda-error)))
+         (buffer (marker-buffer marker))
+         (pos (marker-position marker)))
+    (with-current-buffer buffer
+      (goto-char pos)
+      (outline-up-heading 1)
+      (org-agenda-set-restriction-lock arg))))
+#+END_SRC
+
 *** Planning
+:PROPERTIES:
+:ID:       1c73ac9a-789d-49db-b179-e5c809efee21
+:END:
 These functions are used to decide what to do this day, week or month.
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
   (defun my/create-schedule-for-today ()
