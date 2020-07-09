@@ -1458,7 +1458,7 @@ https://github.com/zaeph/.emacs.d Maybe this can be some inspiration
   "Puts the tag weeklyreview on all TODOs without any review tags or are scheduled today."
   (interactive)
   (org-ql-query
-    :select (λ!  (org-set-tags (cons "weeklyreview" (org-get-tags nil local))))
+    :select (λ!  (org-set-tags (cons "weeklyreview" (org-get-tags nil 't))))
     :from (current-buffer)
     :where '(and (todo)
                  (not (org-entry-blocked-p))
@@ -1478,7 +1478,7 @@ https://github.com/zaeph/.emacs.d Maybe this can be some inspiration
   "Removes the active tag from all projects"
   (interactive)
   (org-ql-query
-    :select (λ!  (org-set-tags (-remove (string= "active") (org-get-tags nil t))))
+    :select (λ!  (org-set-tags (-remove (string= "active") (org-get-tags nil 't))))
     :from (current-buffer)
     :where (tags "active")))
 #+END_SRC
