@@ -1681,6 +1681,12 @@ I want ~j~ and ~k~ and other evil movements to treat soft-wrapped lines like nor
 #+BEGIN_SRC emacs-lisp
 (setq evil-respect-visual-line-mode t)
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(push "~/.nix-profile/bin" tramp-remote-path)
+;; Let magit find the git executable by path
+(setq magit-git-executable "git")
+#+END_SRC
 ** Erlang
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
