@@ -1155,6 +1155,20 @@ I don't want Doom to open the roam buffer automatically
 #+BEGIN_SRC emacs-lisp
 (setq +org-roam-open-buffer-on-find-file nil)
 #+END_SRC
+
+Sometimes there are issues with paragraphs being hard-wrapped. This fixes that
+issue.
+#+BEGIN_SRC emacs-lisp
+(defun my/org-unfill-buffer ()
+  (interactive)
+  (let ((fill-column most-positive-fixnum))
+    (goto-char 0)
+    (set-mark-command nil)
+    (goto-char (point-max))
+    (call-interactively #'org-fill-paragraph)
+    (deactivate-mark)))
+(add-hook 'org-roam-buffer-prepare-hook #'my/org-unfill-buffer 't)
+#+END_SRC
 *** Roam Server
 :PROPERTIES:
 :ID:       352cd483-dc34-4b1f-937d-06265b4d4b23
