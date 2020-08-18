@@ -1268,8 +1268,17 @@ This packages allows org-ref notes to be org-roam files
         bibtex-completion-notes-path "~/Documents/notes/"
         bibtex-completion-pdf-field "File"
         org-ref-cite-onclick-function (lambda (x) (message x) (org-ref-cite-hydra/body)))
+  (defun my/bibtex-completion-format-org-ref (keys)
+    "Format org-ref citations for keys in KEYS."
+    (s-join ", "
+            (--map (format "cite:%s" it) keys)))
+  (setf (alist-get 'org-mode bibtex-completion-format-citation-functions)
+        #'my/bibtex-completion-format-org-ref)
+  (setq ivy-bibtex-default-action
+        #'ivy-bibtex-insert-citation)
   (map!
    :leader
+   :after ivy-bibtex
    :n "nh" #'ivy-bibtex))
 #+END_SRC
 ** Task management
