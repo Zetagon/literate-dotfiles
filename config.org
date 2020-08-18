@@ -977,6 +977,15 @@ I want some alt tab functionality
 #+BEGIN_SRC emacs-lisp
 :n "C-M-i" #'+workspace/other
 #+END_SRC
+I want to move my right hand less so I put this to reduce movement
+#+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
+(map!
+ :i "M-l" "("
+ :i "M-;" "-"
+ :i "M-'" "="
+ :i "M-h" #'delete-backward-char)
+#+END_SRC
+
 ** Completion
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
