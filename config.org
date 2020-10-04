@@ -1370,21 +1370,30 @@ I need these maps to be able to use jk in the agenda buffer properly
  )
 #+END_SRC
 *** Deciding what to do
+:PROPERTIES:
+:ID:       34efb1d3-ecb2-4f59-a8c8-90b58f14cdc0
+:END:
 ~my/today~ is the primary way I see what to do right now. It should only give
 items that are releveant to today.
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (defun my/today ()
     (interactive)
-    (let ((org-agenda-custom-commands
+    (let ((org-agenda-dim-blocked-tasks 'invisible)
+          (org-agenda-custom-commands
            '(("l" "Today"
-              ((agenda "" ((org-agenda-view-columns-initially nil)
+              ((tags-todo "active" (
+                               (org-agenda-overriding-header "Active tasks")))
+               (agenda "" ((org-agenda-view-columns-initially nil)
                            (org-habit-scheduled-past-days 10000)
-                           (org-scheduled-past-days 7)
+                           (org-scheduled-past-days 2)
                            (org-habit-preceding-days 200)
                            (org-habit-following-days 3)
                            (org-deadline-warning-days 1)
                            (org-super-agenda-groups
-                            '((:name "Done Today"
+                            '((:name "Habits"
+                               :habit t
+                               :order 30)
+                              (:name "Done Today"
                                :order 100
                                :and (:date today
                                      :todo "DONE"))
@@ -1400,8 +1409,6 @@ items that are releveant to today.
                               (:name "Meeting"
                                :tag ("@meeting")
                                :order 20)
-                              (:name "Finish Today"
-                               :scheduled today)
                               (:name "Schedule"
                                :time-grid t)
                               (:auto-priority t)
@@ -1411,9 +1418,7 @@ items that are releveant to today.
                               ;; (:discard
                               ;;  (:deadline t))
                               ))
-                           ))
-               (tags "active" ((org-agenda-dim-blocked-tasks 'invisible)
-                               (org-agenda-overriding-header "Active tasks")))))))
+                           ))))))
           (org-agenda-start-day "0d")
           (org-agenda-span 1))
       (org-agenda nil "l")))
@@ -1480,23 +1485,51 @@ These functions are used to decide what to do this day, week or month.
 (defun my//create-schedule (tags)
   (let ((org-overriding-columns-format
          "%EFFORT %80ITEM %3PRIORITY %CATEGORY %TODO ")
-        (org-agenda-view-columns-initially 't))
-    (org-ql-search (append '("~/org/orgzly/InboxComputer.org" "~/org/orgzly/Inbox.org") (org-agenda-files))
-                   `(and (todo)
-                         (or (todo "PROJ")
-                             (not (org-entry-blocked-p)))
-                         (not (and (ancestors (todo "PROJ"))
-                                   (not (todo "WAITING"))))
-                         ,tags)
-                   :super-groups
-                   '((:name "Today"
-                      :scheduled today)
-                     (:name "Past schedule"
-                      :scheduled past)
-                     (:name "Deadlines"
-                      :deadline t
-                      :log t)
-                     (:auto-category t)))))
+        (org-agenda-view-columns-initially 't)
+        (org-agenda-custom-commands
+         '(("l" "Planning"
+            ((org-ql-block
+              `(and (todo)
+                    (or (todo "PROJ")
+                        (not (org-entry-blocked-p)))
+                    (not (and (ancestors (todo "PROJ"))
+                              (not (todo "WAITING"))))
+                    ,tags)
+              ((org-super-agenda-groups
+                '((:name "Habits"
+                   :habit t)
+                  (:name "Today"
+                   :scheduled today)
+                  (:name "Past schedule"
+                   :scheduled past)
+                  (:name "Deadlines"
+                   :deadline t
+                   :log t)
+                  (:auto-category t)))))
+             (org-ql-block
+              `(and (todo)
+                    (ancestors (todo "PROJ"))
+                    ,tags)))))))
+    (org-agenda nil "l")
+    ;; (org-ql-search (append '("~/org/orgzly/InboxComputer.org" "~/org/orgzly/Inbox.org") (org-agenda-files))
+    ;;                `(and (todo)
+    ;;                      (or (todo "PROJ")
+    ;;                          (not (org-entry-blocked-p)))
+    ;;                      (not (and (ancestors (todo "PROJ"))
+    ;;                                (not (todo "WAITING"))))
+    ;;                      ,tags)
+    ;;                :super-groups
+    ;;                '((:name "Habits"
+    ;;                   :habit t)
+    ;;                  (:name "Today"
+    ;;                   :scheduled today)
+    ;;                  (:name "Past schedule"
+    ;;                   :scheduled past)
+    ;;                  (:name "Deadlines"
+    ;;                   :deadline t
+    ;;                   :log t)
+    ;;                  (:auto-category t)))
+    ))
 #+END_SRC
 
 I want to be able to set efforts to tasks through the collumns view so I have to
