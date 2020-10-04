@@ -1719,6 +1719,20 @@ I want ~j~ and ~k~ and other evil movements to treat soft-wrapped lines like nor
 ;; Let magit find the git executable by path
 (setq magit-git-executable "git")
 #+END_SRC
+** Lispy
+#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/init.el
+(after! lispyville
+  (setq lispyville-key-theme
+        '((operators normal)
+          c-w
+          (prettify insert)
+          (atom-movement t)
+          slurp/barf-lispy
+          additional
+          text-objects
+          additional-motions
+          additional-insert)))
+#+END_SRC
 ** Erlang
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
