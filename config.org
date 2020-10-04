@@ -1020,6 +1020,18 @@ This is the way I want to interact with company
 :header-args: :noweb-ref emacs-org-mode
 :ID:       e8c0936d-4815-4823-a6ea-6fab916e929c
 :END:
+
+=org-checklist= has a functionality for resetting checklists when a todo is done.
+Is done by setting :RESET_CHECK_BOXES: t
+#+BEGIN_SRC emacs-lisp
+(require 'org-checklist)
+#+END_SRC
+
+I don't want logs to clutter my documents
+#+BEGIN_SRC emacs-lisp
+(setq org-log-into-drawer t)
+#+END_SRC
+
 I want to use unique ID:s for linking to org notes. The default heading scheme
 is error prone, especially when editing headlines.
 #+BEGIN_SRC emacs-lisp
@@ -1135,6 +1147,7 @@ xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
+(require 'org-roam-protocol)
 (setq org-roam-capture-ref-templates
       '(("r" "ref" plain #'org-roam--capture-get-point "%?"
         :file-name "%<%Y%m%d%H%M%S>"
@@ -1632,6 +1645,7 @@ The default volume is way too loud.
 
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-org-mode
 (setq org-clock-mode-line-total 'today)
+(setq org-duration-format 'h:mm)
 #+END_SRC
 **** TODO Kan vara bra att sätta upp kategorier
 ALla tasks och projekt hamnar under kategorier
