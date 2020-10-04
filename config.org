@@ -735,6 +735,24 @@ Here are the files of my emacs config:
 (after! org-noter
 <<emacs-org-noter>>
 )
+(use-package! org-fc
+  :after org
+  :custom (org-fc-directories "~/Documents/notes/fc/")
+  :config
+  (require 'org-fc-hydra)
+  (evil-define-minor-mode-key '(normal insert emacs) 'org-fc-review-flip-mode
+  (kbd "RET") 'org-fc-review-flip
+  (kbd "n") 'org-fc-review-flip
+  (kbd "s") 'org-fc-review-suspend-card
+  (kbd "q") 'org-fc-review-quit)
+
+(evil-define-minor-mode-key '(normal insert emacs) 'org-fc-review-rate-mode
+  (kbd "a") 'org-fc-review-rate-again
+  (kbd "h") 'org-fc-review-rate-hard
+  (kbd "g") 'org-fc-review-rate-good
+  (kbd "e") 'org-fc-review-rate-easy
+  (kbd "s") 'org-fc-review-suspend-card
+  (kbd "q") 'org-fc-review-quit))
 <<emacs-misc>>
 #+END_SRC
 ** Doom modules
@@ -1117,7 +1135,11 @@ exporting(the contents are kept.) On the other hand, all headlines tagged with
          :file-name "%<%Y%m%d%H%M%S>"
          :head "#+TITLE: ${title}\n#+Created: %t\n#+Time-stamp: <>\n"
          :unnarrowed t)
-        ))
+
+        ("f" "Flash Card" plain #'org-roam--capture-get-point "%?"
+         :file-name "%<%Y%m%d%H%M%S>"
+         :head "#+TITLE: ${title}\n#+Created: %t\n* "
+         :unnarrowed t)))
 (setq org-roam-directory "~/Documents/notes/")
 #+END_SRC
 I want to have a timestamp that updates when I last edited a file. ~time-stamp~
