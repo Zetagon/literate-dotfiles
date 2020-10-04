@@ -1710,7 +1710,7 @@ I want the prompt for when I unlock my gpg key
 
 
 I want ~j~ and ~k~ and other evil movements to treat soft-wrapped lines like normal lines.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/init.el
 (setq evil-respect-visual-line-mode t)
 #+END_SRC
 
