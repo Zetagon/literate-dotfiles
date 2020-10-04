@@ -1778,9 +1778,9 @@ This is the log configuration for the above function
                    `(:tls t
                      :port 6697
                      :nick "Zetagon"
-                     :sasl-username ,(+pass-get-user "freenode/freenode@relevant-information.com")
+                     :sasl-username "Zetagon"
                      :sasl-password (lambda (&rest _) (+pass-get-secret "freenode/freenode@relevant-information.com"))
-                     :channels ("#emacs-circe"))))
+                     :channels ("#emacs-circe" "#emacs" "#haskell" "#org-mode" "#xmonad"))))
 #+END_SRC
 ** Passwords
 I want to pin these packages myself
