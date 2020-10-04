@@ -1310,17 +1310,16 @@ This packages allows org-ref notes to be org-roam files
   (setf (alist-get 'org-mode bibtex-completion-format-citation-functions)
         #'my/bibtex-completion-format-org-ref)
   (setq ivy-bibtex-default-action
-        #'ivy-bibtex-insert-citation)
+        #'ivy-bibtex-insert-citation))
   (map!
    :leader
-   :after ivy-bibtex
-   :n "nh" #'ivy-bibtex))
+   :n "nh" #'ivy-bibtex)
 #+END_SRC
 ** Task management
 :PROPERTIES:
 :ID:       c8423be4-43b1-41b1-8b5b-4159a31e2edc
 :END:
-
+*** Basic
 I use Org-mode for managing my tasks, duh.
 
 I use [[https://github.com/alphapapa/org-ql][Org-QL]] [[https://github.com/alphapapa/org-super-agenda][Org Super Agenda]] for easier queries.
