@@ -1581,6 +1581,17 @@ https://github.com/zaeph/.emacs.d Maybe this can be some inspiration
     :from (current-buffer)
     :where (tags "active")))
 #+END_SRC
+*** Kallelse
+#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
+(defun my/gather-tasks-meeting ()
+  (interactive)
+  (org-ql-search (org-agenda-files)
+    '(and (tags "@meeting")
+          (todo))
+    :sort 'priority))
+#+END_SRC
+
+
 *** Capturing
 
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-org-mode
