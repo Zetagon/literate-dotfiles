@@ -1893,6 +1893,62 @@ I want to pin these packages myself
 (when (featurep! :completion helm)
   (package! helm-pass :pin "ed5798f2d83937575e8f23fde33323bca9e85131"))
 #+END_SRC
+** RSS
+:PROPERTIES:
+:header-args: :noweb-ref emacs-misc
+:END:
+These are my feeds
+#+BEGIN_SRC emacs-lisp
+(setq org-feed-alist '(("Org mode" "https://updates.orgmode.org/feed/bugs"
+                        "~/org/orgzly/feeds.org" "Org Mode Bugs")
+                       ("Lexi Lambda" "https://lexi-lambda.github.io/feeds/all.rss.xml"
+                        "~/org/orgzly/feeds.org" "Lexi Lambda"
+                        :template "\n* %h\n  %U\n  %description\n  %a\n")
+                       ("Reasonably Polymorphic" "https://reasonablypolymorphic.com/feed.rss"
+                        "~/org/orgzly/feeds.org" "Reasonably Polymorphic")))
+(setq org-feed-default-template
+      "\n* %h\n  %U\n  LINK: %a\n  %description\n")
+#+END_SRC
+
+This function will only work with the templates specified above.
+#+BEGIN_SRC emacs-lisp
+(defun my/open-feed-in-eww ()
+  "Open feed in eww.
+If there is a line on the format LINK: %a, in the first two lines
+of the heading use that link to open with eww. Otherwise open the entry in eww."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (outline-back-to-heading)
+      (let ((has-link (save-excursion
+                        (when (search-forward "LINK:"
+                                              (save-excursion (next-line)
+                                                              (next-line)
+                                                              (line-end-position))
+                                              't)
+                          (forward-to-word 1)
+                          (when-let ((link (org-element-link-parser)))
+                            (plist-get (car (cdr link)) :raw-link))))))
+
+        (if has-link
+            (progn
+              (eww-browse-url has-link))
+          (org-narrow-to-subtree)
+          (copy-region-as-kill (point-min) (point-max))))))
+  (with-current-buffer (find-file-noselect "/tmp/feed.html")
+    (delete-region (point-min) (point-max))
+    (yank)
+    (basic-save-buffer))
+  (eww-open-file "/tmp/feed.html")
+  (writeroom-mode))
+#+END_SRC
+
+I want to be able to use org links with eww
+
+#+BEGIN_SRC emacs-lisp
+(use-package! ol-eww
+  :after (org eww))
+#+END_SRC
 * Further improvements
 ** TODO Multiple org-files for config
 It's possible to have multiple source files for org.
