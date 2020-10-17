@@ -1134,12 +1134,14 @@ exporting(the contents are kept.) On the other hand, all headlines tagged with
       '(("d" "default" plain #'org-roam--capture-get-point "%?"
          :file-name "%<%Y%m%d%H%M%S>"
          :head "#+TITLE: ${title}\n#+Created: %t\n#+Time-stamp: <>\n"
-         :unnarrowed t)
+         :unnarrowed t
+         :immediate-finish t)
 
         ("f" "Flash Card" plain #'org-roam--capture-get-point "%?"
          :file-name "%<%Y%m%d%H%M%S>"
          :head "#+TITLE: ${title}\n#+Created: %t\n* "
-         :unnarrowed t)))
+         :unnarrowed t))
+      org-roam-db-location "~/.emacs.d/.local/org-roam/org-roam.db")
 (setq org-roam-directory "~/Documents/notes/")
 #+END_SRC
 I want to have a timestamp that updates when I last edited a file. ~time-stamp~
