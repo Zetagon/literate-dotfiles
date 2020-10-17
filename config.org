@@ -1718,6 +1718,10 @@ The Last column is the % of 40hours
 :ID:       e6e33def-ae4c-4bed-8993-ab7683b8d6d0
 :END:
 
+#+BEGIN_SRC emacs-lisp :noweb-ref emacs-org-mode
+(add-hook! '(org-clock-in-hook org-clock-out-hook) #'org-save-all-org-buffers)
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
 (setq org-clock-out-remove-zero-time-clocks t)
 #+END_SRC
