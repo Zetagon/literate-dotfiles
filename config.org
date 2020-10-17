@@ -1562,51 +1562,26 @@ set this variable with some fixed preset.
     ("s" org-schedule)
     ("d" org-deadline)
     ("q" (switch-to-buffer el-secretario--original-buffer) "Quit" :exit t))
-(defvar my/dailyreview-secretary
-  (list
-      (make-el-secretario-source
-       :init-function  (lambda () (el-secretario--notmuch-init  "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox"))
-       :next-function  #'el-secretario--notmuch-show-next-thread
-       :prev-function  #'notmuch-show-previous-thread-show
-       :hydra-body #'el-secretario-default-hydra/body
-       :finished-hook (lambda ())
-       :next-item-hook (lambda ()
-                         (message "next item")))
-      (make-el-secretario-source
-       :init-function  (lambda () (el-secretario-org-init nil '("~/org/orgzly/InboxComputer.org"
-                                                                "~/org/orgzly/Inbox.org") ))
-       :next-function  #'el-secretario-org-next-item
-       :prev-function  #'el-secretario-org-previous-item
-       :hydra-body #'my/el-secretario-org-hydra/body
-       :finished-hook #'widen
-       :next-item-hook (lambda ()))
-      (make-el-secretario-source
-       :init-function  (lambda ()
-                         (el-secretario-org-init '(and (todo "WAITING")
-                                                       (not (tags "weeklyreview" "monthlyreview" "yearlyreview")))
-                                                 '("~/org/orgzly/Todo.org"
-                                                   "~/org/orgzly/Projects.org")))
-       :next-function  #'el-secretario-org-next-item
-       :prev-function  #'el-secretario-org-previous-item
-       :hydra-body #'my/el-secretario-org-hydra/body
-       :finished-hook #'widen
-       :next-item-hook (lambda ()))
-      (make-el-secretario-source
-       :init-function  (lambda ()
-                         (el-secretario-org-init '(and (todo)
-                                                       (or (todo "PROJ")
-                                                           (not (org-entry-blocked-p)))
-                                                       (not (tags "weeklyreview" "monthlyreview" "yearlyreview")))
-                                                 '("~/org/orgzly/Todo.org"
-                                                   "~/org/orgzly/Projects.org") ))
-       :next-function  #'el-secretario-org-next-item
-       :prev-function  #'el-secretario-org-previous-item
-       :hydra-body #'my/el-secretario-org-hydra/body
-       :finished-hook #'widen
-       :next-item-hook (lambda ()))))
+  (defun my/dailyreview-secretary ()
+    (list
+
+     (el-secretario-notmuch-make-source   "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox")
+
+     (el-secretario-org-make-source nil ("~/org/orgzly/InboxComputer.org"
+                                         "~/org/orgzly/Inbox.org"))
+     (el-secretario-org-make-source (and (todo)
+                                         (or (todo "PROJ")
+                                             (not (org-entry-blocked-p)))
+                                         (not (tags "weeklyreview" "monthlyreview" "yearlyreview")))
+                                    ("~/org/orgzly/Todo.org"
+                                     "~/org/orgzly/Projects.org"))
+     (el-secretario-org-make-source (and (todo "WAITING")
+                                         (not (tags "weeklyreview" "monthlyreview" "yearlyreview")))
+                                    ("~/org/orgzly/Todo.org"
+                                     "~/org/orgzly/Projects.org"))))
   (defun el-secretario-daily-review ()
     (interactive)
-    (el-secretario-start-session my/dailyreview-secretary))
+    (el-secretario-start-session (my/dailyreview-secretary)))
   :commands (el-secretario-daily-review))
 #+END_SRC
 
