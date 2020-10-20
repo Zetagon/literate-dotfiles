@@ -1998,6 +1998,31 @@ I want to be able to use org links with eww
 (use-package! ol-eww
   :after (org eww))
 #+END_SRC
+** Window management
+:PROPERTIES:
+:header-args: :noweb-ref emacs-misc
+:END:
+#+BEGIN_SRC emacs-lisp
+(defun my/bsp-split ()
+  "Split the largest window in the direction it is widest in.
+Select the new window and switch to the buffer that was selected before executing command"
+  (interactive)
+  (let ((current-buf (current-buffer))
+        (largest-window (--max-by (> (max (window-pixel-width it) (window-pixel-height it))
+                                     (max (window-pixel-width other) (window-pixel-height other)))
+                                  (window-list))))
+    (select-window largest-window)
+    ;; Select the new window
+    (select-window
+     (if (> (window-pixel-height largest-window)
+            (window-pixel-width largest-window))
+         (split-window-vertically)
+       (split-window-horizontally)))
+    (switch-to-buffer current-buf)))
+
+(map! :leader "w w" #'my/bsp-split)
+#+END_SRC
+
 * Further improvements
 ** TODO Multiple org-files for config
 It's possible to have multiple source files for org.
