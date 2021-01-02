@@ -1124,6 +1124,52 @@ exporting(the contents are kept.) On the other hand, all headlines tagged with
 (require 'ox-extra)
 (ox-extras-activate '(ignore-headlines))
 #+END_SRC
+*** Refiling
+#+begin_src emacs-lisp
+(defun my/org-refile-to-monthly-review ()
+  (interactive)
+  (my/org-refile-to-query '(parent (string-equal (org-id-get) "b5fd67ea-2459-472f-836e-deb113602913"))))
+#+end_src
+#+begin_src emacs-lisp
+(defun my/org-refile-to-query (query &optional map-fun)
+  "Refile to a target specified by QUERY.
+Prompt user to choose between the results. If MAP-FUN is non-nil,
+use it to transform the list returned by `org-ql-select' before prompting the user.
+"
+  (let ((entry-list (--> query
+                         (org-ql-select (org-agenda-files) it
+                           :action (lambda ()
+                                     (list (buffer-file-name)
+                                           (buffer-substring (line-beginning-position)
+                                                             (line-end-position))
+                                           (line-number-at-pos)
+                                           (org-element-headline-parser (line-end-position)))))
+                         (if map-fun
+                             (funcall map-fun it)
+                           it)
+                         (mapcar (lambda (x)
+                                   (cl-destructuring-bind (file line-text line-num tmp-plist) x
+                                       (let ((plist (nth 1 tmp-plist)))
+                                         (-as-> plist
+                                                that
+                                                (plist-put that :file-name file)
+                                                (plist-put that :raw-value
+                                                           (concat (number-to-string line-num)
+                                                                   ": "
+                                                                   line-text)))
+                                         plist)))
+                                 it))))
+
+    (-as->
+     (--> (completing-read "Refile target" (mapcar (lambda (x) (plist-get x :raw-value)) entry-list))
+          (-filter (lambda (x) (string-equal (plist-get x :raw-value) it)) entry-list)
+          car)
+     that
+     (org-refile nil nil (list
+                          (plist-get that :raw-value)
+                          (plist-get that :file-name)
+                          nil (plist-get that :begin))))))
+#+end_src
 ** Org-Roam
 :PROPERTIES:
 :header-args: :noweb-ref emacs-org-roam
