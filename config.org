@@ -1130,45 +1130,87 @@ exporting(the contents are kept.) On the other hand, all headlines tagged with
   (interactive)
   (my/org-refile-to-query '(parent (string-equal (org-id-get) "b5fd67ea-2459-472f-836e-deb113602913"))))
 #+end_src
+
 #+begin_src emacs-lisp
-(defun my/org-refile-to-query (query &optional map-fun)
+(defun my/org-parse-headline ()
+  "Parse headline at point and put in some more relevant information"
+  (--> (org-element-headline-parser (line-end-position))
+       (nth 1 it)
+       (plist-put it :entry-text
+                  (concat
+                   (buffer-file-name)
+                   ":"
+                   (number-to-string (line-number-at-pos))
+                   ":"
+                   (buffer-substring (line-beginning-position)
+                                     (line-end-position))))
+       (plist-put it :file-name (buffer-file-name))
+       (plist-put it :id (org-id-get-create))
+       (plist-put it :buffer (current-buffer))))
+
+(defun my/org-refile-to-query (query &optional files map-fun)
   "Refile to a target specified by QUERY.
 Prompt user to choose between the results. If MAP-FUN is non-nil,
 use it to transform the list returned by `org-ql-select' before prompting the user.
 "
-  (let ((entry-list (--> query
-                         (org-ql-select (org-agenda-files) it
-                           :action (lambda ()
-                                     (list (buffer-file-name)
-                                           (buffer-substring (line-beginning-position)
-                                                             (line-end-position))
-                                           (line-number-at-pos)
-                                           (org-element-headline-parser (line-end-position)))))
-                         (if map-fun
-                             (funcall map-fun it)
-                           it)
-                         (mapcar (lambda (x)
-                                   (cl-destructuring-bind (file line-text line-num tmp-plist) x
-                                       (let ((plist (nth 1 tmp-plist)))
-                                         (-as-> plist
-                                                that
-                                                (plist-put that :file-name file)
-                                                (plist-put that :raw-value
-                                                           (concat (number-to-string line-num)
-                                                                   ": "
-                                                                   line-text)))
-                                         plist)))
-                                 it))))
+  (if-let ((entry-list (--> query
+                            (org-ql-select (or files (org-agenda-files)) it
+                              :action #'my/org-parse-headline)
+                            (if map-fun
+                                (funcall map-fun it)
+                              it))))
 
-    (-as->
-     (--> (completing-read "Refile target" (mapcar (lambda (x) (plist-get x :raw-value)) entry-list))
-          (-filter (lambda (x) (string-equal (plist-get x :raw-value) it)) entry-list)
-          car)
-     that
-     (org-refile nil nil (list
-                          (plist-get that :raw-value)
-                          (plist-get that :file-name)
-                          nil (plist-get that :begin))))))
+      (-as->
+       (--> (completing-read "Refile target" (mapcar (lambda (x) (plist-get x :entry-text)) entry-list))
+            (-filter (lambda (x) (string-equal (plist-get x :entry-text) it)) entry-list)
+            car)
+       that
+       (org-refile nil nil (list
+                            (plist-get that :raw-value)
+                            (plist-get that :file-name)
+                            nil (plist-get that :begin))))
+    (error "No matching targets to refile to")))
+
+(defun my/org-capture-to-query (query template &optional files map-fun &rest capture-plist)
+  "Capture to a org-ql query.
+Capture to one of the results of QUERY. Prompt the user with
+`completing-read' if there are multiple results.
+
+TEMPLATE is a `org-capture-templates' template (often a string).
+
+If FILES is provided, search among FILES, otherwise use agenda files.
+
+If MAP-FUN is non-nil, use it to transform the list returned by
+`org-ql-select' before prompting the user.
+
+Example: (my/org-capture-to-query '(tags \"foo\" \"* %?\" nil #'car )
+This will capture to the first entry that has the tag \"foo\".
+"
+  (if-let ((entry-list (--> query
+                            (org-ql-select (or files (org-agenda-files)) it
+                              :action #'my/org-parse-headline)
+                            (if map-fun
+                                (funcall map-fun it)
+                              it))))
+
+      (-as->
+       (if (cdr entry-list)
+           (-->
+            entry-list
+            (completing-read "Refile target" (mapcar (lambda (x) (plist-get x :entry-text)) it))
+            (-filter (lambda (x) (string-equal (plist-get x :entry-text) it)) entry-list)
+            (car it))
+         (car entry-list))
+       that
+       (let ((org-capture-templates `(("x" "auto-generated" entry
+                                       (id ,(plist-get that :id))
+                                       ;; (file "/tmp/test.org")
+                                       ,template
+                                       ,@capture-plist))))
+         (org-capture nil "x")))
+
+    (error "No matching targets to capture to")))
+
 #+end_src
 ** Org-Roam
 :PROPERTIES:
