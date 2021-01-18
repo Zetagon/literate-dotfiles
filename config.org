@@ -1941,7 +1941,8 @@ Put info manual on the side and src blocks on the other
 (set-popup-rules!
   '(("^\\*info\\*" :slot 2 :vslot 2 :side left :width 85 :quit nil :height 0.50))
   '(("^\\*info\\*<2>" :slot 3 :vslot 2 :side left :width 85 :quit nil :height 0.50))
-  '(("^\\*Org Src*" :slot 3 :side right :quit nil :width 0.5)))
+  '(("^\\*Org Src*" :slot 3 :side right :quit nil :width 0.5))
+  '(("*eww*" :ignore t)))
 #+end_src
 ** Lispy
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/init.el
