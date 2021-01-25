@@ -1466,51 +1466,40 @@ I need these maps to be able to use jk in the agenda buffer properly
 items that are releveant to today.
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (defun my/today ()
-    (interactive)
-    (let ((org-agenda-dim-blocked-tasks 'invisible)
-          (org-agenda-custom-commands
-           '(("l" "Today"
-              ((tags-todo "active" (
-                               (org-agenda-overriding-header "Active tasks")))
-               (agenda "" ((org-agenda-view-columns-initially nil)
-                           (org-habit-scheduled-past-days 10000)
-                           (org-scheduled-past-days 2)
-                           (org-habit-preceding-days 200)
-                           (org-habit-following-days 3)
-                           (org-deadline-warning-days 1)
-                           (org-super-agenda-groups
-                            '((:name "Habits"
-                               :habit t
-                               :order 30)
-                              (:name "Done Today"
-                               :order 100
-                               :and (:date today
-                                     :todo "DONE"))
-                              ;; (:name "Today"
-                              ;;  :time-grid t
-                              ;;  :date today
-                              ;;  )
-                              ;; (:discard (:and (:scheduled past
-                              ;;                  :not (:habit t)
-                              ;;                  :not (:date today))))
-                              (:name "Städa"
-                               :category "clean")
-                              (:name "Meeting"
-                               :tag ("@meeting")
-                               :order 20)
-                              (:name "Schedule"
-                               :time-grid t)
-                              (:auto-priority t)
-                              (:name "Todos"
-                               :todo t
-                               )
-                              ;; (:discard
-                              ;;  (:deadline t))
-                              ))
-                           ))))))
-          (org-agenda-start-day "0d")
-          (org-agenda-span 1))
-      (org-agenda nil "l")))
+  (interactive)
+  (setq org-agenda-view-columns-initially nil
+        org-habit-scheduled-past-days 10000
+        org-scheduled-past-days 2
+        org-habit-preceding-days 0
+        org-habit-following-days 0
+        org-habit-following-days 3
+        org-deadline-warning-days 1
+        org-super-agenda-groups '((:name "Habits"
+                                   :habit t
+                                   :order 30)
+                                  (:name "Done Today"
+                                   :order 100
+                                   :and (:date today
+                                         :todo "DONE"))
+                                  (:name "Städa"
+                                   :category "clean")
+                                  (:name "Meeting"
+                                   :tag ("@meeting")
+                                   :order 20)
+                                  (:name "Schedule"
+                                   :time-grid t)
+                                  (:auto-priority t)
+                                  (:name "Todos"
+                                   :todo t))
+        org-agenda-dim-blocked-tasks 'invisible
+        org-agenda-start-day "0d"
+        org-agenda-span 1)
+  (let ((org-agenda-custom-commands
+         '(("l" "Today"
+            ((tags-todo "active" (
+                                  (org-agenda-overriding-header "Active tasks")))
+             (agenda "" nil))))))
+    (org-agenda nil "l")))
 #+END_SRC
 
 #+RESULTS:
