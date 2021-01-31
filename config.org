@@ -711,6 +711,10 @@ Here are the files of my emacs config:
 #+CAPTION: packages.el declares which packages I want to install
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/packages.el
 <<emacs-packages>>
+(package! el-secretario
+  :recipe (:local-repo "~/Documents/el-secretario/")
+  :type 'local
+  :pin "b5faddadd512a1a2b0261fb64caf5f33c9f912c")
 #+END_SRC
 
 #+CAPTION: config.el
@@ -1629,38 +1633,91 @@ set this variable with some fixed preset.
 (use-package! el-secretario-notmuch
   :after (el-secretario))
 
+(defhydra my/secretary-notmuch-hydra ()
+  ("n" el-secretario-next-item "next" :exit t)
+  ("q" (el-secretario-end-sesion) "Quit" :exit t)
+  ("d" (progn (notmuch-show-tag-all '("-notdone"))
+              (el-secretario-next-item))
+   "Mark message as done"
+   :exit t)
+  ("c" (progn
+         (org-capture nil "f")
+         (el-secretario-activate-hydra))
+   "Capture"
+   :exit t)
+  ("]" notmuch-show-next-message "Next message")
+  ("[" notmuch-show-previous-message "Next message"))
+
+(defhydra my/el-secretario-org-hydra ()
+  ("n" el-secretario-next-item "next" :exit t)
+  ("r" (progn (org-refile) (el-secretario-next-item)) "Refile" :exit t)
+  ("t" org-set-tags-command "Tags")
+  ("T" org-todo "TODO")
+  ("l" link-hint-open-link "Link")
+  ("s" org-schedule "Schedule")
+  ("d" org-deadline  "Deadline")
+  ("D" (delete-region (point-min) (point-max)) "Delete visible")
+  ("q" (el-secretario-end-sesion) "Quit" :exit t)
+  ("/" nil "disable hydra"  :exit t))
 
 (use-package! el-secretario
   :after (hydra)
   :config
-  (defhydra my/el-secretario-org-hydra (:foreign-keys run)
-    ("n" el-secretario-next-item "next")
-    ("r" org-refile)
-    ("s" org-schedule)
-    ("d" org-deadline)
-    ("q" (switch-to-buffer el-secretario--original-buffer) "Quit" :exit t))
+
   (defun my/dailyreview-secretary ()
     (list
 
-     (el-secretario-notmuch-make-source   "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox")
+     (el-secretario-notmuch-make-source   "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-hydra/body)
 
      (el-secretario-org-make-source nil ("~/org/orgzly/InboxComputer.org"
-                                         "~/org/orgzly/Inbox.org"))
+                                         "~/org/orgzly/Inbox.org")
+                                    nil my/el-secretario-org-hydra/body)
+     (el-secretario-org-make-source (and (todo "WAITING")
+                                         (not (tags "weeklyreview" "monthlyreview" "yearlyreview")))
+                                    ("~/org/orgzly/Todo.org"
+                                     "~/org/orgzly/Projects.org")
+                                    nil my/el-secretario-org-hydra/body)
      (el-secretario-org-make-source (and (todo)
                                          (or (todo "PROJ")
                                              (not (org-entry-blocked-p)))
                                          (not (tags "weeklyreview" "monthlyreview" "yearlyreview")))
                                     ("~/org/orgzly/Todo.org"
-                                     "~/org/orgzly/Projects.org"))
+                                     "~/org/orgzly/Projects.org")
+                                    nil my/el-secretario-org-hydra/body)))
+  (defun my/weeklyreview-secretary ()
+    (list
+
+     (el-secretario-notmuch-make-source   "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-hydra/body)
+
+     (el-secretario-org-make-source nil ("~/org/orgzly/InboxComputer.org"
+                                         "~/org/orgzly/Inbox.org")
+                                    nil my/el-secretario-org-hydra/body)
      (el-secretario-org-make-source (and (todo "WAITING")
-                                         (not (tags "weeklyreview" "monthlyreview" "yearlyreview")))
+                                         (not (tags "monthlyreview" "yearlyreview")))
                                     ("~/org/orgzly/Todo.org"
-                                     "~/org/orgzly/Projects.org"))))
-  (defun el-secretario-daily-review ()
+                                     "~/org/orgzly/Projects.org")
+                                    (lambda () ;; (unless (-contains? (org-get-tags) "dailyreview")
+                                      ;;   (el-secretario-org-add-tag "weeklyreview"))
+                                      ) my/el-secretario-org-hydra/body)
+     (el-secretario-org-make-source (and (todo)
+                                         (not (parent (todo "PROJ")))
+                                         (not (tags "monthlyreview" "yearlyreview")))
+                                    ("~/org/orgzly/Todo.org"
+                                     "~/org/orgzly/Projects.org")
+                                    (lambda () ;; (unless (-contains? (org-get-tags) "dailyreview")
+                                      ;;   (el-secretario-org-add-tag "weeklyreview"))
+                                      )
+                                    my/el-secretario-org-hydra/body)))
+  (defun my/el-secretario-daily-review ()
     (interactive)
     (el-secretario-start-session (my/dailyreview-secretary)))
-  :commands (el-secretario-daily-review))
-#+END_SRC
+  (defun my/el-secretario-weekly-review ()
+    (interactive)
+    (el-secretario-start-session (my/weeklyreview-secretary)))
+  :commands (my/el-secretario-daily-review
+             my/el-secretario-weekly-review))
+ #+END_SRC
+
 
 **** TODO I want to implement the following workflow
 - Daily review
