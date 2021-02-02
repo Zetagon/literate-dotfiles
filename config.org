@@ -1895,6 +1895,14 @@ The default volume is way too loud.
 (setq org-clock-mode-line-total 'today)
 (setq org-duration-format 'h:mm)
 #+END_SRC
+#+begin_src emacs-lisp :noweb-ref emacs-org-mode
+(map!
+ :leader
+ "nf" nil
+ (:prefix ("nf" . "Quick Clock-in")
+  "d" (cmd! (my/clock-in-specific "Dötid under skola" t)) :desc "Dötid under skola"
+  "n" (cmd! (my/clock-in-specific "Nothing" t)) :desc  "Nothing"))
+#+end_src
 **** TODO Kan vara bra att sätta upp kategorier
 ALla tasks och projekt hamnar under kategorier
 
@@ -1913,7 +1921,7 @@ Detta är bra för att då kan jag ha capture templates för att klocka in en mi
 **** Clock in quickly
 
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
-(defun my/clock-in-specific (name)
+(defun my/clock-in-specific (name &optional no-ping)
   (interactive)
   (with-current-buffer (find-file-noselect "/home/leo/org/orgzly/Log.org")
     (save-excursion
@@ -1923,9 +1931,10 @@ Detta är bra för att då kan jag ha capture templates för att klocka in en mi
         (insert (concat "** " name)))
       (goto-char (line-end-position))
       (org-clock-in)
-      (kdeconnect-ping-msg
-       (concat "Clocking in: "
-               (org-no-properties (org-get-heading))))
+      (unless no-ping
+        (kdeconnect-ping-msg
+         (concat "Clocking in: "
+                 (org-no-properties (org-get-heading)))))
       (save-buffer))))
 
 (defun my/kdec-clock-out ()
