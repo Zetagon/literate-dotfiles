@@ -1,20 +1,29 @@
+:PROPERTIES:
+:ID:       d5a495d0-3a3e-420d-b686-51c2ceee4817
+:END:
 #+PROPERTY: header-args :comments no :mkdirp yes :noweb yes :tangle no
 Here are the files I'm using
-#+BEGIN_SRC bash :tangle ~/.bashrc
+#+BEGIN_SRC sh :tangle ~/.bashrc
 <<bashrc>>
 #+END_SRC
-#+BEGIN_SRC bash :tangle ~/.bash_profile
+#+BEGIN_SRC sh :tangle ~/.bash_profile
 export ANDROID_HOME=$HOME/Android/Sdk
 export PATH=$PATH:$ANDROID_HOME/tools
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 <<bashprofile>>
 #+END_SRC
+* Setup
+In order to setup the system, this needs to be run
+#+BEGIN_SRC sh
+<<setup-system>>
+#+END_SRC
 * Bash
 :PROPERTIES:
 :header-args: :noweb-ref bashrc
+:ID:       ef095ff6-c1e1-4ffc-90ff-2a19e320b3f2
 :END:
 Non-personal part.
-#+BEGIN_SRC bash
+#+BEGIN_SRC sh
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -134,14 +143,14 @@ if ! shopt -oq posix; then
 fi
 #+END_SRC
 Make bash use vim and use emacs as default editor.
-#+BEGIN_SRC bash
+#+BEGIN_SRC sh
 set -o vi
 export VISUAL="emacsclient -n"
 export EDITOR="$VISUAL"
 export CARGO_HOME="/home/leo/.cargo"
 #+END_SRC
 My aliases
-#+BEGIN_SRC bash
+#+BEGIN_SRC sh
 alias tmux='tmux -2'
 alias o='xdg-open'
 alias en='emacsclient -n'
@@ -182,13 +191,13 @@ export OPAMROOT=~/opam-coq.8.8.1
 eval `opam config env`
 #+END_SRC
 I use fzf to as fuzzy finding in bash
-#+BEGIN_SRC bash
+#+BEGIN_SRC sh
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*" --max-count 20'
 bind -x '"\C-p": emacsclient -t $(fzf);'
 #+END_SRC
 I don't want to have ms spy on me.
-#+BEGIN_SRC bash
+#+BEGIN_SRC sh
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
 # Make npm install local
@@ -486,7 +495,7 @@ mkdir -p ~/.mail/gmail
 
 #+RESULTS:
 
-#+BEGIN_SRC conf :tangle ~/.config/mbsyncrc
+#+BEGIN_SRC conf :tangle ~/.mbsyncrc
 IMAPAccount gmail
 # Address to connect to
 Host imap.gmail.com
@@ -766,7 +775,7 @@ Here are the files of my emacs config:
 
 Put the doom CLI:s in my path.
 
-#+BEGIN_SRC bash :noweb-ref bashprofile
+#+BEGIN_SRC sh :noweb-ref bashprofile
 export PATH="$PATH:$HOME/.emacs.d/bin"
 #+END_SRC
 
@@ -1266,7 +1275,7 @@ MimeType=x-scheme-handler/org-protocol
 #+END_SRC
 
 And run this command for it to take effect
-#+BEGIN_SRC bash :noweb-ref <<setup-system>>
+#+BEGIN_SRC sh :noweb-ref <<setup-system>>
 xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
 #+END_SRC
 
@@ -1282,6 +1291,7 @@ xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
 I don't want Scrapbook or the journal to be in the graph as i creates artificial connections.
 #+BEGIN_SRC emacs-lisp
 (setq org-roam-graph-exclude-matcher '("Scrapbook.org" "journal/"))
+(setq org-roam-file-exclude-regexp ".stversions/*" )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1342,7 +1352,7 @@ To integrate journaling with [[id:37471411-1f5f-4767-9588-6a47b2070075][Org-Roam
 #+END_SRC
 ** Bibliography managment
 I apparently need to set this in my bashrc
-#+BEGIN_SRC bash :noweb-ref bashprofile
+#+BEGIN_SRC sh :noweb-ref bashprofile
 export BIBINPUTS="~/Documents/notes/Zotero_articles.bib"
 #+END_SRC
 *** Org-roam bibtex
