@@ -1140,10 +1140,13 @@ exporting(the contents are kept.) On the other hand, all headlines tagged with
 
 Enable "type writer mode" (the cursor is always at the center of the screen) in writeroom-mode.
 #+begin_src emacs-lisp
+(defun my/recenter ()
+  (interactive)
+  (recenter 8))
 (add-hook! 'writeroom-mode-hook
   (if writeroom-mode
-      (add-hook 'post-command-hook #'recenter nil t)
-    (remove-hook 'post-command-hook #'recenter nil t)))
+      (add-hook 'post-command-hook #'my/recenter nil t)
+    (remove-hook 'post-command-hook #'my/recenter nil t)))
 #+end_src
 *** Refiling
 #+begin_src emacs-lisp
