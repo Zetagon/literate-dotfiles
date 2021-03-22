@@ -1057,6 +1057,24 @@ solution so far is to apply this patch.
 (setq evil-want-abbrev-expand-on-insert-exit nil)
 
 #+END_SRC
+** Random settings
+:PROPERTIES:
+:header-args: :noweb-ref emacs-misc
+:END:
+#+begin_src emacs-lisp
+(setq doom-font (font-spec :family "Source Code Pro" :size 14))
+#+end_src
+I have disabled using =jk= as escape because it messes with swedish-postfix and
+lispy.
+#+begin_src emacs-lisp
+(setq evil-escape-key-sequence nil)
+#+end_src
+
+I like being able to view documentation inside Emacs.
+#+begin_src emacs-lisp
+(setq +lookup-open-url-fn #'eww)
+(set-docsets! 'python-mode "Python 3")
+#+end_src
 
 Nameless mode is handy to hack in namespaces in elisp
 
@@ -1097,6 +1115,14 @@ I want to use ~Dd~ as avy delete line.
 :n "d" #'avy-kill-ring-save-whole-line
 :n "r" #'avy-kill-ring-save-region)
 #+END_SRC
+
+I want to recompile more often than changing compilation command
+
+#+begin_src emacs-lisp
+(:leader
+ "c c" #'recompile
+ "c C" #'+ivy/compile)
+#+end_src
 
 I have mapped tab to both tab and super, so it becomes clunky to use for keybindings.
 #+BEGIN_SRC emacs-lisp
@@ -1147,6 +1173,11 @@ This is the way I want to interact with company
       "C-k" #'company-select-previous
       [backtab] nil
       [return] #'company-complete-selection)
+(setq company-idle-delay nil)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(set-company-backend! 'prog-mode '(company-capf))
 #+END_SRC
 ** Ivy
 :PROPERTIES:
@@ -1185,14 +1216,13 @@ is error prone, especially when editing headlines.
 very lucky
 
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
-(set-company-backend! 'org-mode
-  'my/company-org
-  'company-capf
-  'company-org-roam
-  'company-ispell
-  'company-dabbrev
-  'company-yasnippet
-)
+(after! org
+  (set-company-backend! 'org-mode
+    'my/company-org
+    'company-capf
+    'company-ispell
+    'company-dabbrev
+    'company-yasnippet))
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-clockreport-parameter-plist
@@ -1365,10 +1395,14 @@ This will capture to the first entry that has the tag \"foo\".
         ("f" "Flash Card" plain #'org-roam--capture-get-point "%?"
          :file-name "%<%Y%m%d%H%M%S>"
          :head "#+TITLE: ${title}\n#+Created: %t\n* "
-         :unnarrowed t))
-      org-roam-db-location "~/.emacs.d/.local/org-roam/org-roam.db")
+         :unnarrowed t)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el :noweb-ref no
+(setq org-roam-db-location "~/.emacs.d/.local/org-roam/org-roam.db")
 (setq org-roam-directory "~/Documents/notes/")
 #+END_SRC
+
 I want to have a timestamp that updates when I last edited a file. ~time-stamp~
 will write a time-stamp between if it finds a string: "Time-stamp: <>" in the
 first 8 lines of the buffer.
@@ -1560,6 +1594,7 @@ Here are my agenda files:
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-org-mode
 (setq org-agenda-files'("~/org/orgzly/Todo.org"
                         "~/org/orgzly/Inbox.org"
+                        "~/org/orgzly/InboxComputer.org"
                         "~/org/orgzly/Habits.org"
                         "~/org/orgzly/Projects.org"
                         "~/org/orgzly/begrepp.org"
@@ -1894,6 +1929,7 @@ https://github.com/zaeph/.emacs.d Maybe this can be some inspiration
     :from (current-buffer)
     :where (tags "active")))
 #+END_SRC
+
 *** Kallelse
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (defun my/gather-tasks-meeting ()
@@ -2092,8 +2128,6 @@ Detta är bra för att då kan jag ha capture templates för att klocka in en mi
                     (shell-quote-argument "5f9f969c142cd64b")
                     "--ping-msg" (shell-quote-argument message)) " ")))
 #+END_SRC
-
-
 ** Latex
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (setq +latex-viewers '(okular))
@@ -2123,6 +2157,11 @@ I want ~j~ and ~k~ and other evil movements to treat soft-wrapped lines like nor
 (push "~/.nix-profile/bin" tramp-remote-path)
 ;; Let magit find the git executable by path
 (setq magit-git-executable "git")
+#+END_SRC
+
+I don't want the lines to be too long when writing using writeroom.
+#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
+(setq writeroom-width 50)
 #+END_SRC
 *** Popup rules
 Put info manual on the side and src blocks on the other
@@ -2228,19 +2267,24 @@ I want to pin these packages myself
 (when (featurep! :completion helm)
   (package! helm-pass :pin "ed5798f2d83937575e8f23fde33323bca9e85131"))
 #+END_SRC
+
 ** RSS
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
 :END:
 These are my feeds
 #+BEGIN_SRC emacs-lisp
-(setq org-feed-alist '(("Org mode" "https://updates.orgmode.org/feed/bugs"
-                        "~/org/orgzly/feeds.org" "Org Mode Bugs")
+(defvar my/feed-file "~/org/orgzly/feeds.org" )
+(setq org-feed-alist `(("Org mode" "https://updates.orgmode.org/feed/bugs"
+                       ,my/feed-file "Org Mode Bugs")
                        ("Lexi Lambda" "https://lexi-lambda.github.io/feeds/all.rss.xml"
-                        "~/org/orgzly/feeds.org" "Lexi Lambda"
+                        ,my/feed-file"Lexi Lambda"
                         :template "\n* %h\n  %U\n  %description\n  %a\n")
                        ("Reasonably Polymorphic" "https://reasonablypolymorphic.com/feed.rss"
-                        "~/org/orgzly/feeds.org" "Reasonably Polymorphic")))
+                        ,my/feed-file "Reasonably Polymorphic")
+                       ("Eccentric J" "https://eccentric-j.com/feed.rss"
+                        ,my/feed-file "idle-parens")))
+
 (setq org-feed-default-template
       "\n* %h\n  %U\n  LINK: %a\n  %description\n")
 #+END_SRC
@@ -2280,10 +2324,6 @@ of the heading use that link to open with eww. Otherwise open the entry in eww."
 
 I want to be able to use org links with eww
 
-#+BEGIN_SRC emacs-lisp
-(use-package! ol-eww
-  :after (org eww))
-#+END_SRC
 ** Org Indexcards
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
@@ -2292,6 +2332,7 @@ I want to be able to use org links with eww
 (load! "./org-indexcards.el")
 (map! :leader "w w" #'org-indexcards-bsp-split)
 #+END_SRC
+
 
 * Further improvements
 ** TODO Multiple org-files for config
