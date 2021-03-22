@@ -813,6 +813,17 @@ Here are the files of my emacs config:
 
 #+CAPTION: config.el
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
+
+
+This makes sure that I eww, man-pages and info manuals are linkable in org.
+#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
+(add-to-list 'org-modules 'ol-eww)
+(add-to-list 'org-modules 'ol-info)
+(use-package ol-man
+  :after (org))
+<<test>>
+
+
 (after! notmuch
   ;;This notmuch config is made for the doom module
   ;;
