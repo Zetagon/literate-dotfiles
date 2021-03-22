@@ -286,14 +286,19 @@ I want to see more of cited lines and set it to a better colour (grey is hard to
                             ((t (:foreground "#50b1c9"))))))
 #+END_SRC
 
-I don't want to have ~auto-fill-mode~ när jag skriver mail. Det blir för det
-mesta jobbigt för den som läser det då. I also want flyspell-mode to be on.
+I don't want to have ~auto-fill-mode~ when I write email. It is just confusing
+for the receivers most of the time. I also want flyspell-mode to be on.
 #+BEGIN_SRC emacs-lisp
 (add-hook! 'notmuch-message-mode
   (auto-fill-mode -1)
-  (visual-line-mode)
   (flyspell-mode)
   (ispell-change-dictionary "swedish"))
+#+END_SRC
+
+This ensures that wordwrapping doesn't cause indentation when I write emails.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list '+word-wrap-text-modes 'notmuch-message-mode)
 #+END_SRC
 ** Notmuch Program
 :PROPERTIES:
