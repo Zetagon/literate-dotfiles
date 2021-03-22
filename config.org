@@ -714,6 +714,86 @@ user dv-ordf@utn.se
 passwordeval "pass Mail/ordf"
 
 #+END_SRC
+* Git
+** Config
+:PROPERTIES:
+:header-args: :tangle ~/.config/git/config
+:END:
+First some basic settings:
+#+begin_src config
+[user]
+	email = git@relevant-information.com
+	name = Leo Okawa Ericson
+[push]
+	default = simple
+[core]
+	editor = nano
+[github]
+	user = Zetagon
+#+end_src
+Here I have some aliases that I used before I used Magit.
+#+begin_src config
+[alias]
+	pup = !git pull && git submodule init && git submodule update && git submodule status
+    lg = !"git lg1"
+    lg1 = !"git lg1-specific --all"
+    lg2 = !"git lg2-specific --all"
+    lg3 = !"git lg3-specific --all"
+
+    lg1-specific = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)'
+    lg2-specific = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(auto)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)'
+    lg3-specific = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset) %C(bold cyan)(committed: %cD)%C(reset) %C(auto)%d%C(reset)%n''          %C(white)%s%C(reset)%n''          %C(dim white)- %an <%ae> %C(reset) %C(dim white)(committer: %cn <%ce>)%C(reset)'
+    gr = log --graph --full-history --all --color --pretty=tformat:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s%x20%x1b[33m(%an)%x1b[0m"
+#+end_src
+
+This is a trick I found in [[https://tecosaur.github.io/emacs-config/config.html#git-diffs][Tecosaur's config]] whom in turn found it on [[https://protesilaos.com/codelog/2021-01-26-git-diff-hunk-elisp-org/][Prot's
+blog]]. It will give useful diff headers in git for the specified languages. You
+also need to specify which diff type to use for which file extension in the
+attributes [[id:94cd351a-195e-412b-bd72-af6b5ada7dd3][file]].
+#+begin_src config
+[diff "lisp"]
+  xfuncname = "^(((;;;+ )|\\(|[ \t]*\\(describe|([ \t]+\\(((cl-|el-patch-)?def(it|un|var|macro|method|custom)|gb/))).*)$"
+
+[diff "org"]
+  xfuncname = "^(\\*+ +.*)$"
+#+end_src
+** Attributes
+:PROPERTIES:
+:header-args: :tangle ~/.config/git/attributes
+:ID:       94cd351a-195e-412b-bd72-af6b5ada7dd3
+:END:
+I took the liberty to a copy from this site: https://gist.github.com/tekin/12500956bd56784728e490d8cef9cb81
+#+begin_src config
+*.c     diff=cpp
+*.h     diff=cpp
+*.c++   diff=cpp
+*.h++   diff=cpp
+*.cpp   diff=cpp
+*.hpp   diff=cpp
+*.cc    diff=cpp
+*.hh    diff=cpp
+*.m     diff=objc
+*.mm    diff=objc
+*.cs    diff=csharp
+*.css   diff=css
+*.html  diff=html
+*.xhtml diff=html
+*.ex    diff=elixir
+*.exs   diff=elixir
+*.go    diff=golang
+*.php   diff=php
+*.pl    diff=perl
+*.py    diff=python
+*.md    diff=markdown
+*.rb    diff=ruby
+*.rake  diff=ruby
+*.rs    diff=rust
+*.lisp  diff=lisp
+*.el    diff=lisp
+*.tex   diff="tex"
+*.bib   diff="bibtex"
+*.org   diff=org
+#+end_src
 * Emacs
 ** Files
 Here are the files of my emacs config:
