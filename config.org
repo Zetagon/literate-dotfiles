@@ -862,7 +862,14 @@ This makes sure that I eww, man-pages and info manuals are linkable in org.
   (kbd "e") 'org-fc-review-rate-easy
   (kbd "s") 'org-fc-review-suspend-card
   (kbd "q") 'org-fc-review-quit))
+(setq default-input-method "swedish-postfix")
 <<emacs-misc>>
+#+END_SRC
+
+I like the swedish postfix input method. It allows me to use the vim friendly us
+layout while still being able to input Swedish. åäö seems to be easier to type too.
+#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
+(setq default-input-method "swedish-postfix")
 #+END_SRC
 ** Doom modules
 :PROPERTIES:
