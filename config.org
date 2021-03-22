@@ -1797,101 +1797,22 @@ set this variable with some fixed preset.
      (el-secretario-org-make-source '(and (todo "TODO")
                                           (not (org-entry-blocked-p))
                                           (not (property "style" "habit"))
-                                          (not (tags "weeklyreview" "monthlyreview" "yearlyreview"))
                                           (not (scheduled :from 1)))
                                     '("~/org/orgzly/Todo.org"
                                       "~/org/orgzly/Projects.org")
                                     '(lambda ()
                                        (el-secretario-org-remove-tag "active"))
                                     'my/el-secretario-org-hydra/body)))
-  (defun my/weeklyreview-secretary ()
-    (list
-
-     (el-secretario-notmuch-make-source   "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-hydra/body)
-
-     (el-secretario-org-make-source nil '("~/org/orgzly/InboxComputer.org"
-                                          "~/org/orgzly/Inbox.org")
-                                    nil 'my/el-secretario-org-hydra/body)
-     (el-secretario-org-make-source '(and (todo "WAITING")
-                                          (tags "weeklyreview")
-                                          (not (tags "monthlyreview" "yearlyreview")))
-                                    '("~/org/orgzly/Todo.org"
-                                      "~/org/orgzly/Projects.org")
-                                    (lambda () ;; (unless (-contains? (org-get-tags) "dailyreview")
-                                      ;;   (el-secretario-org-add-tag "weeklyreview"))
-                                      ) 'my/el-secretario-org-hydra/body)
-     (el-secretario-org-make-source '(and (todo)
-                                          (not (parent (todo "PROJ")))
-                                          (tags "weeklyreview")
-                                          (not (tags "monthlyreview" "yearlyreview")))
-                                    '("~/org/orgzly/Todo.org"
-                                      "~/org/orgzly/Projects.org")
-                                    (lambda () ;; (unless (-contains? (org-get-tags) "dailyreview")
-                                      ;;   (el-secretario-org-add-tag "weeklyreview"))
-                                      )
-                                    #'my/el-secretario-org-hydra/body)))
   (defun my/el-secretario-daily-review ()
     (interactive)
     (el-secretario-start-session (my/dailyreview-secretary)))
-  (defun my/el-secretario-weekly-review ()
-    (interactive)
-    (el-secretario-start-session (my/weeklyreview-secretary)))
-  :commands (my/el-secretario-daily-review
-             my/el-secretario-weekly-review))
+
+  :commands (my/el-secretario-daily-review))
  #+END_SRC
 
 
-**** TODO I want to implement the following workflow
-- Daily review
-  - Schedule things for today, from todos not marked with weekly, monthly or yearly
-- Weekly review
-  - Put the weekly tag on all untagged todos
-  - Manualy remove weekly tags on things that should be considered this week, from todos marked with weekly
-- Monthly review
-  - Replace weekly tags with monthly tags
-  - Manualy replace monthly tags with weekly tags on things that should be considered this month, from todos marked with monthly
 
-https://github.com/zaeph/.emacs.d Maybe this can be some inspiration
 
-#+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
-(defun my/push-dailies-to-weekly ()
-  "Puts the tag weeklyreview on all TODOs without any review tags or are scheduled today."
-  (interactive)
-  (org-ql-query
-    :select (λ!  (org-set-tags (cons "weeklyreview" (org-get-tags nil 't))))
-    :from (current-buffer)
-    :where '(and (todo)
-                 (not (org-entry-blocked-p))
-                 (not (tags "weeklyreview" "dailyreview" "monthlyreview"))
-                 (not (and
-                       (property "BLOCKED" "")
-                       (descendants (todo))
-                       (not (todo "PROJ"))))
-                 (not (ts :from today :to 7)))))
-    ;; :where '(and (todo)
-    ;;              (not (tags "dailyreview" "yearlyreview" "monthlyreview" "weeklyreview"))
-    ;;              (not (ts :on today)))))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
-(defun my/reset-active-projects ()
-  "Removes the active tag from all projects"
-  (interactive)
-  (org-ql-query
-    :select (λ!  (org-set-tags (-remove (string= "active") (org-get-tags nil 't))))
-    :from (current-buffer)
-    :where (tags "active")))
-#+END_SRC
-
-*** Kallelse
-#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
-(defun my/gather-tasks-meeting ()
-  (interactive)
-  (org-ql-search (org-agenda-files)
-    '(and (tags "@meeting")
-          (todo))
-    :sort 'priority))
-#+END_SRC
 
 
 *** Capturing
