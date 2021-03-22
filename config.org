@@ -1669,8 +1669,9 @@ items that are releveant to today.
         org-agenda-span 1)
   (let ((org-agenda-custom-commands
          '(("l" "Today"
-            ((tags-todo "active" (
-                                  (org-agenda-overriding-header "Active tasks")))
+            ((tags-todo "active" ((org-agenda-overriding-header "Active tasks")))
+             (org-ql-block '(and (scheduled :on "today")
+                                 (not (done))))
              (agenda "" nil))))))
     (org-agenda nil "l")))
 #+END_SRC
@@ -1718,70 +1719,7 @@ Argument ARG is the prefix argument."
 :PROPERTIES:
 :ID:       1c73ac9a-789d-49db-b179-e5c809efee21
 :END:
-These functions are used to decide what to do this day, week or month.
-#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
-  (defun my/create-schedule-for-today ()
-    (interactive)
-    (my//create-schedule '(not (tags "weeklyreview" "monthlyreview" "yearlyreview") )))
 
-  (defun my/create-schedule-for-week ()
-    (interactive)
-    (my//create-schedule '(tags "weeklyreview")))
-  (defun my/create-schedule-for-month ()
-    (interactive)
-    (my//create-schedule '(tags "monthlyreview")))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
-(defun my//create-schedule (tags)
-  (let ((org-overriding-columns-format
-         "%EFFORT %80ITEM %3PRIORITY %CATEGORY %TODO ")
-        (org-agenda-view-columns-initially 't)
-        (org-agenda-custom-commands
-         '(("l" "Planning"
-            ((org-ql-block
-              `(and (todo)
-                    (or (todo "PROJ")
-                        (not (org-entry-blocked-p)))
-                    (not (and (ancestors (todo "PROJ"))
-                              (not (todo "WAITING"))))
-                    ,tags)
-              ((org-super-agenda-groups
-                '((:name "Habits"
-                   :habit t)
-                  (:name "Today"
-                   :scheduled today)
-                  (:name "Past schedule"
-                   :scheduled past)
-                  (:name "Deadlines"
-                   :deadline t
-                   :log t)
-                  (:auto-category t)))))
-             (org-ql-block
-              `(and (todo)
-                    (ancestors (todo "PROJ"))
-                    ,tags)))))))
-    (org-agenda nil "l")
-    ;; (org-ql-search (append '("~/org/orgzly/InboxComputer.org" "~/org/orgzly/Inbox.org") (org-agenda-files))
-    ;;                `(and (todo)
-    ;;                      (or (todo "PROJ")
-    ;;                          (not (org-entry-blocked-p)))
-    ;;                      (not (and (ancestors (todo "PROJ"))
-    ;;                                (not (todo "WAITING"))))
-    ;;                      ,tags)
-    ;;                :super-groups
-    ;;                '((:name "Habits"
-    ;;                   :habit t)
-    ;;                  (:name "Today"
-    ;;                   :scheduled today)
-    ;;                  (:name "Past schedule"
-    ;;                   :scheduled past)
-    ;;                  (:name "Deadlines"
-    ;;                   :deadline t
-    ;;                   :log t)
-    ;;                  (:auto-category t)))
-    ))
-#+END_SRC
 
 I want to be able to set efforts to tasks through the collumns view so I have to
 set this variable with some fixed preset.
@@ -1797,13 +1735,12 @@ set this variable with some fixed preset.
 :END:
 
 #+BEGIN_SRC emacs-lisp
-(use-package! el-secretario-org
-  :after (el-secretario))
-(use-package! el-secretario-notmuch
-  :after (el-secretario))
 
 (defhydra my/secretary-notmuch-hydra ()
-  ("n" el-secretario-next-item "next" :exit t)
+  ("n" (progn
+         (org-capture nil "m")
+         (el-secretario-next-item))
+   "next" :exit t)
   ("q" (el-secretario-end-sesion) "Quit" :exit t)
   ("d" (progn (notmuch-show-tag-all '("-notdone"))
               (el-secretario-next-item))
@@ -1817,13 +1754,26 @@ set this variable with some fixed preset.
   ("]" notmuch-show-next-message "Next message")
   ("[" notmuch-show-previous-message "Next message"))
 
+(setq el-secretario-org-narrow-function #'el-secretario-org-narrow-to-highest-todo)
+
 (defhydra my/el-secretario-org-hydra ()
-  ("n" el-secretario-next-item "next" :exit t)
+  ("a" (progn
+         (save-excursion
+           (goto-char (point-min))
+           (el-secretario-org-add-tag "active"))
+         (el-secretario-space--reset)
+         (org-schedule "+7d"))
+   "Activate task")
+  ("n" (progn
+         (el-secretario-space-reschedule)
+         (el-secretario-next-item) ) "next (and spaced rep)" :exit t)
   ("r" (progn (org-refile) (el-secretario-next-item)) "Refile" :exit t)
   ("t" org-set-tags-command "Tags")
   ("T" org-todo "TODO")
   ("l" link-hint-open-link "Link")
-  ("s" org-schedule "Schedule")
+  ("s" (progn
+         (el-secretario-space-schedule-and-reset)
+         (el-secretario-next-item)) "Schedule")
   ("d" org-deadline  "Deadline")
   ("D" (delete-region (point-min) (point-max)) "Delete visible")
   ("q" (el-secretario-end-sesion) "Quit" :exit t)
@@ -1832,51 +1782,54 @@ set this variable with some fixed preset.
 (use-package! el-secretario
   :after (hydra)
   :config
-
   (defun my/dailyreview-secretary ()
     (list
 
      (el-secretario-notmuch-make-source   "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-hydra/body)
 
-     (el-secretario-org-make-source nil ("~/org/orgzly/InboxComputer.org"
-                                         "~/org/orgzly/Inbox.org")
-                                    nil my/el-secretario-org-hydra/body)
-     (el-secretario-org-make-source (and (todo "WAITING")
-                                         (not (tags "weeklyreview" "monthlyreview" "yearlyreview")))
-                                    ("~/org/orgzly/Todo.org"
-                                     "~/org/orgzly/Projects.org")
-                                    nil my/el-secretario-org-hydra/body)
-     (el-secretario-org-make-source (and (todo)
-                                         (or (todo "PROJ")
-                                             (not (org-entry-blocked-p)))
-                                         (not (tags "weeklyreview" "monthlyreview" "yearlyreview")))
-                                    ("~/org/orgzly/Todo.org"
-                                     "~/org/orgzly/Projects.org")
-                                    nil my/el-secretario-org-hydra/body)))
+     (el-secretario-org-make-source nil '("~/org/orgzly/InboxComputer.org"
+                                          "~/org/orgzly/Inbox.org"))
+     (el-secretario-org-make-source '(and (todo "WAITING")
+                                          (not (scheduled :from 1)))
+                                    '("~/org/orgzly/Todo.org"
+                                      "~/org/orgzly/Projects.org")
+                                    nil #'my/el-secretario-org-hydra/body)
+     (el-secretario-org-make-source '(and (todo "TODO")
+                                          (not (org-entry-blocked-p))
+                                          (not (property "style" "habit"))
+                                          (not (tags "weeklyreview" "monthlyreview" "yearlyreview"))
+                                          (not (scheduled :from 1)))
+                                    '("~/org/orgzly/Todo.org"
+                                      "~/org/orgzly/Projects.org")
+                                    '(lambda ()
+                                       (el-secretario-org-remove-tag "active"))
+                                    'my/el-secretario-org-hydra/body)))
   (defun my/weeklyreview-secretary ()
     (list
 
      (el-secretario-notmuch-make-source   "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-hydra/body)
 
-     (el-secretario-org-make-source nil ("~/org/orgzly/InboxComputer.org"
-                                         "~/org/orgzly/Inbox.org")
-                                    nil my/el-secretario-org-hydra/body)
-     (el-secretario-org-make-source (and (todo "WAITING")
-                                         (not (tags "monthlyreview" "yearlyreview")))
-                                    ("~/org/orgzly/Todo.org"
-                                     "~/org/orgzly/Projects.org")
+     (el-secretario-org-make-source nil '("~/org/orgzly/InboxComputer.org"
+                                          "~/org/orgzly/Inbox.org")
+                                    nil 'my/el-secretario-org-hydra/body)
+     (el-secretario-org-make-source '(and (todo "WAITING")
+                                          (tags "weeklyreview")
+                                          (not (tags "monthlyreview" "yearlyreview")))
+                                    '("~/org/orgzly/Todo.org"
+                                      "~/org/orgzly/Projects.org")
                                     (lambda () ;; (unless (-contains? (org-get-tags) "dailyreview")
                                       ;;   (el-secretario-org-add-tag "weeklyreview"))
-                                      ) my/el-secretario-org-hydra/body)
-     (el-secretario-org-make-source (and (todo)
-                                         (not (parent (todo "PROJ")))
-                                         (not (tags "monthlyreview" "yearlyreview")))
-                                    ("~/org/orgzly/Todo.org"
-                                     "~/org/orgzly/Projects.org")
+                                      ) 'my/el-secretario-org-hydra/body)
+     (el-secretario-org-make-source '(and (todo)
+                                          (not (parent (todo "PROJ")))
+                                          (tags "weeklyreview")
+                                          (not (tags "monthlyreview" "yearlyreview")))
+                                    '("~/org/orgzly/Todo.org"
+                                      "~/org/orgzly/Projects.org")
                                     (lambda () ;; (unless (-contains? (org-get-tags) "dailyreview")
                                       ;;   (el-secretario-org-add-tag "weeklyreview"))
                                       )
-                                    my/el-secretario-org-hydra/body)))
+                                    #'my/el-secretario-org-hydra/body)))
   (defun my/el-secretario-daily-review ()
     (interactive)
     (el-secretario-start-session (my/dailyreview-secretary)))
@@ -1984,6 +1937,9 @@ The Last column is the % of 40hours
           ("f" "Todo" entry (file "~/org/orgzly/InboxComputer.org")
            "* TODO %?\n %a "
            :created t)
+          ("m" "Mail" entry (file "~/org/orgzly/InboxComputer.org")
+           "* TODO Reply to %a "
+           :immediate-finish t)
           ("T" "clipboard" entry (file "~/org/orgzly/InboxComputer.org")
            "* %?
 %T
