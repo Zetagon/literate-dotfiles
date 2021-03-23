@@ -11,7 +11,9 @@ Select the new window and switch to the buffer that was selected before executin
   (let ((current-buf (current-buffer))
         (largest-window (--max-by (> (max (window-pixel-width it) (window-pixel-height it))
                                      (max (window-pixel-width other) (window-pixel-height other)))
-                                  (window-list))))
+                                  (--filter
+                                   (not (s-matches? "^\*" (buffer-name (window-buffer it))))
+                                   (window-list)))))
     (select-window largest-window)
     ;; Select the new window
     (select-window
@@ -24,6 +26,7 @@ Select the new window and switch to the buffer that was selected before executin
 (defun org-indexcards-add-screen ()
   "Add all current org-mode buffers as a screen with name NAME."
   (interactive)
+  (org-indexcards--load-screens)
   (let ((name (ivy-read "Name: " (-map #'car org-indexcards-screens)))
         screen)
     (dolist (window (window-list))
@@ -33,11 +36,13 @@ Select the new window and switch to the buffer that was selected before executin
           (push (buffer-file-name) screen))))
     (setq org-indexcards-screens
           (a-assoc org-indexcards-screens
-                                name screen))))
+                                name screen)))
+  (org-indexcards--save-screens))
 
 (defun org-indexcards-apply-screen ()
   "Open all files in screen"
   (interactive)
+  (org-indexcards--load-screens)
   (let* ((name (ivy-read "Select Screen"
                         (-map #'car org-indexcards-screens)))
         (screen (alist-get name org-indexcards-screens nil nil #'string-equal)))
@@ -49,16 +54,14 @@ Select the new window and switch to the buffer that was selected before executin
 (defvar org-indexcards-screens-path "~/.emacs.d/org-indexcards-screens"
   "The path for where to store screens.")
 
-(defun org-indexcards-load-screens ()
+(defun org-indexcards--load-screens ()
   "Load a list of screens from disk."
-  (interactive)
   (setq org-indexcards-screens
         (with-temp-buffer
           (insert-file-contents org-indexcards-screens-path)
           (read (current-buffer)))))
 
-(defun org-indexcards-save-screens ()
+(defun org-indexcards--save-screens ()
   "Save loaded screens to disk."
-  (interactive)
   (with-temp-file org-indexcards-screens-path
     (prin1 org-indexcards-screens (current-buffer))))
