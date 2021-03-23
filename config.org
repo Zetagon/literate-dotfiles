@@ -1859,7 +1859,7 @@ The Last column is the % of 40hours
            "* TODO %?\n %a "
            :created t)
           ("m" "Mail" entry (file "~/org/orgzly/InboxComputer.org")
-           "* TODO Reply to %a "
+           "* TODO Deal with Email: %a "
            :immediate-finish t)
           ("T" "clipboard" entry (file "~/org/orgzly/InboxComputer.org")
            "* %?
