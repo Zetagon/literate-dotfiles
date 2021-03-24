@@ -1078,27 +1078,11 @@ set this variable with some fixed preset.
 
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-org-mode
 (setq org-capture-templates
-        '(;; ("w" "Weekly Review" entry (file+datetree "~/Dropbox/org/reviews.org")
-          ;;  (file "~/Dropbox/org/templates/weeklyreviewtemplate.org"))
-          ;; ("d" "Daily Review" entry (file+datetree "~/Dropbox/org/reviews.org")
-          ;;  (file "~/Dropbox/org/templates/dailyreviewtemplate.org"))
-          ("x" "Scrapbook with clipboard" entry (file+datetree "~/Documents/notes/scrapbook.org")
+        '(("x" "Scrapbook with clipboard" entry (file+datetree "~/Documents/notes/scrapbook.org")
            "* %?
 %x
 ")
-          ("X" "Scrapbook" entry (file+datetree "~/Documents/notes/scrapbook.org")
-           "* %?
-")
-          ("d" "Daily Summary" entry (file+datetree "~/org/reviews.org")
-           "* Daily Summary :daily:
-:PROPERTIES:
-:STRESS: %?
-:CONTENTMENT:
-:END:
-%t
-Summary: "
-           :jump-to-captured t
-           )
+
           ("w" "Weekly Summary" entry (file+datetree "~/org/reviews.org")
            "* Weekly summary :weekly:
 \** What went well :good:
@@ -1130,28 +1114,11 @@ The Last column is the % of 40hours
            "* %?"
            :clock-in t
            :clock-resume t)
-          ("ce" "Clock in emacs confing" entry (file+headline "~/org/orgzly/Log.org" "Emacs Config")
-           "* %?"
-           :clock-in t
-           :clock-resume t)
-          ("cx" "Clock in xmonad confing" entry (file+headline "~/org/orgzly/Log.org" "XMonad Config")
-           "* %?"
-           :clock-in t
-           :clock-resume t)
-          ("co" "Clock in general confing" entry (file+headline "~/org/orgzly/Log.org" "Config")
-           "* %?"
-           :clock-in t
-           :clock-resume t)
-          ("l" "Learning Log" table-line (file+headline "~/org/orgzly/Log.org" "Learning")
-           "| %t | %K %? | | |")
+
           ("s" "Clock in subtask" entry (clock)
            "* %?"
            :clock-in t
-           :clock-resume t
-           )
-          ("p" "Plan" entry (file  "~/org/orgzly/plan.org")
-           "* %?
-%(cfw:org-capture-day)")))
+           :clock-resume t)))
 #+END_SRC
 *** Clocking
 :PROPERTIES:
