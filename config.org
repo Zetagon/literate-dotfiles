@@ -993,13 +993,29 @@ set this variable with some fixed preset.
 :header-args: :tangle ~/.doom.d/config.el
 :END:
 
-#+BEGIN_SRC emacs-lisp
+When I don't want to read an email I want to capture it so that I can deal with
+it in my todo system instead of turning email into an inferior secondary todo system.
 
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-capture-templates
+            '("m" "Mail" entry (file "~/org/orgzly/InboxComputer.org")
+              "* TODO Deal with Email: %a "
+              :immediate-finish t))
+#+END_SRC
+
+Then when I go through my email during daily review if I can't complete the
+email there I capture the email and mark it as done.
+
+#+BEGIN_SRC emacs-lisp
 (defhydra my/secretary-notmuch-hydra ()
   ("n" (progn
+         (notmuch-show-tag-all '("-notdone"))
          (org-capture nil "m")
          (el-secretario-next-item))
    "next" :exit t)
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp
   ("q" (el-secretario-end-sesion) "Quit" :exit t)
   ("d" (progn (notmuch-show-tag-all '("-notdone"))
               (el-secretario-next-item))
@@ -1012,10 +1028,20 @@ set this variable with some fixed preset.
    :exit t)
   ("]" notmuch-show-next-message "Next message")
   ("[" notmuch-show-previous-message "Next message"))
+#+END_SRC
 
+I want to see the context of this todo if it is part of a project (i.e. there is
+a parent which is a todo).
+#+BEGIN_SRC emacs-lisp
 (setq el-secretario-org-narrow-function #'el-secretario-org-narrow-to-highest-todo)
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
 (defhydra my/el-secretario-org-hydra ()
+  ;; To activate a project is to put the tag :active: on the highest todo
+  ;; parent. Because ~el-secretario-org-narrow-to-highest-todo~ narrows so that
+  ;; the highest todo is the first in
+  ;; the buffer after narrowing, the follwing accomplishes that.
   ("a" (progn
          (save-excursion
            (goto-char (point-min))
@@ -1026,6 +1052,7 @@ set this variable with some fixed preset.
   ("n" (progn
          (el-secretario-space-reschedule)
          (el-secretario-next-item) ) "next (and spaced rep)" :exit t)
+  ("RET" (el-secretario-next-item)  "next" :exit t)
   ("r" (progn (org-refile) (el-secretario-next-item)) "Refile" :exit t)
   ("t" org-set-tags-command "Tags")
   ("T" org-todo "TODO")
@@ -1101,9 +1128,7 @@ The Last column is the % of 40hours
           ("f" "Todo" entry (file "~/org/orgzly/InboxComputer.org")
            "* TODO %?\n %a "
            :created t)
-          ("m" "Mail" entry (file "~/org/orgzly/InboxComputer.org")
-           "* TODO Deal with Email: %a "
-           :immediate-finish t)
+
           ("T" "clipboard" entry (file "~/org/orgzly/InboxComputer.org")
            "* %?
 %T
