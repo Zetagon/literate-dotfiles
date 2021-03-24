@@ -1045,9 +1045,9 @@ a parent which is a todo).
   ("a" (progn
          (save-excursion
            (goto-char (point-min))
-           (el-secretario-org-add-tag "active"))
-         (el-secretario-space--reset)
-         (org-schedule "+7d"))
+           (el-secretario-org-add-tag "active")
+           (el-secretario-space--reset)
+           (org-schedule "+7d")))
    "Activate task")
   ("n" (progn
          (el-secretario-space-reschedule)
@@ -1080,10 +1080,14 @@ a parent which is a todo).
                                     '("~/org/orgzly/Todo.org"
                                       "~/org/orgzly/Projects.org")
                                     nil #'my/el-secretario-org-hydra/body)
-     (el-secretario-org-make-source '(and (todo "TODO")
-                                          (not (org-entry-blocked-p))
-                                          (not (property "style" "habit"))
-                                          (not (scheduled :from 1)))
+     (el-secretario-org-make-source '(or (and (todo "TODO")
+                                              (not (org-entry-blocked-p))
+                                              (not (tags-inherited "active"))
+                                              (not (property "style" "habit"))
+                                              (not (scheduled :from 1)))
+                                         (and (todo "PROJ")
+                                              (not (scheduled :from 1))
+                                              (tags "active")))
                                     '("~/org/orgzly/Todo.org"
                                       "~/org/orgzly/Projects.org")
                                     '(lambda ()
