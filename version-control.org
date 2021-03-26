@@ -6,7 +6,7 @@
 :header-args: :tangle ~/.config/git/config
 :END:
 First some basic settings:
-#+begin_src config
+#+begin_src conf
 [user]
 	email = git@relevant-information.com
 	name = Leo Okawa Ericson
@@ -18,7 +18,7 @@ First some basic settings:
 	user = Zetagon
 #+end_src
 Here I have some aliases that I used before I used Magit.
-#+begin_src config
+#+begin_src conf
 [alias]
 	pup = !git pull && git submodule init && git submodule update && git submodule status
     lg = !"git lg1"
@@ -36,7 +36,7 @@ This is a trick I found in [[https://tecosaur.github.io/emacs-config/config.html
 blog]]. It will give useful diff headers in git for the specified languages. You
 also need to specify which diff type to use for which file extension in the
 attributes [[id:94cd351a-195e-412b-bd72-af6b5ada7dd3][file]].
-#+begin_src config
+#+begin_src conf
 [diff "lisp"]
   xfuncname = "^(((;;;+ )|\\(|[ \t]*\\(describe|([ \t]+\\(((cl-|el-patch-)?def(it|un|var|macro|method|custom)|gb/))).*)$"
 
