@@ -16,6 +16,14 @@ First some basic settings:
 	editor = nano
 [github]
 	user = Zetagon
+[sendemail]
+    from = leo@relevant-information.com
+    smtpserver = /usr/bin/msmtp
+    smtpserveroption = -a
+    smtpserveroption = mailbox
+    smtpserveroption = --auto-from=off
+    smtpserveroption = -f
+    smtpserveroption = leo@relevant-information.com
 #+end_src
 Here I have some aliases that I used before I used Magit.
 #+begin_src conf
