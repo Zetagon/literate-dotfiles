@@ -10,9 +10,9 @@ In order to setup the system, this needs to be run
 #+BEGIN_SRC sh
 <<setup-system>>
 #+END_SRC
-* Emacs
-** Files
+* Files
 Here are the files of my emacs config:
+** Emacs packages
 #+CAPTION: packages.el declares which packages I want to install
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/packages.el
 <<emacs-packages>>
@@ -44,6 +44,7 @@ Here are the files of my emacs config:
   )
 #+END_SRC
 
+** Config
 #+CAPTION: config.el
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (defun my/exwm ()
@@ -126,7 +127,7 @@ layout while still being able to input Swedish. åäö seems to be easier to typ
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (setq default-input-method "swedish-postfix")
 #+END_SRC
-** Doom modules
+* Doom modules
 :PROPERTIES:
 :ID:       2e858646-92c4-49ed-ae54-ffff5cf3c217
 :END:
@@ -314,7 +315,7 @@ solution so far is to apply this patch.
 (setq evil-want-abbrev-expand-on-insert-exit nil)
 
 #+END_SRC
-** Random settings
+* Random settings
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
 :END:
@@ -342,7 +343,7 @@ Nameless mode is handy to hack in namespaces in elisp
 #+begin_src emacs-lisp :tangle ~/.doom.d/packages.el
 (package! nameless :pin "a3a1ce3ec0c5724bcbfe553d831bd4f6b3fe863a")
 #+end_src
-** Keybindings
+* Keybindings
 :PROPERTIES:
 :ID:       35c66993-c662-499d-a103-4e9355855aee
 :END:
@@ -354,7 +355,7 @@ I want to use "," as my localleader key
 <<emacs-keybinds>>
  )
 #+END_SRC
-*** Actual keybindings
+** Actual keybindings
 :PROPERTIES:
 :header-args: :noweb-ref emacs-keybinds
 :ID:       fc66f6f3-e3c7-4190-a8e9-a1bdede6b308
@@ -413,7 +414,7 @@ I want to move my right hand less so I put this to reduce movement
  :i "M-h" #'delete-backward-char)
 #+END_SRC
 
-** Completion
+* Completion
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
 :ID:       1467765f-7c45-4a97-961d-07bb162eb512
@@ -436,7 +437,7 @@ This is the way I want to interact with company
 #+BEGIN_SRC emacs-lisp
 (set-company-backend! 'prog-mode '(company-capf))
 #+END_SRC
-** Ivy
+* Ivy
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
 :ID:       c3b3a98d-5744-47cd-a72d-795164ed5a45
@@ -447,7 +448,7 @@ This is the way I want to interact with company
   (setq +ivy-buffer-preview t))
 #+END_SRC
 
-** Org-mode
+* Org-mode
 :PROPERTIES:
 :header-args: :noweb-ref emacs-org-mode
 :ID:       e8c0936d-4815-4823-a6ea-6fab916e929c
@@ -485,7 +486,7 @@ very lucky
 (setq org-agenda-clockreport-parameter-plist
       '(:link t :maxlevel 5))
 #+END_SRC
-*** TODO Completion for noweb-ref
+** TODO Completion for noweb-ref
 This is a sorta working company backend that can complete noweb-ref style header
 arguments in src blocks. It completes all links enclosed with << >>
 #+BEGIN_SRC emacs-lisp
@@ -526,7 +527,7 @@ arguments in src blocks. It completes all links enclosed with << >>
 (defun my/company-org--candidates (arg)
   (-filter (lambda (x) (s-prefix? arg x)) '("noweb-ref")))
 #+END_SRC
-*** Writing
+** Writing
 :PROPERTIES:
 :ID:       938140cf-2a39-41bf-a59d-5b14d7cedbe0
 :END:
@@ -548,7 +549,7 @@ Enable "type writer mode" (the cursor is always at the center of the screen) in 
       (add-hook 'post-command-hook #'my/recenter nil t)
     (remove-hook 'post-command-hook #'my/recenter nil t)))
 #+end_src
-*** Refiling
+** Refiling
 #+begin_src emacs-lisp
 (defun my/org-refile-to-monthly-review ()
   (interactive)
@@ -636,7 +637,7 @@ This will capture to the first entry that has the tag \"foo\".
     (error "No matching targets to capture to")))
 
 #+end_src
-** Org-Roam
+* Org-Roam
 :PROPERTIES:
 :header-args: :noweb-ref emacs-org-roam
 :ID:       37471411-1f5f-4767-9588-6a47b2070075
@@ -723,7 +724,7 @@ issue.
     (deactivate-mark)))
 (add-hook 'org-roam-buffer-prepare-hook #'my/org-unfill-buffer 't)
 #+END_SRC
-*** Roam Server
+** Roam Server
 :PROPERTIES:
 :ID:       352cd483-dc34-4b1f-937d-06265b4d4b23
 :END:
@@ -734,7 +735,7 @@ issue.
 (use-package! org-roam-server
   :defer t)
 #+END_SRC
-** Journaling
+* Journaling
 :PROPERTIES:
 :ID:       477c0408-c61d-48e9-9ca5-ada0ff511ca4
 :END:
@@ -746,7 +747,7 @@ To integrate journaling with [[id:37471411-1f5f-4767-9588-6a47b2070075][Org-Roam
 ;; Don't use stupid american date format
   (calendar-set-date-style 'iso))
 #+END_SRC
-** Org-noter
+* Org-noter
 :PROPERTIES:
 :header-args: :noweb-ref emacs-org-noter
 :ID:       b1f487cb-a6b1-4122-a587-1a0357f5987e
@@ -757,12 +758,12 @@ To integrate journaling with [[id:37471411-1f5f-4767-9588-6a47b2070075][Org-Roam
  :n "I" #'org-noter-insert-note-toggle-no-questions
  :n "i" #'org-noter-insert-note)
 #+END_SRC
-** Bibliography managment
+* Bibliography managment
 I apparently need to set this in my bashrc
 #+BEGIN_SRC sh :noweb-ref bashprofile
 export BIBINPUTS="~/Documents/notes/Zotero_articles.bib"
 #+END_SRC
-*** Org-roam bibtex
+** Org-roam bibtex
 :PROPERTIES:
 :ID:       2a036cc6-b88b-4369-a48c-86975e421044
 :END:
@@ -776,7 +777,7 @@ This packages allows org-ref notes to be org-roam files
   (org-roam-bibtex-mode))
 #+END_SRC
 
-*** Org-ref
+** Org-ref
 :PROPERTIES:
 :ID:       1f784267-984f-4acc-9dac-ec3da3b185e3
 :END:
@@ -834,11 +835,11 @@ This packages allows org-ref notes to be org-roam files
    :leader
    :n "nh" #'ivy-bibtex)
 #+END_SRC
-** Task management
+* Task management
 :PROPERTIES:
 :ID:       c8423be4-43b1-41b1-8b5b-4159a31e2edc
 :END:
-*** Basic
+** Basic
 I use Org-mode for managing my tasks, duh.
 
 I use [[https://github.com/alphapapa/org-ql][Org-QL]] [[https://github.com/alphapapa/org-super-agenda][Org Super Agenda]] for easier queries.
@@ -868,7 +869,7 @@ Here are my todo-keywords. NEXT is mostly there for legacy reasons.
       '((sequence "TODO(t)" "NEXT(n)" "WAITING" "PROJ(p)" "|" "DONE(d!)" "CANCELLED(c@)")))
 #+END_SRC
 
-*** Keymaps
+** Keymaps
 I need these maps to be able to use jk in the agenda buffer properly
 #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref emacs-keybinds
  (:map org-super-agenda-header-map
@@ -888,7 +889,7 @@ I need these maps to be able to use jk in the agenda buffer properly
 :desc "Create schedule for this month" "osm" #'my/create-schedule-for-month
  )
 #+END_SRC
-*** Deciding what to do
+** Deciding what to do
 :PROPERTIES:
 :ID:       34efb1d3-ecb2-4f59-a8c8-90b58f14cdc0
 :END:
@@ -974,7 +975,7 @@ Argument ARG is the prefix argument."
       (org-agenda-set-restriction-lock arg))))
 #+END_SRC
 
-*** Planning
+** Planning
 :PROPERTIES:
 :ID:       1c73ac9a-789d-49db-b179-e5c809efee21
 :END:
@@ -988,7 +989,7 @@ set this variable with some fixed preset.
       '(("Effort_ALL" .
          "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")))
 #+END_SRC
-**** El Secretario
+*** El Secretario
 :PROPERTIES:
 :header-args: :tangle ~/.doom.d/config.el
 :END:
@@ -1110,7 +1111,7 @@ a parent which is a todo).
 
 
 
-*** Capturing
+** Capturing
 
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-org-mode
 (setq org-capture-templates
@@ -1154,7 +1155,7 @@ The Last column is the % of 40hours
            :clock-in t
            :clock-resume t)))
 #+END_SRC
-*** Clocking
+** Clocking
 :PROPERTIES:
 :ID:       e6e33def-ae4c-4bed-8993-ab7683b8d6d0
 :END:
@@ -1210,7 +1211,7 @@ The default volume is way too loud.
   "d" (cmd! (my/clock-in-specific "Dötid under skola" t)) :desc "Dötid under skola"
   "n" (cmd! (my/clock-in-specific "Nothing" t)) :desc  "Nothing"))
 #+end_src
-**** TODO Kan vara bra att sätta upp kategorier
+*** TODO Kan vara bra att sätta upp kategorier
 ALla tasks och projekt hamnar under kategorier
 
 + kategori
@@ -1219,13 +1220,13 @@ ALla tasks och projekt hamnar under kategorier
     + task
 
 Detta är bra för att då kan jag ha capture templates för att klocka in en misc. event i en kategori, ex. ordf
-**** TODO Man kan klocka det som finns i arkiven också.
+*** TODO Man kan klocka det som finns i arkiven också.
 
 #+BEGIN: clocktable :scope agenda-with-archives :maxlevel 2
 #+CAPTION: Clock summary at [2020-05-16 Sat 19:44]
 #+END:
-*** Time Tracking functions
-**** Clock in quickly
+** Time Tracking functions
+*** Clock in quickly
 
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
 (defun my/clock-in-specific (name &optional no-ping)
@@ -1265,17 +1266,17 @@ Detta är bra för att då kan jag ha capture templates för att klocka in en mi
                     (shell-quote-argument "5f9f969c142cd64b")
                     "--ping-msg" (shell-quote-argument message)) " ")))
 #+END_SRC
-** Latex
+* Latex
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (setq +latex-viewers '(okular))
 (setq TeX-master nil)
 #+END_SRC
-** PDF
+* PDF
 Use the same theme in pdfs as in the rest of emacs
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (add-hook 'pdf-tools-enabled-hook #'pdf-view-midnight-minor-mode)
 #+END_SRC
-** Misc.
+* Misc.
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
 :ID:       dc4b5876-482c-4057-b0cb-d391f1feed05
@@ -1302,7 +1303,7 @@ I don't want the lines to be too long when writing using writeroom.
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (setq writeroom-width 50)
 #+END_SRC
-*** Popup rules
+** Popup rules
 Put info manual on the side and src blocks on the other
 #+begin_src elisp
 (set-popup-rules!
@@ -1311,7 +1312,7 @@ Put info manual on the side and src blocks on the other
   '(("^\\*Org Src*" :slot 3 :side right :quit nil :width 0.5))
   '(("*eww*" :ignore t)))
 #+end_src
-** Lispy
+* Lispy
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/init.el
 (after! lispyville
   (setq lispyville-key-theme
@@ -1325,7 +1326,7 @@ Put info manual on the side and src blocks on the other
           additional-motions
           additional-insert)))
 #+END_SRC
-** Erlang
+* Erlang
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
 :ID:       736efea6-84b6-4951-afb1-65d772cf7c93
@@ -1366,7 +1367,7 @@ This is the log configuration for the above function
  ]}
 ].
 #+END_SRC
-** IRC
+* IRC
 :PROPERTIES:
 :ID:       1c96e624-b94d-46dd-8e24-92dffb7a0685
 :END:
@@ -1388,7 +1389,7 @@ This is the log configuration for the above function
                      :sasl-password (lambda (&rest _) (+pass-get-secret "freenode/freenode@relevant-information.com"))
                      :channels ("#emacs-circe" "#emacs" "#haskell" "#org-mode" "#xmonad" "#fsf" "#libreplanet" "#gnu" "#cryptoparty-uppsala" "#wikimedia" "#wikibooks"))))
 #+END_SRC
-** Passwords
+* Passwords
 I want to pin these packages myself
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-packages
 (package! pass :pin "919d8e3826d556433ab67d4ee21a509d209d1baa")
@@ -1407,7 +1408,7 @@ I want to pin these packages myself
   (package! helm-pass :pin "ed5798f2d83937575e8f23fde33323bca9e85131"))
 #+END_SRC
 
-** RSS
+* RSS
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
 :END:
@@ -1463,7 +1464,7 @@ of the heading use that link to open with eww. Otherwise open the entry in eww."
 
 I want to be able to use org links with eww
 
-** Org Indexcards
+* Org Indexcards
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
 :END:
