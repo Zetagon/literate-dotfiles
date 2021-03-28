@@ -1333,6 +1333,11 @@ I don't want the lines to be too long when writing using writeroom.
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (setq writeroom-width 50)
 #+END_SRC
+
+#+begin_src emacs-lisp
+(remove-hook 'org-mode-hook #'+literate-enable-recompile-h)
+#+end_src
+
 ** Popup rules
 Put info manual on the side and src blocks on the other
 #+begin_src elisp
