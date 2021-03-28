@@ -1112,7 +1112,7 @@ a parent which is a todo).
      (el-secretario-org-make-source nil '("~/org/orgzly/InboxComputer.org"
                                           "~/org/orgzly/Inbox.org"))
      (el-secretario-org-make-source '(and (todo "WAITING")
-                                          (not (scheduled :from 1)))
+                                          (not (scheduled :from 2)))
                                     '("~/org/orgzly/Todo.org"
                                       "~/org/orgzly/Projects.org")
                                     nil #'my/el-secretario-org-hydra/body)
@@ -1120,9 +1120,9 @@ a parent which is a todo).
                                               (not (org-entry-blocked-p))
                                               (not (tags-inherited "active"))
                                               (not (property "style" "habit"))
-                                              (not (scheduled :from 1)))
+                                              (not (scheduled :from 2)))
                                          (and (todo "PROJ")
-                                              (not (scheduled :from 1))
+                                              (not (scheduled :from 2))
                                               (tags "active")))
                                     '("~/org/orgzly/Todo.org"
                                       "~/org/orgzly/Projects.org")
