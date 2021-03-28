@@ -549,6 +549,36 @@ Enable "type writer mode" (the cursor is always at the center of the screen) in 
       (add-hook 'post-command-hook #'my/recenter nil t)
     (remove-hook 'post-command-hook #'my/recenter nil t)))
 #+end_src
+*** Writing Inbox
+I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUwLxefodzfnnfKXx63vXzP88?stackedNotes=z4AX7pHAu5uUfmrq4K4zig9x8jmmF62XgaMXm&stackedNotes=z5aJUJcSbxuQxzHr2YvaY4cX5TuvLQT7r27Dz
+
+#+begin_src emacs-lisp
+(defhydra my/el-secretario-writing-hydra ()
+  ("n" (progn
+         (el-secretario-space-reschedule)
+         (el-secretario-next-item) ) "next (and spaced rep)" :exit t)
+  ("l" link-hint-open-link "Link")
+  ("s" (progn
+         (el-secretario-space-schedule-and-reset)
+         (el-secretario-next-item)) "Schedule")
+  ("b" (progn
+         (el-secretario-space--reset)
+         (el-secretario-tasks-begin-task)) "Begin writing" :exit t)
+  ("D" (delete-region (point-min) (point-max)) "Delete visible")
+  ("q" (el-secretario-end-sesion) "Quit" :exit t))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun my/begin-writing ()
+  (interactive)
+  (el-secretario-start-session (list
+                                (el-secretario-org-make-source
+                                 '(todo)
+                                 '("~/org/writing-inbox.org")))))
+#+end_src
+
+
+
 ** Refiling
 #+begin_src emacs-lisp
 (defun my/org-refile-to-monthly-review ()
