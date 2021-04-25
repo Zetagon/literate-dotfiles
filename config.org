@@ -343,6 +343,12 @@ Nameless mode is handy to hack in namespaces in elisp
 #+begin_src emacs-lisp :tangle ~/.doom.d/packages.el
 (package! nameless :pin "a3a1ce3ec0c5724bcbfe553d831bd4f6b3fe863a")
 #+end_src
+
+The flatwhite theme has a face that makes comments hard to read. This makes it much easier to read while making it distinct from normal text.
+#+begin_src emacs-lisp
+(custom-theme-set-faces! 'doom-flatwhite
+  '(font-lock-comment-face  :background "#fcf2bf") )
+#+end_src
 * Keybindings
 :PROPERTIES:
 :ID:       35c66993-c662-499d-a103-4e9355855aee
