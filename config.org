@@ -372,8 +372,7 @@ CLOCK: [2020-05-11 Mon 10:48]--[2020-05-11 Mon 11:05] =>  0:17
 
 Outline-mode works in Woman buffers but I need some keybindings:
 #+begin_src emacs-lisp
-(map!
- :map Man-mode-map
+ (:map Man-mode-map
  :ivmn "C-j" #'outline-next-visible-heading
  :ivmn "C-k" #'outline-previous-visible-heading
  :ivmn "<backtab>" #'outline-hide-sublevels
