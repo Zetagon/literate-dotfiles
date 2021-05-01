@@ -1206,6 +1206,9 @@ The Last column is the % of 40hours
           ("f" "Todo" entry (file "~/org/orgzly/InboxComputer.org")
            "* TODO %?\n %a "
            :created t)
+          ("e" "Email" entry (file "~/org/orgzly/InboxComputer.org")
+           "* WAITING for %a\n
+%(el-secretario-notmuch-capture-get-thread-link) ")
 
           ("T" "clipboard" entry (file "~/org/orgzly/InboxComputer.org")
            "* %?
