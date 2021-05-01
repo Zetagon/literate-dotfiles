@@ -564,6 +564,9 @@ Enable "type writer mode" (the cursor is always at the center of the screen) in 
     (remove-hook 'post-command-hook #'my/recenter nil t)))
 #+end_src
 *** Writing Inbox
+:PROPERTIES:
+:ID:       7f9f4e8b-2d24-4a45-ab54-7ea22b0b52c7
+:END:
 I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUwLxefodzfnnfKXx63vXzP88?stackedNotes=z4AX7pHAu5uUfmrq4K4zig9x8jmmF62XgaMXm&stackedNotes=z5aJUJcSbxuQxzHr2YvaY4cX5TuvLQT7r27Dz
 
 #+begin_src emacs-lisp
@@ -1152,11 +1155,28 @@ a parent which is a todo).
 
   :commands (my/el-secretario-daily-review))
  #+END_SRC
+*** Fun tasks
 
+I want to do a lot of things because I think they are fun. I'd like to keep a
+queue of such things so that I can easily choose a fun thing to do. It is very
+similar to [[id:7f9f4e8b-2d24-4a45-ab54-7ea22b0b52c7][Writing Inbox]] so I can reuse the hydra from there.
 
+#+begin_src emacs-lisp
 
-
-
+(defun my/choose-fun-thing ()
+  (interactive)
+  (el-secretario-start-session (list
+                                (el-secretario-org-make-source
+                                 '(and (todo)
+                                       (tags-inherited "fun"))
+                                 '("~/org/orgzly/Todo.org"
+                                   "~/org/orgzly/Projects.org")
+                                 :hydra #'my/el-secretario-writing-hydra/body
+                                 :shuffle-p t
+                                 :ids '("dc0de31b-24a5-49f9-add3-7af77ca19206" ;; Writing inbox's id
+                                        )
+                                 :compare-fun #'el-secretario-space-compare-le))))
+#+end_src
 
 ** Capturing
 
