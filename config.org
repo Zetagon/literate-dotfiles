@@ -587,13 +587,11 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
   (interactive)
   (el-secretario-start-session (list
                                 (el-secretario-org-make-source
-                                 '(and (todo)
-                                       ;; (not (org-entry-blocked-p))
-                                       (not (scheduled :from 2)))
+                                 '(todo)
                                  '("~/org/writing-inbox.org")
-                                 nil
-                                 #'my/el-secretario-writing-hydra/body
-                                 t))))
+                                 :hydra #'my/el-secretario-writing-hydra/body
+                                 :shuffle-p t
+                                 :compare-fun #'el-secretario-space-compare-le))))
 #+end_src
 
 
