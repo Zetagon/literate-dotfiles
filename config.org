@@ -1157,6 +1157,9 @@ a parent which is a todo).
   :commands (my/el-secretario-daily-review))
  #+END_SRC
 *** Fun tasks
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
 
 I want to do a lot of things because I think they are fun. I'd like to keep a
 queue of such things so that I can easily choose a fun thing to do. It is very
