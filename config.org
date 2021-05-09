@@ -576,7 +576,7 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
          (el-secretario-next-item) ) "next (and spaced rep)" :exit t)
   ("l" link-hint-open-link "Link")
   ("s" (progn
-         (el-secretario-space-schedule-and-reset)
+         (el-secretario-space-schedule-and-reset nil "+0d")
          (el-secretario-next-item)) "Schedule")
   ("b" (progn
          (el-secretario-space--reset)
