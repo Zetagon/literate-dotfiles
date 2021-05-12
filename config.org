@@ -1114,7 +1114,7 @@ a parent which is a todo).
   ("T" org-todo "TODO")
   ("l" link-hint-open-link "Link")
   ("s" (progn
-         (el-secretario-space-schedule-and-reset)
+         (call-interactively #'el-secretario-space-schedule-and-reset)
          (el-secretario-next-item)) "Schedule")
   ("d" org-deadline  "Deadline")
   ("D" (delete-region (point-min) (point-max)) "Delete visible")
