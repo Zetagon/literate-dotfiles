@@ -868,7 +868,7 @@ This packages allows org-ref notes to be org-roam files
 #+END_SRC
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-org-mode
 (use-package! org-ref
-  :defer t
+  :after (org)
   :init
   (setq org-ref-completion-library 'org-ref-ivy-cite)
   :config
