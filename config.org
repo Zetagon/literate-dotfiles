@@ -892,39 +892,6 @@ This packages allows org-ref notes to be org-roam files
            "c" #'org-ref-change-cite-type))))))
 #+END_SRC
 
-Some [[id:ae3de41e-8f08-4f8d-b1a0-7548bb5f3842][embark]] regular buffer actions for org-ref.
-
-#+BEGIN_SRC emacs-lisp :noweb-ref emacs-org-mode
-  (defun my/org-ref-link-embark ()
-    "Target an org-ref cite or ref link at point."
-    (save-excursion
-      (let ((beg (progn (skip-chars-backward "[:alnum:]_:") (point)))
-            (end (progn (skip-chars-forward "[:alnum:]_:") (point)))
-            (str (buffer-substring-no-properties beg end)))
-
-        (save-match-data
-          (cond ((string-match (concat "\\(" (s-join "\\|" org-ref-cite-types)
-                                       "\\)" ":\\([[:alnum:]_]+\\)")
-                               str)
-                 (cons 'cite-link (match-string 0 str)))
-                ((string-match (concat "\\(" (s-join "\\|" org-ref-ref-types)
-                                       "\\)" ":\\([[:alnum:]_]+\\)")
-                               str)
-                 (cons 'ref-link (match-string 0 str)))
-                (t nil))))))
-  (embark-define-keymap embark-cite-link-actions
-    "Embark actions for cite links."
-    ("c" (lambda (&rest _) (call-interactively #'org-ref-change-cite-type))))
-
-  (embark-define-keymap embark-ref-link-actions
-    "Embark actions for cite links."
-    ("c" (lambda (&rest _) (call-interactively #'org-ref-change-ref-type))))
-  (add-to-list 'embark-keymap-alist '(cite-link . embark-cite-link-actions))
-
-  (add-to-list 'embark-keymap-alist '(ref-link . embark-ref-link-actions))
-
-  (add-to-list 'embark-target-finders #'my/org-ref-link-embark))
-#+END_SRC
 
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (use-package! ivy-bibtex
