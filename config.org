@@ -575,6 +575,14 @@ Sometimes I want to use the koma-script document classes. For that I need this:
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 #+end_src
+
+Org-mode uses it's own system for invoking latex and bibtex the correct amount
+of times, but I find latexmk to be easier, especially when used with biblatex
+and biber.
+
+#+begin_src emacs-lisp
+(setq org-latex-pdf-process '("latexmk -shell-escape -bibtex -pdf %f"))
+#+end_src
 *** Writing Inbox
 :PROPERTIES:
 :ID:       7f9f4e8b-2d24-4a45-ab54-7ea22b0b52c7
@@ -857,7 +865,6 @@ This packages allows org-ref notes to be org-roam files
   (setq org-ref-notes-directory "~/Documents/notes"
         org-ref-default-bibliography '("~/Documents/notes/Zotero_articles.bib")
         org-ref-pdf-directory "~/Documents/notes/pdfs/"
-        org-latex-pdf-process '("latexmk -shell-escape -bibtex -pdf %f")
         org-ref-default-ref-type "cref"
         org-ref-default-citation-link "autocite"
         org-latex-prefer-user-labels t
