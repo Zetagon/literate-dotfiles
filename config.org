@@ -468,8 +468,19 @@ This is the way I want to interact with company
 :ID:       ae3de41e-8f08-4f8d-b1a0-7548bb5f3842
 :END:
 #+begin_src emacs-lisp
-(map! :leader
-      "a" #'embark-act)
+(embark-define-keymap embark-imenu-map
+  "TODO")
+(add-to-list 'embark-keymap-alist '(imenu . embark-imenu-map))
+
+(map! (:leader
+       "a" #'embark-act)
+      (:map embark-imenu-map
+       ;; store org links from an imenu target
+       "l" (lambda (&rest _)
+             (interactive)
+             (save-excursion
+                 (consult-imenu--select (consult-imenu--all-items (consult-imenu--project-buffers)))
+               (call-interactively #'org-store-link)))))
 #+end_src
 
 * Org-mode
