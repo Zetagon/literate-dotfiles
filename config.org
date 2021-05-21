@@ -563,6 +563,18 @@ Enable "type writer mode" (the cursor is always at the center of the screen) in 
       (add-hook 'post-command-hook #'my/recenter nil t)
     (remove-hook 'post-command-hook #'my/recenter nil t)))
 #+end_src
+
+Sometimes I want to use the koma-script document classes. For that I need this:
+#+begin_src emacs-lisp
+(after! ox-latex
+  (add-to-list 'org-latex-classes
+               '("koma-article" "\\documentclass{scrartcl}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+#+end_src
 *** Writing Inbox
 :PROPERTIES:
 :ID:       7f9f4e8b-2d24-4a45-ab54-7ea22b0b52c7
