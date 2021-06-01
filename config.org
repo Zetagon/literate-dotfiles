@@ -439,7 +439,7 @@ I want to move my right hand less so I put this to reduce movement
 #+begin_src emacs-lisp
 (map!
  :i "C-SPC" #'completion-at-point
- : "M-/" #'dabbrev-completion)
+ :i "M-/" #'dabbrev-completion)
 #+end_src
 ** Company
 This is the way I want to interact with company
@@ -481,6 +481,9 @@ This is the way I want to interact with company
 
 (map! (:leader
        "a" #'embark-act)
+      (:map minibuffer-local-map
+       "C-o" (λ! (let ((embark-quit-after-action nil))
+                   (embark-act))))
       (:map embark-imenu-map
        ;; store org links from an imenu target
        "l" (lambda (&rest _)
