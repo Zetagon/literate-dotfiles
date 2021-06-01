@@ -439,7 +439,17 @@ I want to move my right hand less so I put this to reduce movement
 #+begin_src emacs-lisp
 (map!
  :i "C-SPC" #'completion-at-point
- :i "M-/" #'dabbrev-completion)
+ :i "M-/" #'hippie-expand)
+(setq hippie-expand-try-functions-list
+      '(try-expand-all-abbrevs
+        try-expand-list
+        try-expand-dabbrev
+        try-expand-dabbrev-all-buffers
+        try-expand-line
+        try-complete-lisp-symbol-partially
+        try-complete-lisp-symbol))
+; I don't think expanding on line is useful in text mode buffers
+(add-hook text-mode-hook (lambda () (remove #'try-expand-line hippie-expand-try-functions-list)))
 #+end_src
 ** Company
 This is the way I want to interact with company
