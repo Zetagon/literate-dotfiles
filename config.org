@@ -220,6 +220,7 @@ solution so far is to apply this patch.
        ;;grammar           ; tasing grammar mistake every you make
 
        :tools
+       biblio
        ;;ansible
        ;;debugger          ; FIXME stepping through code, to help you add bugs
        ;;direnv
@@ -449,7 +450,7 @@ I want to move my right hand less so I put this to reduce movement
         try-complete-lisp-symbol-partially
         try-complete-lisp-symbol))
 ; I don't think expanding on line is useful in text mode buffers
-(add-hook text-mode-hook (lambda () (remove #'try-expand-line hippie-expand-try-functions-list)))
+(add-hook 'text-mode-hook (lambda () (remove #'try-expand-line hippie-expand-try-functions-list)))
 #+end_src
 ** Company
 This is the way I want to interact with company
@@ -502,6 +503,56 @@ This is the way I want to interact with company
                  (consult-imenu--select (consult-imenu--all-items (consult-imenu--project-buffers)))
                (call-interactively #'org-store-link)))))
 #+end_src
+
+#+begin_src emacs-lisp
+(defadvice! my/embark-target-url-at-point (fun)
+  :around #'embark-target-url-at-point
+  (my/foo fun))
+(defun my/foo (fun)
+  (save-excursion
+      (let* ((beg (progn (skip-chars-backward "[:alnum:]*_:") (point)))
+             (end (progn (skip-chars-forward "[:alnum:]*_:") (point)))
+             (str (buffer-substring-no-properties beg end))
+             (cite-type (cl-second (s-match "^\\([[:alpha:]\*]+\\):" str))))
+
+        (cond ((-contains? org-ref-cite-types
+                           cite-type)
+               `(org-ref-cite . ,str))
+              ((-contains? org-ref-ref-types
+                           cite-type)
+               `(org-ref-ref . ,str))
+              (t
+               (funcall fun)))))
+)
+(embark-define-keymap embark-org-ref-cite-map
+  "Embark keymap for org-ref cite: links"
+  ("o" (lambda (&optional _) (funcall org-ref-open-citation-at-point)))
+  ("p" (lambda (&optional _) (funcall org-ref-open-pdf-function)))
+  ("n" #'org-ref-open-notes-at-point)
+  ("u" #'org-ref-open-url-at-point)
+  ("w" #'org-ref-wos-at-point)
+  ("r" #'org-ref-wos-related-at-point)
+  ("c" #'org-ref-wos-citing-at-point)
+  ("g" #'org-ref-google-scholar-at-point)
+  ("P" #'org-ref-pubmed-at-point)
+  ("C" #'org-ref-crossref-at-point)
+  ("K" #'org-ref-copy-entry-as-summary)
+  ("k" (λ! (progn (kill-new (car (org-ref-get-bibtex-key-and-file))))))
+  ("f" (λ! (kill-new (org-ref-format-entry (org-ref-get-bibtex-key-under-cursor)))))
+  ("e" (λ! (kill-new (save-excursion (org-ref-open-citation-at-point) (org-ref-email-bibtex-entry)))))
+  ("i" (lambda (&optional _) (funcall org-ref-insert-cite-function)))
+  ("h" #'org-ref-change-cite-type))
+
+(embark-define-keymap embark-org-ref-ref-map
+  "Embark keymap for org-ref ref: links"
+  ("i" (lambda () (funcall org-ref-insert-ref-function)))
+  ("h" #'org-ref-change-cite-type))
+
+(add-to-list 'embark-keymap-alist '(org-ref-cite . embark-org-ref-cite-map))
+(add-to-list 'embark-keymap-alist '(org-ref-ref . embark-org-ref-ref-map))
+#+end_src
+
+
 
 * Org-mode
 :PROPERTIES:
@@ -894,8 +945,6 @@ This packages allows org-ref notes to be org-roam files
 :END:
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-packages
 (package! org-ref)
-(package! helm-bibtex)
-(package! ivy-bibtex)
 #+END_SRC
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-org-mode
 (use-package! org-ref
@@ -910,31 +959,23 @@ This packages allows org-ref notes to be org-roam files
         org-ref-default-citation-link "autocite"
         org-latex-prefer-user-labels t
         org-footnote-auto-label 'confirm
-        org-ref-ref-types '("cref" "Cref" "ref" "eqref" "pageref" "nameref" "autoref"))
-  (map!
-   (:leader
-     :n "nb" #'org-ref-open-bibtex-notes)
-   (:map org-mode-map
-     (:localleader
-       (:prefix (";" . "Org-ref")
-         "r" #'org-ref-helm-insert-ref-link
-         (:prefix ("c" . "Change")
-           "r" #'org-ref-change-ref-type
-           "c" #'org-ref-change-cite-type))))))
+        org-ref-ref-types '("cref" "Cref" "ref" "eqref" "pageref" "nameref" "autoref")))
 #+END_SRC
 
-
+*** bibtex-completion
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
-(use-package! ivy-bibtex
-  :defer t
-  :commands (ivy-bibtex)
-  :config
+(after! bibtex-completion
   (setq bibtex-completion-bibliography "~/Documents/notes/Zotero_articles.bib"
         reftex-default-bibliography '("~/Documents/notes/Zotero_articles.bib")
-        helm-bibtex-library-path "~/Documents/notes/pdfs"
+        bibtex-completion-library-path "~/Documents/notes/pdfs"
         bibtex-completion-notes-path "~/Documents/notes/"
-        bibtex-completion-pdf-field "File"
-        org-ref-cite-onclick-function (lambda (x) (message x) (org-ref-cite-hydra/body)))
+        bibtex-completion-pdf-field "File")
+  (when (featurep! :completion ivy)
+    (setq org-ref-cite-onclick-function (lambda (x)  (org-ref-cite-hydra/body))))
+  (when (featurep! :completion selectrum)
+    ;; I have embark-act, so click enter needs to only go to the entry
+    (setq org-ref-cite-onclick-function (lambda (_) (org-ref-open-citation-at-point))))
+
   (defun my/bibtex-completion-format-org-ref (keys)
     "Format org-ref citations for keys in KEYS."
     (s-join ", "
@@ -943,9 +984,12 @@ This packages allows org-ref notes to be org-roam files
         #'my/bibtex-completion-format-org-ref)
   (setq ivy-bibtex-default-action
         #'ivy-bibtex-insert-citation))
-  (map!
-   :leader
-   :n "nh" #'ivy-bibtex)
+(map!
+ :leader
+ (:when (featurep! :completion ivy)
+  :n "nh" #'ivy-bibtex)
+ (:when (featurep! :completion selectrum)
+  :n "nh" #'bibtex-actions-open-entry))
 #+END_SRC
 * Task management
 :PROPERTIES:
