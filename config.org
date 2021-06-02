@@ -452,6 +452,56 @@ I want to move my right hand less so I put this to reduce movement
 ; I don't think expanding on line is useful in text mode buffers
 (add-hook 'text-mode-hook (lambda () (remove #'try-expand-line hippie-expand-try-functions-list)))
 #+end_src
+*** Double keys
+The idea is based on based on:
+https://kisaragi-hiu.com/blog/2021-06-02-insert-key-double-key. This macro is a
+generalization of the command found in the link. It allows creation of
+double-key commands from any commands. Code modified is licensed under MIT.
+Copyright 2021 Kisaragi Hiu
+
+#+begin_src emacs-lisp
+(defmacro my/define-double-key (name command)
+  "Define a new command NAME, that calls COMMAND if NAME was called twice with the same key."
+
+  `(defun ,name ()
+     (interactive)
+     (cond
+      ((and (eq last-command (quote ,name))
+            (eq (char-before) last-command-event))
+       (delete-char -1)
+       (call-interactively ,command))
+      (t (insert (string last-command-event))))))
+#+end_src
+
+I have one double-key for org-roam links, and one for elisp functions and variables respectively.
+
+#+begin_src emacs-lisp
+(defun my/insert-function ()
+  (interactive)
+  (insert  (symbol-name (helpful--read-symbol
+                         "Callable: "
+                         nil
+                         #'fboundp))))
+
+(defun my/insert-variable ()
+  (interactive)
+  (insert  (symbol-name (helpful--read-symbol
+                 "Callable: "
+                 nil
+                 #'helpful--variable-p))))
+
+(my/define-double-key my/org-roam-insert #'org-roam-insert)
+(my/define-double-key my/insert-function/double-key #'my/insert-function)
+(my/define-double-key my/insert-variable/double-key #'my/insert-variable)
+
+
+
+(map! (:map org-mode-map
+       :i "[" #'my/org-roam-insert)
+      (:map emacs-lisp-mode-map
+       :i "." #'my/insert-variable/double-key
+       :i "/" #'my/insert-function/double-key))
+#+end_src
 ** Company
 This is the way I want to interact with company
 #+BEGIN_SRC emacs-lisp
