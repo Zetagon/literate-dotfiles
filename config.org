@@ -560,8 +560,8 @@ This is the way I want to interact with company
   (my/foo fun))
 (defun my/foo (fun)
   (save-excursion
-      (let* ((beg (progn (skip-chars-backward "[:alnum:]*_:") (point)))
-             (end (progn (skip-chars-forward "[:alnum:]*_:") (point)))
+      (let* ((beg (progn (skip-chars-backward "[:alnum:]*_\\-:") (point)))
+             (end (progn (skip-chars-forward "[:alnum:]*_\\-:") (point)))
              (str (buffer-substring-no-properties beg end))
              (cite-type (cl-second (s-match "^\\([[:alpha:]\*]+\\):" str))))
 
@@ -591,7 +591,8 @@ This is the way I want to interact with company
   ("f" (λ! (kill-new (org-ref-format-entry (org-ref-get-bibtex-key-under-cursor)))))
   ("e" (λ! (kill-new (save-excursion (org-ref-open-citation-at-point) (org-ref-email-bibtex-entry)))))
   ("i" (lambda (&optional _) (funcall org-ref-insert-cite-function)))
-  ("h" #'org-ref-change-cite-type))
+  ("h" (lambda (&optional _) (call-interactively #'org-ref-change-cite-type))))
+
 
 (embark-define-keymap embark-org-ref-ref-map
   "Embark keymap for org-ref ref: links"
