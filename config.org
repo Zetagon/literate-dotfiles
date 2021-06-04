@@ -555,11 +555,12 @@ This is the way I want to interact with company
 #+end_src
 
 #+begin_src emacs-lisp
-(defadvice! my/embark-target-url-at-point (fun)
-  :around #'embark-target-url-at-point
-  (my/foo fun))
-(defun my/foo (fun)
-  (save-excursion
+(after!
+  (defadvice! my/embark-target-url-at-point (fun)
+    :around #'embark-target-url-at-point
+    (my/foo fun))
+  (defun my/foo (fun)
+    (save-excursion
       (let* ((beg (progn (skip-chars-backward "[:alnum:]*_\\-:") (point)))
              (end (progn (skip-chars-forward "[:alnum:]*_\\-:") (point)))
              (str (buffer-substring-no-properties beg end))
@@ -573,34 +574,34 @@ This is the way I want to interact with company
                `(org-ref-ref . ,str))
               (t
                (funcall fun)))))
-)
-(embark-define-keymap embark-org-ref-cite-map
-  "Embark keymap for org-ref cite: links"
-  ("o" (lambda (&optional _) (funcall org-ref-open-citation-at-point)))
-  ("p" (lambda (&optional _) (funcall org-ref-open-pdf-function)))
-  ("n" #'org-ref-open-notes-at-point)
-  ("u" #'org-ref-open-url-at-point)
-  ("w" #'org-ref-wos-at-point)
-  ("r" #'org-ref-wos-related-at-point)
-  ("c" #'org-ref-wos-citing-at-point)
-  ("g" #'org-ref-google-scholar-at-point)
-  ("P" #'org-ref-pubmed-at-point)
-  ("C" #'org-ref-crossref-at-point)
-  ("K" #'org-ref-copy-entry-as-summary)
-  ("k" (λ! (progn (kill-new (car (org-ref-get-bibtex-key-and-file))))))
-  ("f" (λ! (kill-new (org-ref-format-entry (org-ref-get-bibtex-key-under-cursor)))))
-  ("e" (λ! (kill-new (save-excursion (org-ref-open-citation-at-point) (org-ref-email-bibtex-entry)))))
-  ("i" (lambda (&optional _) (funcall org-ref-insert-cite-function)))
-  ("h" (lambda (&optional _) (call-interactively #'org-ref-change-cite-type))))
+    )
+  (embark-define-keymap embark-org-ref-cite-map
+    "Embark keymap for org-ref cite: links")
+  (map! :map embark-org-ref-cite-map
+        "o" (lambda (&optional _) (funcall org-ref-open-citation-at-point))
+        "p" (lambda (&optional _) (funcall org-ref-open-pdf-function))
+        "n" #'org-ref-open-notes-at-point
+        "u" #'org-ref-open-url-at-point
+        "w" #'org-ref-wos-at-point
+        "r" #'org-ref-wos-related-at-point
+        "c" #'org-ref-wos-citing-at-point
+        "g" #'org-ref-google-scholar-at-point
+        "P" #'org-ref-pubmed-at-point
+        "C" #'org-ref-crossref-at-point
+        "K" #'org-ref-copy-entry-as-summary
+        "k" (λ! (progn (kill-new (car (org-ref-get-bibtex-key-and-file)))))
+        "f" (λ! (kill-new (org-ref-format-entry (org-ref-get-bibtex-key-under-cursor))))
+        "e" (λ! (kill-new (save-excursion (org-ref-open-citation-at-point) (org-ref-email-bibtex-entry))))
+        "i" (lambda (&optional _) (funcall org-ref-insert-cite-function))
+        :desc "Change cite type" "h" (lambda (&optional _)  (call-interactively #'org-ref-change-cite-type)))
 
+  (embark-define-keymap embark-org-ref-ref-map
+    "Embark keymap for org-ref ref: links"
+    ("i" (lambda () (funcall org-ref-insert-ref-function)))
+    ("h" #'org-ref-change-cite-type))
 
-(embark-define-keymap embark-org-ref-ref-map
-  "Embark keymap for org-ref ref: links"
-  ("i" (lambda () (funcall org-ref-insert-ref-function)))
-  ("h" #'org-ref-change-cite-type))
-
-(add-to-list 'embark-keymap-alist '(org-ref-cite . embark-org-ref-cite-map))
-(add-to-list 'embark-keymap-alist '(org-ref-ref . embark-org-ref-ref-map))
+  (add-to-list 'embark-keymap-alist '(org-ref-cite . embark-org-ref-cite-map))
+  (add-to-list 'embark-keymap-alist '(org-ref-ref . embark-org-ref-ref-map)))
 #+end_src
 
 
