@@ -1548,6 +1548,35 @@ Put info manual on the side and src blocks on the other
   '(("^\\*Org Src*" :slot 3 :side right :quit nil :width 0.5))
   '(("*eww*" :ignore t)))
 #+end_src
+** Remarkable
+Send files to a reMarkble tablet using curl
+(https://remarkablewiki.com/tech/webinterface#accessing_files_via_curl).
+#+begin_src emacs-lisp
+(defun my/send-to-remarkable-dwim (prompt)
+  "Send files to remarkable.
+If in a dired buffer, send the currently marked files.
+If in a doc-view buffer, send the current buffer's file.
+
+With a prefix argument, prompt for a new name to use for each file.
+"
+  (interactive "P")
+  (let* ((file-names (pcase major-mode
+                       ('dired-mode (dired-get-marked-files))
+                       ('doc-view-mode (list (buffer-file-name)))))
+         (name-file-name-alist (mapcar (lambda (f)
+                                         `(,(if prompt
+                                                (read-from-minibuffer "File name to use: "
+                                                                      (file-name-base f))
+                                                (file-name-base f)) . ,f))
+                                       file-names)))
+    (mapc (lambda (pair)
+            (shell-command (concat "curl 'http://10.11.99.1/upload' -H 'Origin: http://10.11.99.1' -H 'Accept: */*' -H 'Referer: http://10.11.99.1/' -H 'Connection: keep-alive' -F \"file=@"
+                                   (cdr pair)
+                                   ";filename="
+                                   (car pair)
+                                   ";type=application/pdf\" ")))
+          name-file-name-alist)))
+#+end_src
 * Lispy
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/init.el
 (after! lispyville
