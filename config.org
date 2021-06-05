@@ -535,6 +535,7 @@ This is the way I want to interact with company
 :header-args: :tangle ~/.doom.d/config.el
 :ID:       ae3de41e-8f08-4f8d-b1a0-7548bb5f3842
 :END:
+** Imenu
 #+begin_src emacs-lisp
 (embark-define-keymap embark-imenu-map
   "TODO")
@@ -553,11 +554,25 @@ This is the way I want to interact with company
                  (consult-imenu--select (consult-imenu--all-items (consult-imenu--project-buffers)))
                (call-interactively #'org-store-link)))))
 #+end_src
-
+** Org
 #+begin_src emacs-lisp
 (after! embark
-  (defvar my/embark-org-link-type-alist nil)
-  (defvar my/embark-org-element-target-finders '((link . my/embark-target-org-link)))
+  (defvar my/embark-org-element-target-finders '((link . my/embark-target-org-link))
+    "An (ELEMENT-TYPE . TARGET-FINDER) alist to determine which org elementshas its own embark actions.
+
+ELEMENT-TYPE is a symbol that is the first element of the result of
+`org-element-context'. TARGET-FINDER is a function that works as
+specified in `embark-target-finders', with the exception that it
+takes an argument that is the the second element of the
+returned value of `org-element-context'.")
+
+  (defvar my/embark-org-link-type-alist nil
+    "An (LINK-TYPE . ACTION-TYPE) alist to determine which link types has its own embark actions.
+
+See `my/embark-target-org-link'.
+
+LINK-TYPE is a string of the part before the colon in an org link.
+ACTION-TYPE is a symbol and should be a key in embark-keymap-alist.")
 
   (mapc (lambda (x)
           (push (cons x 'org-ref-cite-link) my/embark-org-link-type-alist))
@@ -568,6 +583,13 @@ This is the way I want to interact with company
         org-ref-ref-types)
 
   (defun my/embark-target-org-context ()
+    "Target the org element at point.
+
+This is an abstract function. What elements are recognized as
+targets is determined by `my/embark-org-element-target-finders'.
+If the element at point is not specified in
+`my/embark-org-element-target-finders' return nil.
+"
     (when (eq major-mode
             'org-mode)
         (when-let ((context (org-element-context)))
@@ -577,6 +599,11 @@ This is the way I want to interact with company
   (add-to-list 'embark-target-finders #'my/embark-target-org-context)
 
   (defun my/embark-target-org-link (link)
+    "Target org link at point.
+
+If a matching entry is found in `my/embark-org-link-type-alist'
+use that as action type. Otherwise the action type is 'url.
+"
     (let ((type (plist-get link :type))
           (path (plist-get link :path)))
       (if-let ((matched-type (alist-get type my/embark-org-link-type-alist
@@ -590,10 +617,10 @@ This is the way I want to interact with company
   (embark-define-keymap embark-org-ref-cite-map
     "Embark keymap for org-ref cite: links")
   (map! :map embark-org-ref-cite-map
-        "o" (lambda (&optional _) (funcall org-ref-open-citation-at-point))
-        "p" (lambda (&optional _) (funcall org-ref-open-pdf-function))
-        "n" #'org-ref-open-notes-at-point
-        "u" #'org-ref-open-url-at-point
+        :desc "Open citation at point" "o" (lambda (&optional _) (funcall org-ref-open-citation-at-point))
+        :desc "Open pdf" "p" (lambda (&optional _) (funcall org-ref-open-pdf-function))
+        :desc "Open notes" "n" #'org-ref-open-notes-at-point
+        :desc "Open URL" "u" #'org-ref-open-url-at-point
         "w" #'org-ref-wos-at-point
         "r" #'org-ref-wos-related-at-point
         "c" #'org-ref-wos-citing-at-point
@@ -601,17 +628,17 @@ This is the way I want to interact with company
         "P" #'org-ref-pubmed-at-point
         "C" #'org-ref-crossref-at-point
         "K" #'org-ref-copy-entry-as-summary
-        "k" (λ! (progn (kill-new (car (org-ref-get-bibtex-key-and-file)))))
-        "f" (λ! (kill-new (org-ref-format-entry (org-ref-get-bibtex-key-under-cursor))))
-        "e" (λ! (kill-new (save-excursion (org-ref-open-citation-at-point) (org-ref-email-bibtex-entry))))
-        "i" (lambda (&optional _) (funcall org-ref-insert-cite-function))
+        :desc "Copy key to clipboard" "k" (λ! (progn (kill-new (car (org-ref-get-bibtex-key-and-file)))))
+        :desc "Copy formated entry" "f" (λ! (kill-new (org-ref-format-entry (org-ref-get-bibtex-key-under-cursor))))
+        :desc "Email entry" "e" (λ! (kill-new (save-excursion (org-ref-open-citation-at-point) (org-ref-email-bibtex-entry))))
+        :desc "Insert cite" "i" (lambda (&optional _) (funcall org-ref-insert-cite-function))
         :desc "Change cite type" "h" (lambda (&optional _)  (call-interactively #'org-ref-change-cite-type)))
 
   (embark-define-keymap embark-org-ref-ref-map
     "Embark keymap for org-ref ref: links")
   (map! :map embark-org-ref-ref-map
-        "i" (lambda () (funcall org-ref-insert-ref-function))
-        "h" (lambda (&optional _) (call-interactively #'org-ref-change-ref-type)))
+        :desc "Insert ref" "i" (lambda () (funcall org-ref-insert-ref-function))
+        :desc "Change ref type" "h" (lambda (&optional _) (call-interactively #'org-ref-change-ref-type)))
 
   (add-to-list 'embark-keymap-alist '(org-ref-cite-link . embark-org-ref-cite-map))
   (add-to-list 'embark-keymap-alist '(org-ref-ref-link . embark-org-ref-ref-map)))
