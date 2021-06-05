@@ -555,26 +555,30 @@ This is the way I want to interact with company
 #+end_src
 
 #+begin_src emacs-lisp
-(after!
+(after! embark
   (defadvice! my/embark-target-url-at-point (fun)
     :around #'embark-target-url-at-point
-    (my/foo fun))
-  (defun my/foo (fun)
-    (save-excursion
-      (let* ((beg (progn (skip-chars-backward "[:alnum:]*_\\-:") (point)))
-             (end (progn (skip-chars-forward "[:alnum:]*_\\-:") (point)))
-             (str (buffer-substring-no-properties beg end))
-             (cite-type (cl-second (s-match "^\\([[:alpha:]\*]+\\):" str))))
+    (my/embark-org-link-finder fun))
 
-        (cond ((-contains? org-ref-cite-types
-                           cite-type)
-               `(org-ref-cite . ,str))
-              ((-contains? org-ref-ref-types
-                           cite-type)
-               `(org-ref-ref . ,str))
-              (t
-               (funcall fun)))))
-    )
+  (defun my/embark-org-link-finder (fun)
+    (if-let ((context (org-element-context)))
+        (-some--> context
+          (when (eq (car it)
+                    'link)
+            (cl-second it))
+          (cons (plist-get it :type)
+                (plist-get it :path))
+          (pcase it
+            (`(,type . ,path)
+             (if-let ((matched-type (alist-get type my/embark-org-link-type-alist
+                                               nil
+                                               nil
+                                               #'string=)))
+                 (cons matched-type path)
+               (cons 'url path)))
+            (_ 3)))
+      (funcall fun)))
+
   (embark-define-keymap embark-org-ref-cite-map
     "Embark keymap for org-ref cite: links")
   (map! :map embark-org-ref-cite-map
