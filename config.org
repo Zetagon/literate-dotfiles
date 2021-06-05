@@ -556,28 +556,36 @@ This is the way I want to interact with company
 
 #+begin_src emacs-lisp
 (after! embark
-  (defadvice! my/embark-target-url-at-point (fun)
-    :around #'embark-target-url-at-point
-    (my/embark-org-link-finder fun))
+  (defvar my/embark-org-link-type-alist nil)
+  (defvar my/embark-org-element-target-finders '((link . my/embark-target-org-link)))
 
-  (defun my/embark-org-link-finder (fun)
-    (if-let ((context (org-element-context)))
-        (-some--> context
-          (when (eq (car it)
-                    'link)
-            (cl-second it))
-          (cons (plist-get it :type)
-                (plist-get it :path))
-          (pcase it
-            (`(,type . ,path)
-             (if-let ((matched-type (alist-get type my/embark-org-link-type-alist
-                                               nil
-                                               nil
-                                               #'string=)))
-                 (cons matched-type path)
-               (cons 'url path)))
-            (_ 3)))
-      (funcall fun)))
+  (mapc (lambda (x)
+          (push (cons x 'org-ref-cite-link) my/embark-org-link-type-alist))
+        org-ref-cite-types)
+
+  (mapc (lambda (x)
+          (push (cons x 'org-ref-ref-link) my/embark-org-link-type-alist))
+        org-ref-ref-types)
+
+  (defun my/embark-target-org-context ()
+    (when (eq major-mode
+            'org-mode)
+        (when-let ((context (org-element-context)))
+          (when-let ((finder (alist-get (car context) my/embark-org-element-target-finders)))
+            (funcall finder (cl-second context))))))
+
+  (add-to-list 'embark-target-finders #'my/embark-target-org-context)
+
+  (defun my/embark-target-org-link (link)
+    (let ((type (plist-get link :type))
+          (path (plist-get link :path)))
+      (if-let ((matched-type (alist-get type my/embark-org-link-type-alist
+                                        nil
+                                        nil
+                                        #'string=)))
+          (cons matched-type path)
+        (cons 'url path))))
+
 
   (embark-define-keymap embark-org-ref-cite-map
     "Embark keymap for org-ref cite: links")
@@ -600,12 +608,13 @@ This is the way I want to interact with company
         :desc "Change cite type" "h" (lambda (&optional _)  (call-interactively #'org-ref-change-cite-type)))
 
   (embark-define-keymap embark-org-ref-ref-map
-    "Embark keymap for org-ref ref: links"
-    ("i" (lambda () (funcall org-ref-insert-ref-function)))
-    ("h" #'org-ref-change-cite-type))
+    "Embark keymap for org-ref ref: links")
+  (map! :map embark-org-ref-ref-map
+        "i" (lambda () (funcall org-ref-insert-ref-function))
+        "h" (lambda (&optional _) (call-interactively #'org-ref-change-ref-type)))
 
-  (add-to-list 'embark-keymap-alist '(org-ref-cite . embark-org-ref-cite-map))
-  (add-to-list 'embark-keymap-alist '(org-ref-ref . embark-org-ref-ref-map)))
+  (add-to-list 'embark-keymap-alist '(org-ref-cite-link . embark-org-ref-cite-map))
+  (add-to-list 'embark-keymap-alist '(org-ref-ref-link . embark-org-ref-ref-map)))
 #+end_src
 
 
