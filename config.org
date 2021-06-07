@@ -774,31 +774,32 @@ and biber.
 I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUwLxefodzfnnfKXx63vXzP88?stackedNotes=z4AX7pHAu5uUfmrq4K4zig9x8jmmF62XgaMXm&stackedNotes=z5aJUJcSbxuQxzHr2YvaY4cX5TuvLQT7r27Dz
 
 #+begin_src emacs-lisp
-(defhydra my/el-secretario-writing-hydra ()
-  ("n" (progn
-         (el-secretario-space-reschedule)
-         (el-secretario-next-item) ) "next (and spaced rep)" :exit t)
-  ("l" link-hint-open-link "Link")
-  ("s" (progn
-         (el-secretario-space-schedule-and-reset nil "-365d")
-         (el-secretario-next-item)) "Schedule")
-  ("b" (progn
-         (el-secretario-space--reset)
-         (el-secretario-tasks-begin-task)) "Begin writing" :exit t)
-  ("D" (delete-region (point-min) (point-max)) "Delete visible")
-  ("q" (el-secretario-end-sesion) "Quit" :exit t))
+(defvar my/el-secretario-writing-map (make-sparse-keymap))
+(map!
+ :map my/el-secretario-writing-map
+ :desc "next (and spaced rep)" "n" (cmd!
+                                    (el-secretario-space-reschedule)
+                                    (el-secretario-next-item) )
+ :desc  "Link" "l" #'link-hint-open-link
+ :desc "Schedule" "s" (cmd!
+                       (el-secretario-space-schedule-and-reset nil "-365d")
+                       (el-secretario-next-item))
+ :desc "Begin writing" "b" (cmd!
+                            (el-secretario-space--reset)
+                            (el-secretario-tasks-begin-task))
+ :desc  "Delete visible" "D" (cmd! (delete-region (point-min) (point-max)))
+ :desc  "Quit" "q" (cmd! (el-secretario-end-sesion)))
 #+end_src
 
 #+begin_src emacs-lisp
 (defun my/begin-writing ()
   (interactive)
-  (el-secretario-start-session (list
-                                (el-secretario-org-make-source
-                                 '(todo)
-                                 '("~/org/writing-inbox.org")
-                                 :hydra #'my/el-secretario-writing-hydra/body
-                                 :shuffle-p t
-                                 :compare-fun #'el-secretario-space-compare-le))))
+  (el-secretario-start-session (el-secretario-org-make-source
+                                '(todo)
+                                '("~/org/writing-inbox.org")
+                                :keymap #'my/el-secretario-writing-map
+                                :shuffle-p t
+                                :compare-fun #'el-secretario-space-compare-le)))
 #+end_src
 
 
@@ -1256,27 +1257,24 @@ Then when I go through my email during daily review if I can't complete the
 email there I capture the email and mark it as done.
 
 #+BEGIN_SRC emacs-lisp
-(defhydra my/secretary-notmuch-hydra ()
-  ("n" (progn
-         (notmuch-show-tag-all '("-notdone"))
-         (org-capture nil "m")
-         (el-secretario-next-item))
-   "next" :exit t)
-  #+END_SRC
+(defvar my/secretary-notmuch-map (make-sparse-keymap))
+(map!
+ :map my/secretary-notmuch-map
+ :desc "next" "n" (cmd!
+                   (notmuch-show-tag-all '("-notdone"))
+                   (org-capture nil "m")
+                   (el-secretario-next-item))
 
-  #+BEGIN_SRC emacs-lisp
-  ("q" (el-secretario-end-sesion) "Quit" :exit t)
-  ("d" (progn (notmuch-show-tag-all '("-notdone"))
-              (el-secretario-next-item))
-   "Mark message as done"
-   :exit t)
-  ("c" (progn
-         (org-capture nil "f")
-         (el-secretario-activate-hydra))
-   "Capture"
-   :exit t)
-  ("]" notmuch-show-next-message "Next message")
-  ("[" notmuch-show-previous-message "Next message"))
+ :desc "Quit" "q" #'el-secretario-end-sesion
+ :desc "Mark message as done" "d" (cmd! (notmuch-show-tag-all '("-notdone"))
+                                        (el-secretario-next-item))
+
+ :desc "Capture" "c" (cmd!
+                      (org-capture nil "f")
+                      (el-secretario/activate-keymap))
+
+ :desc "Next message" "]" #'notmuch-show-next-message
+ :desc "Previous message" "[" #'notmuch-show-previous-message)
 #+END_SRC
 
 I want to see the context of this todo if it is part of a project (i.e. there is
@@ -1286,46 +1284,50 @@ a parent which is a todo).
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(defhydra my/el-secretario-org-hydra ()
-  ;; To activate a project is to put the tag :active: on the highest todo
-  ;; parent. Because ~el-secretario-org-narrow-to-highest-todo~ narrows so that
-  ;; the highest todo is the first in
-  ;; the buffer after narrowing, the follwing accomplishes that.
-  ("a" (progn
-         (save-excursion
-           (goto-char (point-min))
-           (el-secretario-org-add-tag "active")
-           (el-secretario-space--reset)
-           (org-schedule "+7d")))
-   "Activate task")
-  ("n" (progn
-         (el-secretario-space-reschedule)
-         (el-secretario-next-item) ) "next (and spaced rep)" :exit t)
-  ("RET" (el-secretario-next-item)  "next" :exit t)
-  ("r" (let ((org-reverse-note-order nil))
-         (org-refile)
-         (el-secretario-next-item)) "Refile" :exit t)
-  ("R" (let ((org-reverse-note-order t))
-         (org-refile)
-         (el-secretario-next-item)) "Refile to top" :exit t)
-  ("t" org-set-tags-command "Tags")
-  ("T" org-todo "TODO")
-  ("l" link-hint-open-link "Link")
-  ("s" (progn
-         (call-interactively #'el-secretario-space-schedule-and-reset)
-         (el-secretario-next-item)) "Schedule")
-  ("d" org-deadline  "Deadline")
-  ("D" (delete-region (point-min) (point-max)) "Delete visible")
-  ("q" (el-secretario-end-sesion) "Quit" :exit t)
-  ("/" nil "disable hydra"  :exit t))
+(defvar my/el-secretario-org-map (make-sparse-keymap))
+
+(map! :map my/el-secretario-org-map
+      ;; To activate a project is to put the tag :active: on the highest todo
+      ;; parent. Because ~el-secretario-org-narrow-to-highest-todo~ narrows so that
+      ;; the highest todo is the first in
+      ;; the buffer after narrowing, the follwing accomplishes that.
+      :desc "Activate task" "a" (cmd!
+                                  (save-excursion
+                                    (goto-char (point-min))
+                                    (el-secretario-org-add-tag "active")
+                                    (el-secretario-space--reset)
+                                    (org-schedule "+7d")))
+
+      :desc "next (and spaced rep)" "n" (cmd!
+                                          (el-secretario-space-reschedule)
+                                          (el-secretario-next-item) )
+      :desc "next" "RET" #'el-secretario-next-item
+      :desc "Refile" "r" (cmd!
+                          (let ((org-reverse-note-order nil))
+                            (org-refile)
+                            (el-secretario-next-item)))
+      :desc "Refile to top" "R" (cmd!
+                                 (let ((org-reverse-note-order t))
+                                   (org-refile)
+                                   (el-secretario-next-item)))
+      :desc "Tags" "t" #'org-set-tags-command
+      :desc "TODO" "T" #'org-todo
+      :desc "Link" "l" #'link-hint-open-link
+      :desc "Schedule" "s" (cmd!
+                             (call-interactively #'el-secretario-space-schedule-and-reset)
+                             (el-secretario-next-item))
+      :desc "Deadline" "d" #'org-deadline
+      :desc "Delete visible" "D" (cmd! (delete-region (point-min) (point-max)))
+      :desc "Quit" "q" #'el-secretario-end-sesion)
 
 (use-package! el-secretario
-  :after (hydra)
   :config
   (defun my/dailyreview-secretary ()
     (list
 
-     (el-secretario-notmuch-make-source   "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-hydra/body)
+     (el-secretario-notmuch-make-source   "to:leo@relevant-information.com AND tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-map)
+     (el-secretario-notmuch-make-source   "tag:lists AND tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-map)
+     (el-secretario-notmuch-make-source   "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-map)
 
      (el-secretario-org-make-source nil '("~/org/orgzly/InboxComputer.org"
                                           "~/org/orgzly/Inbox.org"))
@@ -1333,7 +1335,7 @@ a parent which is a todo).
                                           (not (scheduled :from 2)))
                                     '("~/org/orgzly/Todo.org"
                                       "~/org/orgzly/Projects.org")
-                                    :hydra #'my/el-secretario-org-hydra/body)
+                                    :keymap #'my/el-secretario-org-map)
      (el-secretario-org-make-source '(and (or (and (todo "TODO")
                                                    (not (org-entry-blocked-p))
                                                    (not (tags-inherited "active"))
@@ -1347,7 +1349,7 @@ a parent which is a todo).
                                       "~/org/orgzly/Projects.org")
                                     :next-item-hook' (lambda ()
                                        (el-secretario-org-remove-tag "active"))
-                                    :hydra 'my/el-secretario-org-hydra/body)))
+                                    :keymap 'my/el-secretario-org-map)))
   (defun my/el-secretario-daily-review ()
     (interactive)
     (el-secretario-start-session (my/dailyreview-secretary)))
@@ -1373,8 +1375,7 @@ similar to [[id:7f9f4e8b-2d24-4a45-ab54-7ea22b0b52c7][Writing Inbox]] so I can r
                                        (tags-inherited "fun"))
                                  '("~/org/orgzly/Todo.org"
                                    "~/org/orgzly/Projects.org")
-                                 :hydra #'my/el-secretario-writing-hydra/body
-                                 :shuffle-p t
+                                 :keymap #'my/el-secretario-writing-map                                 :shuffle-p t
                                  :ids '("dc0de31b-24a5-49f9-add3-7af77ca19206" ;; Writing inbox's id
                                         )
                                  :compare-fun #'el-secretario-space-compare-le))))
