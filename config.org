@@ -1082,7 +1082,7 @@ This packages allows org-ref notes to be org-roam files
  (:when (featurep! :completion ivy)
   :n "nh" #'ivy-bibtex)
  (:when (featurep! :completion selectrum)
-  :n "nh" #'bibtex-actions-open-entry))
+  :n "nh" #'bibtex-actions-insert-citation))
 #+END_SRC
 * Task management
 :PROPERTIES:
