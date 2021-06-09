@@ -779,11 +779,11 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
  :map my/el-secretario-writing-map
  :desc "next (and spaced rep)" "n" (cmd!
                                     (el-secretario-space-reschedule)
-                                    (el-secretario-next-item) )
+                                    (el-secretario/next-item) )
  :desc  "Link" "l" #'link-hint-open-link
  :desc "Schedule" "s" (cmd!
                        (el-secretario-space-schedule-and-reset nil "-365d")
-                       (el-secretario-next-item))
+                       (el-secretario/next-item))
  :desc "Begin writing" "b" (cmd!
                             (el-secretario-space--reset)
                             (el-secretario-tasks-begin-task))
@@ -1263,11 +1263,11 @@ email there I capture the email and mark it as done.
  :desc "next" "n" (cmd!
                    (notmuch-show-tag-all '("-notdone"))
                    (org-capture nil "m")
-                   (el-secretario-next-item))
+                   (el-secretario/next-item))
 
  :desc "Quit" "q" #'el-secretario-end-sesion
  :desc "Mark message as done" "d" (cmd! (notmuch-show-tag-all '("-notdone"))
-                                        (el-secretario-next-item))
+                                        (el-secretario/next-item))
 
  :desc "Capture" "c" (cmd!
                       (org-capture nil "f")
@@ -1300,26 +1300,28 @@ a parent which is a todo).
 
       :desc "next (and spaced rep)" "n" (cmd!
                                           (el-secretario-space-reschedule)
-                                          (el-secretario-next-item) )
+                                          (el-secretario/next-item) )
       :desc "next" "RET" #'el-secretario-next-item
       :desc "Refile" "r" (cmd!
                           (let ((org-reverse-note-order nil))
                             (org-refile)
-                            (el-secretario-next-item)))
+                            (el-secretario/next-item)))
       :desc "Refile to top" "R" (cmd!
                                  (let ((org-reverse-note-order t))
                                    (org-refile)
-                                   (el-secretario-next-item)))
+                                   (el-secretario/next-item)))
       :desc "Tags" "t" #'org-set-tags-command
       :desc "TODO" "T" #'org-todo
       :desc "Link" "l" #'link-hint-open-link
       :desc "Schedule" "s" (cmd!
                              (call-interactively #'el-secretario-space-schedule-and-reset)
-                             (el-secretario-next-item))
+                             (el-secretario/next-item))
       :desc "Deadline" "d" #'org-deadline
       :desc "Delete visible" "D" (cmd! (delete-region (point-min) (point-max)))
       :desc "Quit" "q" #'el-secretario-end-sesion)
 
+(use-package el-secretario-keybindings
+  :after el-secretario)
 (use-package! el-secretario
   :config
   (defun my/dailyreview-secretary ()
