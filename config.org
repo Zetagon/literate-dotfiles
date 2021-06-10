@@ -1158,7 +1158,7 @@ items that are releveant to today.
         org-habit-preceding-days 0
         org-habit-following-days 0
         org-habit-following-days 3
-        org-deadline-warning-days 1
+        org-deadline-warning-days 14
         org-super-agenda-groups '((:name "Habits"
                                    :habit t
                                    :order 30)
