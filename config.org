@@ -308,7 +308,7 @@ solution so far is to apply this patch.
        :app
        ;;calendar
        irc               ; how neckbeards socialize
-       ;;(rss +org)        ; emacs as an RSS reader
+       (rss +org)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
 
        :config
@@ -1275,8 +1275,7 @@ email there I capture the email and mark it as done.
                                         (el-secretario/next-item))
 
  :desc "Capture" "c" (cmd!
-                      (org-capture nil "f")
-                      (el-secretario/activate-keymap))
+                      (org-capture nil "f"))
 
  :desc "Next message" "]" #'notmuch-show-next-message
  :desc "Previous message" "[" #'notmuch-show-previous-message)
@@ -1306,7 +1305,7 @@ a parent which is a todo).
       :desc "next (and spaced rep)" "n" (cmd!
                                           (el-secretario-space-reschedule)
                                           (el-secretario/next-item) )
-      :desc "next" "RET" #'el-secretario-next-item
+      :desc "next" "RET" #'el-secretario/next-item
       :desc "Refile" "r" (cmd!
                           (let ((org-reverse-note-order nil))
                             (org-refile)
@@ -1335,6 +1334,7 @@ a parent which is a todo).
      (el-secretario-notmuch-make-source   "to:leo@relevant-information.com AND tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-map)
      (el-secretario-notmuch-make-source   "tag:lists AND tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-map)
      (el-secretario-notmuch-make-source   "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-map)
+     (el-secretario-elfeed-make-source "@2-month-ago +unread")
 
      (el-secretario-org-make-source nil '("~/org/orgzly/InboxComputer.org"
                                           "~/org/orgzly/Inbox.org"))
@@ -1777,7 +1777,15 @@ of the heading use that link to open with eww. Otherwise open the entry in eww."
 #+END_SRC
 
 I want to be able to use org links with eww
+* Elfeed
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
 
+#+begin_src emacs-lisp
+(after! elfeed-org
+  (setq rmh-elfeed-org-files '("~/org/orgzly/feeds.org")))
+#+end_src
 * Org Indexcards
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
