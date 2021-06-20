@@ -1330,43 +1330,46 @@ a parent which is a todo).
       :desc "Deadline" "d" #'org-deadline
       :desc "Delete visible" "D" (cmd! (delete-region (point-min) (point-max)))
       :desc "Quit" "q" #'el-secretario-end-sesion)
+#+END_SRC
 
-(use-package el-secretario-keybindings
-  :after el-secretario)
-(use-package! el-secretario
-  :config
-  (defun my/dailyreview-secretary ()
-    (list
+#+BEGIN_SRC emacs-lisp
+(after! el-secretario
+  (require 'el-secretario-keybindings))
+(defun my/dailyreview-secretary ()
+  (list
+   (el-secretario-function-source :func (lambda ()
+                                          (browse-url "https://etidning.dn.se/")))
+   (el-secretario-notmuch-make-source   "to:leo@relevant-information.com AND tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-map)
+   (el-secretario-notmuch-make-source   "tag:lists AND tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-map)
+   (el-secretario-notmuch-make-source   "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-map)
 
-     (el-secretario-notmuch-make-source   "to:leo@relevant-information.com AND tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-map)
-     (el-secretario-notmuch-make-source   "tag:lists AND tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-map)
-     (el-secretario-notmuch-make-source   "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-map)
-     (el-secretario-elfeed-make-source "@2-month-ago +unread")
-
-     (el-secretario-org-make-source nil '("~/org/orgzly/InboxComputer.org"
-                                          "~/org/orgzly/Inbox.org"))
-     (el-secretario-org-make-source '(and (todo "WAITING")
-                                          (not (scheduled :from 2)))
-                                    '("~/org/orgzly/Todo.org"
-                                      "~/org/orgzly/Projects.org")
-                                    :keymap #'my/el-secretario-org-map)
-     (el-secretario-org-make-source '(and (or (and (todo "TODO")
-                                                   (not (org-entry-blocked-p))
-                                                   (not (tags-inherited "active"))
-                                                   (not (property "style" "habit"))
-                                                   (not (scheduled :from 2)))
-                                              (and (todo "PROJ")
-                                                   (not (scheduled :from 2))
-                                                   (tags "active")))
-                                          (not (tags "noreview")))
-                                    '("~/org/orgzly/Todo.org"
-                                      "~/org/orgzly/Projects.org")
-                                    :next-item-hook' (lambda ()
-                                       (el-secretario-org-remove-tag "active"))
-                                    :keymap 'my/el-secretario-org-map)))
-  (defun my/el-secretario-daily-review ()
-    (interactive)
-    (el-secretario-start-session (my/dailyreview-secretary)))
+   (el-secretario-elfeed-make-source "@2-month-ago +unread")
+   (el-secretario-org-make-source nil '("~/org/orgzly/InboxComputer.org"
+                                        "~/org/orgzly/Inbox.org"))
+   (el-secretario-org-make-source '(and (todo "WAITING")
+                                        (not (scheduled :from 2)))
+                                  '("~/org/orgzly/Todo.org"
+                                    "~/org/orgzly/Projects.org")
+                                  :keymap #'my/el-secretario-org-map)
+   (el-secretario-org-make-source '(and (or (and (todo "TODO")
+                                                 (not (org-entry-blocked-p))
+                                                 (not (tags-inherited "active"))
+                                                 (not (property "style" "habit"))
+                                                 (not (scheduled :from 2)))
+                                            (and (todo "PROJ")
+                                                 (not (scheduled :from 2))
+                                                 (tags "active")))
+                                        (not (tags "noreview")))
+                                  '("~/org/orgzly/Todo.org"
+                                    "~/org/orgzly/Projects.org")
+                                  :next-item-hook' (lambda ()
+                                                     (el-secretario-org-remove-tag "active"))
+                                  :keymap 'my/el-secretario-org-map)
+   (el-secretario-function-source :func #'my/empty-remarkable-outbox)))
+(defun my/el-secretario-daily-review ()
+  (interactive)
+  (elfeed-update)
+  (el-secretario-start-session (my/dailyreview-secretary)))
 
   :commands (my/el-secretario-daily-review))
  #+END_SRC
