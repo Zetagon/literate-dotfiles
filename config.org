@@ -684,6 +684,13 @@ very lucky
 (setq org-agenda-clockreport-parameter-plist
       '(:link t :maxlevel 5))
 #+END_SRC
+
+Sometimes I want to export to markdown on save, for example when I'm writing a
+readme for a project on sourcehut.
+#+begin_src emacs-lisp
+(add-to-list 'safe-local-variable-values
+             '(after-save-hook . org-md-export-to-markdown))
+#+end_src
 ** TODO Completion for noweb-ref
 This is a sorta working company backend that can complete noweb-ref style header
 arguments in src blocks. It completes all links enclosed with << >>
