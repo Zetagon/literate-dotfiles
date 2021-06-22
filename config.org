@@ -1096,6 +1096,25 @@ This packages allows org-ref notes to be org-roam files
  (:when (featurep! :completion selectrum)
   :n "nh" #'bibtex-actions-insert-citation))
 #+END_SRC
+
+There seems to be issues with the embark actions in the bibtex-completion package. The which-key descriptions are from other keybindings. Mapping them manually seems to fix the issue.
+
+#+begin_src emacs-lisp
+(after! bibtex-completion
+  (map! :map bibtex-actions-map
+        :desc "Add pdf attachment" "t" 'bibtex-actions-add-pdf-attachment
+        :desc "Add pdf to library" "a" 'bibtex-actions-add-pdf-to-library
+        :desc "Insert bibtex entry" "b" 'bibtex-actions-insert-bibtex
+        :desc "Insert citation" "c" 'bibtex-actions-insert-citation
+        :desc "Insert key" "k" 'bibtex-actions-insert-key
+        :desc "Insert reference" "f" 'bibtex-actions-insert-reference
+        :desc "Open" "o" 'bibtex-actions-open
+        :desc "Open entry" "e" 'bibtex-actions-open-entry
+        :desc "Open notes" "l" 'bibtex-actions-open-link
+        :desc "Open notes" "n" 'bibtex-actions-open-notes
+        :desc "Open pdf" "p" 'bibtex-actions-open-pdf
+        :desc "Refresh" "r" 'bibtex-actions-refresh))
+#+end_src
 * Task management
 :PROPERTIES:
 :ID:       c8423be4-43b1-41b1-8b5b-4159a31e2edc
