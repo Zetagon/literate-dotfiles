@@ -1357,10 +1357,15 @@ a parent which is a todo).
 (defun my/dailyreview-secretary ()
   (list
    (el-secretario-function-source :func (lambda ()
-                                          (browse-url "https://etidning.dn.se/")))
-   (el-secretario-notmuch-make-source   "to:leo@relevant-information.com AND tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-map)
-   (el-secretario-notmuch-make-source   "tag:lists AND tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-map)
-   (el-secretario-notmuch-make-source   "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" nil #'my/secretary-notmuch-map)
+                                          (browse-url "https://etidning.dn.se/")
+                                          (el-secretario-activate-keymap)))
+   (el-secretario-function-source :func
+                                  (lambda ()
+                                    (el-secretario-message--display-message-prompt "Go through todo journal!\nMove tasks marked with △ to org-mode")
+                                    (el-secretario-activate-keymap)))
+   (el-secretario-notmuch-make-source   "to:leo@relevant-information.com AND tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" #'my/secretary-notmuch-map)
+   (el-secretario-notmuch-make-source   "tag:lists AND tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" #'my/secretary-notmuch-map)
+   (el-secretario-notmuch-make-source   "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" #'my/secretary-notmuch-map)
 
    (el-secretario-elfeed-make-source "@2-month-ago +unread")
    (el-secretario-org-make-source nil '("~/org/orgzly/InboxComputer.org"
