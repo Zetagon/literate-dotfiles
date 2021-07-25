@@ -42,6 +42,7 @@ Here are the files of my emacs config:
   ;; :recipe (:repo "https://github.com/Zetagon/el-secretario")
   ;; :pin "b59941ea4b4f91cd4f5e4f00189d549149cfcbb2"
   )
+(package! ox-hugo)
 #+END_SRC
 
 ** Config
@@ -916,6 +917,11 @@ This will capture to the first entry that has the tag \"foo\".
          :head "#+TITLE: ${title}\n#+Created: %t\n#+Time-stamp: <>\n"
          :unnarrowed t
          :immediate-finish t)
+        ("t" "text" plain #'org-roam--capture-get-point "%?"
+         :file-name "texter/${slug}"
+         :head "#+TITLE: ${title}\n#+Created: %t\n#+Time-stamp: <>\n#+hugo_publishdate: %t\n#+hugo_draft: true\n"
+         :unnarrowed t
+         :immediate-finish t)
 
         ("f" "Flash Card" plain #'org-roam--capture-get-point "%?"
          :file-name "%<%Y%m%d%H%M%S>"
@@ -1002,6 +1008,18 @@ issue.
 (use-package! org-roam-server
   :defer t)
 #+END_SRC
+* Blog
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:ID:       0dfd9a2a-b8db-4f18-bc83-5760277ec957
+:END:
+#+begin_src emacs-lisp
+(use-package! ox-hugo
+  :after ox
+  :config
+  (setq org-hugo-base-dir "~/Documents/blog/")
+  (add-to-list 'safe-local-variable-values))
+#+end_src
 * Journaling
 :PROPERTIES:
 :ID:       477c0408-c61d-48e9-9ca5-ada0ff511ca4
