@@ -313,7 +313,7 @@ solution so far is to apply this patch.
        ;;twitter           ; twitter client https://twitter.com/vnought
 
        :config
-       literate
+       ;; literate
        (default +bindings +smartparens))
 (setq evil-want-abbrev-expand-on-insert-exit nil)
 
