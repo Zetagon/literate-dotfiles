@@ -279,7 +279,7 @@ solution so far is to apply this patch.
        ;;nim               ; python + lisp at the speed of c
        ;; nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       (org +roam +pomodoro +journal noter +gnuplot)               ; organize your plain life in plain text
+       (org +roam2 +pomodoro +journal noter +gnuplot)               ; organize your plain life in plain text
        ;;perl              ; write code no one else can comprehend
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
@@ -912,21 +912,17 @@ This will capture to the first entry that has the tag \"foo\".
 :END:
 #+BEGIN_SRC emacs-lisp
 (setq org-roam-capture-templates
-      '(("d" "default" plain #'org-roam--capture-get-point "%?"
-         :file-name "%<%Y%m%d%H%M%S>"
-         :head "#+TITLE: ${title}\n#+Created: %t\n#+Time-stamp: <>\n"
+      '(("d" "default" plain "%?"
+         :if-new (file+head "%<%Y%m%d%H%M%S>.org"
+         "#+TITLE: ${title}\n#+Created: %t\n#+Time-stamp: <>\n")
          :unnarrowed t
          :immediate-finish t)
         ("t" "text" plain #'org-roam--capture-get-point "%?"
-         :file-name "texter/${slug}"
-         :head "#+TITLE: ${title}\n#+Created: %t\n#+Time-stamp: <>\n#+hugo_publishdate: %t\n#+hugo_draft: true\n"
+         :if-new
+         (file+head "texter/${slug}"
+                    "#+TITLE: ${title}\n#+Created: %t\n#+Time-stamp: <>\n#+hugo_publishdate: %t\n#+hugo_draft: true\n")
          :unnarrowed t
-         :immediate-finish t)
-
-        ("f" "Flash Card" plain #'org-roam--capture-get-point "%?"
-         :file-name "%<%Y%m%d%H%M%S>"
-         :head "#+TITLE: ${title}\n#+Created: %t\n* "
-         :unnarrowed t)))
+         :immediate-finish t)))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el :noweb-ref no
