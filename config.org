@@ -1364,7 +1364,16 @@ a parent which is a todo).
       :desc "Delete visible" "D" (cmd! (delete-region (point-min) (point-max)))
       :desc "Quit" "q" #'el-secretario-end-sesion)
 #+END_SRC
-
+**** Backups
+#+begin_src emacs-lisp
+(defun my/usb-backup ()
+  "Call the backupscript to backup to the usb-stick."
+  (interactive)
+  (save-some-buffers)
+  (when (y-or-n-p "Have you plugged in the USB?")
+    (shell-command "~/.doom.d/usb-backup.sh")))
+#+end_src
+**** El Secretario
 #+BEGIN_SRC emacs-lisp
 (after! el-secretario
   (require 'el-secretario-keybindings))
