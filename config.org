@@ -1305,7 +1305,10 @@ email there I capture the email and mark it as done.
  :desc "Next message" "]" #'notmuch-show-next-message
  :desc "Previous message" "[" #'notmuch-show-previous-message)
 #+END_SRC
-
+**** TODOs
+:PROPERTIES:
+:ID:       789e5430-126e-4c7b-b205-9b517112794b
+:END:
 I want to see the context of this todo if it is part of a project (i.e. there is
 a parent which is a todo).
 #+BEGIN_SRC emacs-lisp
@@ -1320,12 +1323,11 @@ a parent which is a todo).
       ;; parent. Because ~el-secretario-org-narrow-to-highest-todo~ narrows so that
       ;; the highest todo is the first in
       ;; the buffer after narrowing, the follwing accomplishes that.
-      :desc "Activate task" "a" (cmd!
+      :desc "Activate task (and send to notebook)" "a" (cmd!
                                   (save-excursion
-                                    (goto-char (point-min))
-                                    (el-secretario-org-add-tag "active")
+                                    (el-secretario-org-add-tag "onnotebook")
                                     (el-secretario-space--reset)
-                                    (org-schedule "+7d")))
+                                    (org-schedule nil "+7d")))
 
       :desc "next (and spaced rep)" "n" (cmd!
                                           (el-secretario-space-reschedule)
@@ -1376,6 +1378,14 @@ a parent which is a todo).
                                           (browse-url "https://etidning.dn.se/")
                                           (el-secretario-activate-keymap)))
    (el-secretario-function-source :func
+                                  (lambda () (org-ql-search (org-agenda-files) '(and (tags "onnotebook")
+                                                                                     (todo))
+                                               :title
+                                               (propertize "Mark tasks that are done in the notebook as done here too"
+                                                           'face '(:height 150
+                                                                   :weight bold)))))
+
+   (el-secretario-function-source :func
                                   (lambda ()
                                     (el-secretario-message--display-message-prompt "Go through todo journal!\nMove tasks marked with △ to org-mode")
                                     (el-secretario-activate-keymap)))
@@ -1393,17 +1403,12 @@ a parent which is a todo).
                                   :keymap #'my/el-secretario-org-map)
    (el-secretario-org-make-source '(and (or (and (todo "TODO")
                                                  (not (org-entry-blocked-p))
-                                                 (not (tags-inherited "active"))
                                                  (not (property "style" "habit"))
-                                                 (not (scheduled :from 2)))
-                                            (and (todo "PROJ")
-                                                 (not (scheduled :from 2))
-                                                 (tags "active")))
+                                                 (not (scheduled :from 2))))
                                         (not (tags "noreview")))
                                   '("~/org/orgzly/Todo.org"
                                     "~/org/orgzly/Projects.org")
-                                  :next-item-hook' (lambda ()
-                                                     (el-secretario-org-remove-tag "active"))
+                                  :tag-transitions '(("onnotebook" . ""))
                                   :keymap 'my/el-secretario-org-map)
    (el-secretario-function-source :func #'my/empty-remarkable-outbox)))
 (defun my/el-secretario-daily-review ()
