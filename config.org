@@ -54,8 +54,6 @@ Here are the files of my emacs config:
   (require 'exwm-config)
   (exwm-config-example))
 
-(use-package! org-sidebar
-  :after (org))
 #+END_SRC
 
 This makes sure that I eww, man-pages and info manuals are linkable in org.
@@ -101,25 +99,7 @@ This makes sure that I eww, man-pages and info manuals are linkable in org.
 (use-package! elgantt
   :defer t
   :commands (elgantt-open))
-(setq doom-theme 'brutalist)
-(use-package! org-fc
-  :after org
-  :config
-  (setq org-fc-directories '("~/Documents/notes/fc/"))
-  (require 'org-fc-hydra)
-  (evil-define-minor-mode-key '(normal insert emacs) 'org-fc-review-flip-mode
-    (kbd "RET") 'org-fc-review-flip
-    (kbd "n") 'org-fc-review-flip
-    (kbd "s") 'org-fc-review-suspend-card
-    (kbd "q") 'org-fc-review-quit)
-
-  (evil-define-minor-mode-key '(normal insert emacs) 'org-fc-review-rate-mode
-  (kbd "a") 'org-fc-review-rate-again
-  (kbd "h") 'org-fc-review-rate-hard
-  (kbd "g") 'org-fc-review-rate-good
-  (kbd "e") 'org-fc-review-rate-easy
-  (kbd "s") 'org-fc-review-suspend-card
-  (kbd "q") 'org-fc-review-quit))
+(setq doom-theme 'doom-flatwhite)
 <<emacs-misc>>
 #+END_SRC
 
@@ -161,7 +141,7 @@ solution so far is to apply this patch.
        ;; helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;; ivy               ; a search engine for love and life
-       selectrum       ; the search engine of the future
+       vertico       ; the search engine of the future
 
        :ui
        emoji
@@ -217,7 +197,7 @@ solution so far is to apply this patch.
 
        :checkers
        syntax              ; tasing you for every semicolon you forget
-       ( spell +aspell)             ; tasing you for misspelling mispelling
+       ( spell +aspell +flyspell)             ; tasing you for misspelling mispelling
        ;;grammar           ; tasing grammar mistake every you make
 
        :tools
@@ -444,7 +424,6 @@ I want to move my right hand less so I put this to reduce movement
  :i "M-/" #'hippie-expand)
 (setq hippie-expand-try-functions-list
       '(try-expand-all-abbrevs
-        try-expand-list
         try-expand-dabbrev
         try-expand-dabbrev-all-buffers
         try-expand-line
@@ -537,25 +516,32 @@ This is the way I want to interact with company
 :ID:       ae3de41e-8f08-4f8d-b1a0-7548bb5f3842
 :END:
 ** Imenu
+:PROPERTIES:
+:ID:       cf85c455-5bf0-4397-be56-3e7ae82d93ff
+:END:
 #+begin_src emacs-lisp
-(embark-define-keymap embark-imenu-map
-  "TODO")
-(add-to-list 'embark-keymap-alist '(imenu . embark-imenu-map))
+(after! embark
+  (embark-define-keymap embark-imenu-map
+                        "TODO")
+  (add-to-list 'embark-keymap-alist '(imenu . embark-imenu-map))
 
-(map! (:leader
-       "a" #'embark-act)
-      (:map minibuffer-local-map
-       "C-o" (λ! (let ((embark-quit-after-action nil))
-                   (embark-act))))
-      (:map embark-imenu-map
-       ;; store org links from an imenu target
-       "l" (lambda (&rest _)
-             (interactive)
-             (save-excursion
+  (map! (:leader
+         "a" #'embark-act)
+        (:map minibuffer-local-map
+         "C-o" (λ! (let ((embark-quit-after-action nil))
+                     (embark-act))))
+        (:map embark-imenu-map
+         ;; store org links from an imenu target
+         "l" (lambda (&rest _)
+               (interactive)
+               (save-excursion
                  (consult-imenu--select (consult-imenu--all-items (consult-imenu--project-buffers)))
-               (call-interactively #'org-store-link)))))
+                 (call-interactively #'org-store-link))))))
 #+end_src
 ** Org
+:PROPERTIES:
+:ID:       9f963b27-4040-453f-9840-00f7595667bb
+:END:
 #+begin_src emacs-lisp
 (after! embark
   (defvar my/embark-org-element-target-finders '((link . my/embark-target-org-link))
@@ -792,11 +778,11 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
  :map my/el-secretario-writing-map
  :desc "next (and spaced rep)" "n" (cmd!
                                     (el-secretario-space-reschedule)
-                                    (el-secretario/next-item) )
+                                    (el-secretario-next-item) )
  :desc  "Link" "l" #'link-hint-open-link
  :desc "Schedule" "s" (cmd!
                        (el-secretario-space-schedule-and-reset nil "-365d")
-                       (el-secretario/next-item))
+                       (el-secretario-next-item))
  :desc "Begin writing" "b" (cmd!
                             (el-secretario-space--reset)
                             (el-secretario-tasks-begin-task))
@@ -944,7 +930,7 @@ In order to have org-roam-protocol working I need to setup emacsclient to handle
 #+BEGIN_SRC nil :noweb-ref no :tangle ~/.local/share/applications/org-protocol.desktop
 [Desktop Entry]
 Name=Org-Protocol
-Exec=emacsclient %u
+Exec=~/.nix-profile/bin/emacsclient  %u
 Icon=emacs-icon
 Type=Application
 Terminal=false
@@ -968,7 +954,7 @@ xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
 I don't want Scrapbook or the journal to be in the graph as i creates artificial connections.
 #+BEGIN_SRC emacs-lisp
 (setq org-roam-graph-exclude-matcher '("Scrapbook.org" "journal/"))
-(setq org-roam-file-exclude-regexp ".stversions/*" )
+(setq org-roam-file-exclude-regexp "\\.stversions/*" )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1014,7 +1000,7 @@ issue.
   :after ox
   :config
   (setq org-hugo-base-dir "~/Documents/blog/")
-  (add-to-list 'safe-local-variable-values))
+  (setq org-hugo-paired-shortcodes "alert"))
 #+end_src
 * Journaling
 :PROPERTIES:
@@ -1082,6 +1068,9 @@ This packages allows org-ref notes to be org-roam files
 #+END_SRC
 
 *** bibtex-completion
+:PROPERTIES:
+:ID:       07f30b8f-229a-4d73-ae8a-a9217e1ee2da
+:END:
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (after! bibtex-completion
   (setq bibtex-completion-bibliography "~/Documents/notes/Zotero_articles.bib"
@@ -1203,6 +1192,7 @@ items that are releveant to today.
                                    :habit t
                                    :order 30)
                                   (:scheduled t
+                                   :time-grid t
                                    :order 9000)
                                   (:name "Done Today"
                                    :order 100
@@ -1210,12 +1200,6 @@ items that are releveant to today.
                                          :todo "DONE"))
                                   (:name "Städa"
                                    :category "clean")
-                                  (:name "Meeting"
-                                   :tag ("@meeting")
-                                   :order 20)
-                                  (:name "Schedule"
-                                   :time-grid t)
-                                  (:auto-priority t)
                                   (:name "Todos"
                                    :todo t))
         org-agenda-dim-blocked-tasks 'invisible
@@ -1286,8 +1270,9 @@ set this variable with some fixed preset.
 *** El Secretario
 :PROPERTIES:
 :header-args: :tangle ~/.doom.d/config.el
+:ID:       d0422106-d73e-47ae-85d7-21d840881649
 :END:
-
+**** Email
 When I don't want to read an email I want to capture it so that I can deal with
 it in my todo system instead of turning email into an inferior secondary todo system.
 
@@ -1308,11 +1293,11 @@ email there I capture the email and mark it as done.
  :desc "next" "n" (cmd!
                    (notmuch-show-tag-all '("-notdone"))
                    (org-capture nil "m")
-                   (el-secretario/next-item))
+                   (el-secretario-next-item))
 
  :desc "Quit" "q" #'el-secretario-end-sesion
  :desc "Mark message as done" "d" (cmd! (notmuch-show-tag-all '("-notdone"))
-                                        (el-secretario/next-item))
+                                        (el-secretario-next-item))
 
  :desc "Capture" "c" (cmd!
                       (org-capture nil "f"))
@@ -1344,25 +1329,28 @@ a parent which is a todo).
 
       :desc "next (and spaced rep)" "n" (cmd!
                                           (el-secretario-space-reschedule)
-                                          (el-secretario/next-item) )
-      :desc "next" "RET" #'el-secretario/next-item
+                                          (el-secretario-next-item) )
+      :desc "previous" "p" #'el-secretario-previous-item
+      :desc "next" "RET" #'el-secretario-next-item
       :desc "Refile" "r" (cmd!
                           (let ((org-reverse-note-order nil))
                             (org-refile)
-                            (el-secretario/next-item)))
+                            (el-secretario-next-item)))
       :desc "Refile to top" "R" (cmd!
                                  (let ((org-reverse-note-order t))
                                    (org-refile)
-                                   (el-secretario/next-item)))
+                                   (el-secretario-next-item)))
       :desc "Tags" "t" #'org-set-tags-command
       :desc "TODO" "T" #'org-todo
       :desc "Link" "l" #'link-hint-open-link
       :desc "Schedule" "s" (cmd!
                              (call-interactively #'el-secretario-space-schedule-and-reset)
-                             (el-secretario/next-item))
+                             (el-secretario-next-item))
       :desc "Deadline" "d" #'org-deadline
       :desc "Delete visible" "D" (cmd! (delete-region (point-min) (point-max)))
       :desc "Quit" "q" #'el-secretario-end-sesion)
+(map! :map el-secretario-org-map
+           :desc "Link" "l" #'link-hint-open-link)
 #+END_SRC
 **** Backups
 #+begin_src emacs-lisp
@@ -1376,7 +1364,12 @@ a parent which is a todo).
 **** El Secretario
 #+BEGIN_SRC emacs-lisp
 (after! el-secretario
-  (require 'el-secretario-keybindings))
+  (require 'hercules)
+  (require 'el-secretario-keybindings)
+  (require 'el-secretario-space)
+  (require 'el-secretario-tasks)
+  )
+
 (defun my/dailyreview-secretary ()
   (list
    (el-secretario-function-source :func (lambda ()
@@ -1415,14 +1408,15 @@ a parent which is a todo).
    (el-secretario-function-source :func #'my/empty-remarkable-outbox)))
 (defun my/el-secretario-daily-review ()
   (interactive)
+  (elfeed)
   (elfeed-update)
   (el-secretario-start-session (my/dailyreview-secretary)))
 
-  :commands (my/el-secretario-daily-review))
  #+END_SRC
 *** Fun tasks
 :PROPERTIES:
 :header-args: :tangle ~/.doom.d/config.el
+:ID:       9c358bd4-2e08-48d0-8b68-d1fc5bc0d44f
 :END:
 
 I want to do a lot of things because I think they are fun. I'd like to keep a
@@ -1618,6 +1612,16 @@ Use the same theme in pdfs as in the rest of emacs
 :header-args: :noweb-ref emacs-misc
 :ID:       dc4b5876-482c-4057-b0cb-d391f1feed05
 :END:
+I want to have some local variables and prefer to not have them ignored.
+#+begin_src emacs-lisp
+(setq-default enable-local-variables t)
+#+end_src
+
+#+begin_src emacs-lisp
+(after! ispell
+  (setq ispell-personal-dictionary nil))
+(setq ispell-dictionary "english")
+#+end_src
 I want the prompt for when I unlock my gpg key
 #+BEGIN_SRC emacs-lisp
 (after! epa (setq epa-pinentry-mode 'ask))
@@ -1682,8 +1686,21 @@ With a prefix argument, prompt for a new name to use for each file.
                                    (car pair)
                                    ";type=application/pdf\" ")))
           name-file-name-alist)))
+(defun my/empty-remarkable-outbox ()
+  (interactive)
+  (hercules--hide)
+  (dired "~/Downloads/remarkable-outbox/")
+  (dired-mark-sexp '(string= (file-name-extension name) "pdf"))
+  (when (y-or-n-p "Send marked files to remarkable?")
+    (call-interactively #'my/send-to-remarkable-dwim)
+    (when (y-or-n-p "Delete marked files?")
+      (dired-do-delete)))
+  (el-secretario-activate-keymap))
 #+end_src
 * Lispy
+:PROPERTIES:
+:ID:       37e1bb8c-b3f6-454d-bbfb-6e75e3078cc5
+:END:
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/init.el
 (after! lispyville
   (setq lispyville-key-theme
@@ -1738,6 +1755,45 @@ This is the log configuration for the above function
  ]}
 ].
 #+END_SRC
+* Emacs-lisp
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
+#+begin_src emacs-lisp
+(after! flycheck
+  (flycheck-package-setup))
+#+end_src
+* Lean
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:ID:       41d6185f-9ae5-41dc-9a89-6f1ec52c7207
+:END:
+#+begin_src emacs-lisp
+(after! helm-lean
+  (add-to-list 'helm-lean-definitions-actions
+               '("Add to working lemmas" .
+                 (lambda (c) (with-helm-current-buffer
+                               (message (prin1-to-string c))
+                               (let* ((buf (get-buffer-create "*helm-lean-working-lemmas*"))
+                                      (win (get-buffer-window buf)))
+                                 (with-current-buffer buf
+                                   (goto-char (point-max))
+                                   (insert  (plist-get c :text)
+                                            " : "
+                                            (plist-get c :type)
+                                            "\n")
+                                   (save-excursion
+                                     (unless win
+                                       (setq win (split-window (selected-window)
+                                                               nil
+                                                               'below))
+                                       (switch-to-buffer buf)
+                                       ;; (setq win (get-buffer-window (current-buffer)))
+                                       )
+                                     (fit-window-to-buffer win)
+                                     ;; (select-window (other-window 1))
+                                     ))))))))
+#+end_src
 * IRC
 :PROPERTIES:
 :ID:       1c96e624-b94d-46dd-8e24-92dffb7a0685

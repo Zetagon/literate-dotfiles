@@ -17,6 +17,10 @@ very useful for when trying to find conflicting keybindings.
 gsettings list-recursively | grep -F "<Super>"
 #+end_src
 
+Pin a window to all workspaces
+#+begin_src sh
+gsettings set org.gnome.desktop.wm.keybindings toggle-on-all-workspaces "['<Super>p']"
+#+end_src
 Use super+<num> to Switch between workspaces like xmonad :)
 #+begin_src sh
 gsettings set org.gnome.mutter dynamic-workspaces false
@@ -82,3 +86,35 @@ gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-10 "['<Super><S
 
 #+RESULTS:
 
+
+
+#+begin_src conf :tangle ~/.local/share/applications/emacs-client.desktop :mkdirp yes
+[Desktop Entry]
+Name=Emacs client
+GenericName=Text Editor
+Comment=A flexible platform for end-user applications
+MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;
+Exec=/home/leo/.nix-profile/bin/emacsclient -create-frame --alternate-editor="" --no-wait %F
+Icon=emacs
+Type=Application
+Terminal=false
+Categories=TextEditor;Utility;
+StartupWMClass=Emacs
+Keywords=Text;Editor;
+X-KDE-StartupNotify=false
+#+end_src
+
+#+begin_src conf :tangle ~/.local/share/applications/emacs-daemon.desktop :mkdirp yes
+[Desktop Entry]
+Name=Emacs client
+GenericName=Text Editor
+Comment=A flexible platform for end-user applications
+Exec=/home/leo/.nix-profile/bin/emacs --daemon
+Icon=emacs
+Type=Application
+Terminal=false
+Categories=TextEditor;Utility;
+StartupWMClass=Emacs
+Keywords=Text;Editor;
+X-KDE-StartupNotify=false
+#+end_src
