@@ -766,40 +766,6 @@ Some default classes I use:
 #+begin_src emacs-lisp
 (add-to-list 'org-latex-packages-alist '("" "microtype"))
 #+end_src
-*** Writing Inbox
-:PROPERTIES:
-:ID:       7f9f4e8b-2d24-4a45-ab54-7ea22b0b52c7
-:END:
-I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUwLxefodzfnnfKXx63vXzP88?stackedNotes=z4AX7pHAu5uUfmrq4K4zig9x8jmmF62XgaMXm&stackedNotes=z5aJUJcSbxuQxzHr2YvaY4cX5TuvLQT7r27Dz
-
-#+begin_src emacs-lisp
-(defvar my/el-secretario-writing-map (make-sparse-keymap))
-(map!
- :map my/el-secretario-writing-map
- :desc "next (and spaced rep)" "n" (cmd!
-                                    (el-secretario-space-reschedule)
-                                    (el-secretario-next-item) )
- :desc  "Link" "l" #'link-hint-open-link
- :desc "Schedule" "s" (cmd!
-                       (el-secretario-space-schedule-and-reset nil "-365d")
-                       (el-secretario-next-item))
- :desc "Begin writing" "b" (cmd!
-                            (el-secretario-space--reset)
-                            (el-secretario-tasks-begin-task))
- :desc  "Delete visible" "D" (cmd! (delete-region (point-min) (point-max)))
- :desc  "Quit" "q" (cmd! (el-secretario-end-sesion)))
-#+end_src
-
-#+begin_src emacs-lisp
-(defun my/begin-writing ()
-  (interactive)
-  (el-secretario-start-session (el-secretario-org-make-source
-                                '(todo)
-                                '("~/org/writing-inbox.org")
-                                :keymap #'my/el-secretario-writing-map
-                                :shuffle-p t
-                                :compare-fun #'el-secretario-space-compare-le)))
-#+end_src
 
 
 
@@ -1363,6 +1329,30 @@ a parent which is a todo).
   (when (y-or-n-p "Have you plugged in the USB?")
     (shell-command "~/.doom.d/usb-backup.sh")))
 #+end_src
+
+**** Writing Inbox
+:PROPERTIES:
+:ID:       7f9f4e8b-2d24-4a45-ab54-7ea22b0b52c7
+:END:
+I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUwLxefodzfnnfKXx63vXzP88?stackedNotes=z4AX7pHAu5uUfmrq4K4zig9x8jmmF62XgaMXm&stackedNotes=z5aJUJcSbxuQxzHr2YvaY4cX5TuvLQT7r27Dz
+
+#+begin_src emacs-lisp
+(defvar my/el-secretario-writing-map (make-sparse-keymap))
+(map!
+ :map my/el-secretario-writing-map
+ :desc "next (and spaced rep)" "n" (cmd!
+                                    (el-secretario-space-reschedule)
+                                    (el-secretario-next-item) )
+ :desc  "Link" "l" #'link-hint-open-link
+ :desc "Schedule" "s" (cmd!
+                       (el-secretario-space-schedule-and-reset nil "-365d")
+                       (el-secretario-next-item))
+ :desc "Send to notebook" "a" (cmd!
+                               (el-secretario-space--reset)
+                               (el-secretario--next-source))
+ :desc  "Delete visible" "D" (cmd! (delete-region (point-min) (point-max)))
+ :desc  "Quit" "q" (cmd! (el-secretario-end-sesion)))
+#+end_src
 **** El Secretario
 #+BEGIN_SRC emacs-lisp
 (after! el-secretario
@@ -1410,6 +1400,12 @@ a parent which is a todo).
                                     "~/org/orgzly/Projects.org")
                                   :tag-transitions '(("onnotebook" . ""))
                                   :keymap 'my/el-secretario-org-map)
+  (el-secretario-org-make-source
+                                '(todo)
+                                '("~/org/writing-inbox.org")
+                                :keymap #'my/el-secretario-writing-map
+                                :shuffle-p t
+                                :compare-fun #'el-secretario-space-compare-le)
    (el-secretario-function-source :func #'my/empty-remarkable-outbox)))
 (defun my/el-secretario-daily-review ()
   (interactive)
