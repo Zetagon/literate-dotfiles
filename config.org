@@ -869,9 +869,9 @@ This will capture to the first entry that has the tag \"foo\".
          "#+TITLE: ${title}\n#+Created: %t\n#+Time-stamp: <>\n")
          :unnarrowed t
          :immediate-finish t)
-        ("t" "text" plain #'org-roam--capture-get-point "%?"
+        ("t" "text" plain "%?"
          :if-new
-         (file+head "texter/${slug}"
+         (file+head "texter/${slug}.org"
                     "#+TITLE: ${title}\n#+Created: %t\n#+Time-stamp: <>\n#+hugo_publishdate: %t\n#+hugo_draft: true\n")
          :unnarrowed t
          :immediate-finish t)))
