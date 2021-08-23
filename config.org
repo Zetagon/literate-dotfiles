@@ -1174,7 +1174,7 @@ items that are releveant to today.
   (let ((org-agenda-custom-commands
          '(("l" "Today"
             ((tags-todo "active" ((org-agenda-overriding-header "Active tasks")))
-             (org-ql-block '(and (scheduled :on "today")
+             (org-ql-block '(and (tags "onnotebook")
                                  (not (done))))
              (agenda "" nil))))))
     (org-agenda nil "l")))
