@@ -1402,7 +1402,7 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
                                   :keymap 'my/el-secretario-org-map)
   (el-secretario-org-make-source
                                 '(todo)
-                                '("~/org/writing-inbox.org")
+                                '("~/org/orgzly/writing-inbox.org")
                                 :keymap #'my/el-secretario-writing-map
                                 :shuffle-p t
                                 :compare-fun #'el-secretario-space-compare-le)
