@@ -1341,8 +1341,9 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
 (map!
  :map my/el-secretario-writing-map
  :desc "next (and spaced rep)" "n" (cmd!
+                                    (el-secretario-org-add-tag "onnotebook")
                                     (el-secretario-space-reschedule)
-                                    (el-secretario-next-item) )
+                                    (el-secretario-next-item))
  :desc  "Link" "l" #'link-hint-open-link
  :desc "Schedule" "s" (cmd!
                        (el-secretario-space-schedule-and-reset nil "-365d")
