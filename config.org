@@ -1614,6 +1614,18 @@ Use the same theme in pdfs as in the rest of emacs
 :header-args: :noweb-ref emacs-misc
 :ID:       dc4b5876-482c-4057-b0cb-d391f1feed05
 :END:
+
+#+begin_quote
+A man is not dead while his name is still spoken.
+#+end_quote
+
+[[www.gnuterrypratchett.com/]]
+
+#+begin_src emacs-lisp
+(after! sendmail
+  (setq mail-default-headers "X-Clacks-Overhead: GNU Terry Pratchett\n"))
+#+end_src
+
 I want to have some local variables and prefer to not have them ignored.
 #+begin_src emacs-lisp
 (setq-default enable-local-variables t)
