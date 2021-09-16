@@ -376,7 +376,7 @@ I want to recompile more often than changing compilation command
 #+begin_src emacs-lisp
 (:leader
  "c c" #'recompile
- "c C" #'+ivy/compile)
+ "c C" #'+default/compile)
 #+end_src
 
 I have mapped tab to both tab and super, so it becomes clunky to use for keybindings.
@@ -1038,6 +1038,8 @@ This packages allows org-ref notes to be org-roam files
 :ID:       07f30b8f-229a-4d73-ae8a-a9217e1ee2da
 :END:
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
+(after! org
+  (setq org-cite-global-bibliography  '("~/Documents/notes/Zotero_articles.bib")))
 (after! bibtex-completion
   (setq bibtex-completion-bibliography "~/Documents/notes/Zotero_articles.bib"
         reftex-default-bibliography '("~/Documents/notes/Zotero_articles.bib")
