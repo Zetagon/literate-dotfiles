@@ -1295,7 +1295,8 @@ a parent which is a todo).
                                   (save-excursion
                                     (el-secretario-org-add-tag "onnotebook")
                                     (el-secretario-space--reset)
-                                    (org-schedule nil "+7d")))
+                                    (org-schedule nil "+7d")
+                                    (el-secretario-next-item)))
 
       :desc "next (and spaced rep)" "n" (cmd!
                                           (el-secretario-space-reschedule)
@@ -1343,7 +1344,6 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
 (map!
  :map my/el-secretario-writing-map
  :desc "next (and spaced rep)" "n" (cmd!
-                                    (el-secretario-org-add-tag "onnotebook")
                                     (el-secretario-space-reschedule)
                                     (el-secretario-next-item))
  :desc  "Link" "l" #'link-hint-open-link
@@ -1351,6 +1351,7 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
                        (el-secretario-space-schedule-and-reset nil "-365d")
                        (el-secretario-next-item))
  :desc "Send to notebook" "a" (cmd!
+                               (el-secretario-org-add-tag "onnotebook")
                                (el-secretario-space--reset)
                                (el-secretario--next-source))
  :desc  "Delete visible" "D" (cmd! (delete-region (point-min) (point-max)))
@@ -1394,21 +1395,22 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
                                   '("~/org/orgzly/Todo.org"
                                     "~/org/orgzly/Projects.org")
                                   :keymap #'my/el-secretario-org-map)
-   (el-secretario-org-make-source '(and (or (and (todo "TODO")
-                                                 (not (org-entry-blocked-p))
-                                                 (not (property "style" "habit"))
-                                                 (not (scheduled :from 2))))
+   (el-secretario-org-make-source '(and (and (todo "TODO")
+                                             (not (org-entry-blocked-p))
+                                             (not (property "style" "habit"))
+                                             (not (scheduled :from 2)))
                                         (not (tags "noreview")))
                                   '("~/org/orgzly/Todo.org"
                                     "~/org/orgzly/Projects.org")
                                   :tag-transitions '(("onnotebook" . ""))
                                   :keymap 'my/el-secretario-org-map)
-  (el-secretario-org-make-source
-                                '(todo)
-                                '("~/org/orgzly/writing-inbox.org")
-                                :keymap #'my/el-secretario-writing-map
-                                :shuffle-p t
-                                :compare-fun #'el-secretario-space-compare-le)
+   (el-secretario-org-make-source
+    '(todo)
+    '("~/org/orgzly/writing-inbox.org")
+    :keymap #'my/el-secretario-writing-map
+    :shuffle-p t
+    :tag-transitions '(("onnotebook" . ""))
+    :compare-fun #'el-secretario-space-compare-le)
    (el-secretario-function-source :func #'my/empty-remarkable-outbox)))
 (defun my/el-secretario-daily-review ()
   (interactive)
