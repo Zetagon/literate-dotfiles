@@ -413,6 +413,12 @@ I want to move my right hand less so I put this to reduce movement
  :i "M-h" #'delete-backward-char)
 #+END_SRC
 
+#+begin_src emacs-lisp
+(map!
+ :leader
+ "i i" #'iedit-mode)
+#+end_src
+
 * Completion
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
