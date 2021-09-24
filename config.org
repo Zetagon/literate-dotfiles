@@ -21,8 +21,6 @@ Here are the files of my emacs config:
 (package! color-identifiers-mode :pin "75a837548b58d0ade286f32559e3d49bae844d6d")
 (package! elgantt :pin "be49f119bf09ff4ebe98c0ca3f1907191e3603d6"
   :recipe (:repo "https://github.com/legalnonsense/elgantt/"))
-(package! org-pandoc-import
-  :recipe (:local-repo "~/Downloads/org-pandoc-import"))
 (package! brutalist-theme
   :recipe (:repo "https://github.com/aparkerdavid/brutalist-theme/")
   :pin "a291f9a520e5d5692d645a05880092a54cd30b2f")
@@ -38,8 +36,8 @@ Here are the files of my emacs config:
 ;;   :recipe (:host github :repo"ymarco/auto-activating-snippets"
 ;;            :files (:defaults "*.el")))
 (package! el-secretario
-  :recipe (:local-repo "~/Documents/el-secretario")
-  ;; :recipe (:repo "https://github.com/Zetagon/el-secretario")
+  ;; :recipe (:local-repo "~/Documents/el-secretario")
+  :recipe (:repo "https://git.sr.ht/~zetagon/el-secretario")
   ;; :pin "b59941ea4b4f91cd4f5e4f00189d549149cfcbb2"
   )
 (package! ox-hugo)
@@ -282,8 +280,12 @@ solution so far is to apply this patch.
        ;; yaml              ; JSON, but readable
 
        :email
-       ;;(mu4e +gmail)
-       notmuch
+       (:if (string= "sakura"
+                     (system-name))
+        mu4e)
+       (:if (string= "silencio"
+                     (system-name))
+        notmuch)
        ;;(wanderlust +gmail)
 
        :app
