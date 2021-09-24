@@ -1,5 +1,22 @@
 #+TITLE: Email
 #+PROPERTY: header-args :comments no :mkdirp yes :noweb yes :tangle no
+* Mu4e
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:ID:       bb9034e9-fb1c-4e81-8996-982b1378bc6d
+:END:
+#+begin_src emacs-lisp
+;; Each path is relative to the path of the maildir you passed to mu
+(set-email-account! "relevant-info"
+  '((mu4e-sent-folder       . "/relevant-info/Sent")
+    (mu4e-drafts-folder     . "/relevant-info/Drafts")
+    (mu4e-trash-folder      . "/relevant-info/Trash")
+    (mu4e-refile-folder     . "/relevant-info/Archive")
+    (smtpmail-smtp-user     . "leo@relevant-information.com")
+    (user-mail-address     . "leo@relevant-information.com")
+    (mu4e-compose-signature . "---\Leo Okawa Ericson"))
+  t)
+#+end_src
 * Notmuch Emacs
 :PROPERTIES:
 :header-args: :noweb-ref emacs-notmuch
