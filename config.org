@@ -291,7 +291,9 @@ solution so far is to apply this patch.
        :app
        ;;calendar
        irc               ; how neckbeards socialize
-       (rss +org)        ; emacs as an RSS reader
+       (:if (string= "hako"
+                     (system-name))
+            rss +org)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
 
        :config
@@ -1403,7 +1405,9 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
      (el-secretario-notmuch-make-source   "tag:lists AND tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" #'my/secretary-notmuch-map)
      (el-secretario-notmuch-make-source   "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" #'my/secretary-notmuch-map))
 
-   (el-secretario-elfeed-make-source "@2-month-ago +unread")
+   (when (string= (system-name)
+                  "hako")
+     (el-secretario-elfeed-make-source "@2-month-ago +unread"))
    (el-secretario-org-make-source nil '("~/org/orgzly/InboxComputer.org"
                                         "~/org/orgzly/Inbox.org"))
    (el-secretario-org-make-source '(and (todo "WAITING")
