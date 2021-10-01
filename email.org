@@ -16,6 +16,8 @@
     (user-mail-address     . "leo@relevant-information.com")
     (mu4e-compose-signature . "---\Leo Okawa Ericson"))
   t)
+;; I don't like threading by default. It makes it hard to work with longer email threads and pollutes my unread messages view
+(setq mu4e-headers-show-threads nil)
 #+end_src
 * Notmuch Emacs
 :PROPERTIES:
