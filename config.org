@@ -1431,7 +1431,9 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
     :shuffle-p t
     :tag-transitions '(("onnotebook" . ""))
     :compare-fun #'el-secretario-space-compare-le)
-   (el-secretario-function-source :func #'my/empty-remarkable-outbox)))
+   (el-secretario-function-source :func #'my/empty-remarkable-outbox)
+  (el-secretario-function-source :func (lambda ()
+                                         (shell-command "~/.doom.d/dropbox-backup.sh"))) ))
 (defun my/el-secretario-daily-review ()
   (interactive)
   (elfeed)
