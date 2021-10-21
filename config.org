@@ -1392,7 +1392,7 @@ a parent which is a todo).
   (interactive)
   (save-some-buffers)
   (when (y-or-n-p "Have you plugged in the USB?")
-    (shell-command "~/.doom.d/usb-backup.sh")))
+    (shell-command "ruby ~/.doom.d/usb-backup.rb")))
 #+end_src
 
 **** Writing Inbox
