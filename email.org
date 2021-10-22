@@ -18,6 +18,7 @@
   t)
 ;; I don't like threading by default. It makes it hard to work with longer email threads and pollutes my unread messages view
 (setq mu4e-headers-show-threads nil)
+(setq mu4e-view-auto-mark-as-read nil)
 #+end_src
 * Notmuch Emacs
 :PROPERTIES:
