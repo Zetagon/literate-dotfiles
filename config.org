@@ -642,6 +642,58 @@ use that as action type. Otherwise the action type is 'url.
 #+end_src
 
 
+* Avy
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
+** Avy Actions
+Blogpost that inspired this part
+https://karthinks.com/software/avy-can-do-anything/. My novel contribution is
+just binding the evil delete and copy operators so that I can copy and delete
+evil text objects/motions on avy targets.
+#+begin_src emacs-lisp
+(after! avy
+  (setf (alist-get ?w avy-dispatch-alist)
+        #'my/avy-evil-delete)
+  (setf (alist-get ?y avy-dispatch-alist)
+        #'my/avy-evil-copy)
+  (setf (alist-get ?e avy-dispatch-alist)
+        #'my/avy-embark-act))
+
+#+end_src
+*** Avy-fied functions
+:PROPERTIES:
+:ID:       0d173d66-37b2-45f5-a0d2-59b7adac2d72
+:END:
+#+begin_src emacs-lisp
+(defun my/avy-embark-act (pt)
+  (save-excursion
+    (goto-char pt)
+    (embark-act))
+  (select-window
+   (cdr
+    (ring-ref avy-ring 0)))
+  t)
+(defun my/avy-evil-delete (pt)
+  (interactive)
+  (save-excursion
+    (goto-char pt)
+    (call-interactively #'evil-delete))
+  (select-window
+   (cdr
+    (ring-ref avy-ring 0)))
+  t)
+
+(defun my/avy-evil-copy (pt)
+  (interactive)
+  (save-excursion
+    (goto-char pt)
+    (call-interactively #'evil-yank))
+  (select-window
+   (cdr
+    (ring-ref avy-ring 0)))
+  t)
+#+end_src
 
 * Org-mode
 :PROPERTIES:
