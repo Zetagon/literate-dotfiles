@@ -647,6 +647,11 @@ use that as action type. Otherwise the action type is 'url.
 :PROPERTIES:
 :header-args: :tangle ~/.doom.d/config.el
 :END:
+This lets me switch from an isearch to an avy selection. Avy will use the isearch search term as candidates.
+#+begin_src emacs-lisp
+(map! :map isearch-mode-map "M-j" #'avy-isearch)
+#+end_src
+
 ** Avy Actions
 Blogpost that inspired this part
 https://karthinks.com/software/avy-can-do-anything/. My novel contribution is
