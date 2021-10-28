@@ -1472,7 +1472,7 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
          (require 'mu4e)
          (setq mu4e-headers-show-threads nil)
          (el-secretario-mu4e-make-source
-          "flagged:unread"))
+          "flag:unread"))
      (el-secretario-notmuch-make-source   "to:leo@relevant-information.com AND tag:unread AND NOT tag:deleted NOT tag:gmail/Inbox" #'my/secretary-notmuch-map)
      (el-secretario-notmuch-make-source   "tag:lists AND tag:unread AND NOT tag:deleted NOT tag:gmail/Inbox" #'my/secretary-notmuch-map)
      (el-secretario-notmuch-make-source   "tag:unread AND NOT tag:deleted NOT tag:gmail/Inbox" #'my/secretary-notmuch-map))
