@@ -1415,8 +1415,10 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
                                          (shell-command "~/.doom.d/dropbox-backup.sh"))) ))
 (defun my/el-secretario-daily-review ()
   (interactive)
-  (elfeed)
-  (elfeed-update)
+  (when (string= (system-name)
+                 "hako")
+    (elfeed)
+    (elfeed-update))
   (el-secretario-start-session (my/dailyreview-secretary)))
 
  #+END_SRC
