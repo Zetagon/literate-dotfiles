@@ -1848,25 +1848,6 @@ This is the log configuration for the above function
                      :sasl-password (lambda (&rest _) (+pass-get-secret "freenode/freenode@relevant-information.com"))
                      :channels ("#emacs-circe" "#emacs" "#haskell" "#org-mode" "#xmonad" "#fsf" "#libreplanet" "#gnu" "#cryptoparty-uppsala" "#wikimedia" "#wikibooks"))))
 #+END_SRC
-* Passwords
-I want to pin these packages myself
-#+BEGIN_SRC emacs-lisp :noweb-ref emacs-packages
-(package! pass :pin "919d8e3826d556433ab67d4ee21a509d209d1baa")
-(package! password-store :pin "07b169ec32ad6961ed8625a0b932a663abcb01d2")
-(package! password-store-otp :pin "04998c8578a060ab4a4e8f46f2ee0aafad4ab4d5")
-
-;; an older version of `auto-source-pass' is built into Emacs 26+, so we must
-;; install the new version directly from the source and with a psuedonym.
-(package! auth-source-pass
-  :recipe (:host github :repo "DamienCassou/auth-password-store")
-  :pin "ff4940c647786914b3cbef69103d96a4ea334111")
-
-(when (featurep! :completion ivy)
-  (package! ivy-pass :pin "5b523de1151f2109fdd6a8114d0af12eef83d3c5"))
-(when (featurep! :completion helm)
-  (package! helm-pass :pin "ed5798f2d83937575e8f23fde33323bca9e85131"))
-#+END_SRC
-
 * RSS
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
