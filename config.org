@@ -1815,6 +1815,17 @@ This is the log configuration for the above function
                                      ;; (select-window (other-window 1))
                                      ))))))))
 #+end_src
+* Java
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
+#+begin_src emacs-lisp
+(when (and (featurep! :tools lsp)
+           (featurep! :lang java))
+  (add-hook! java-mode-hook #'lsp-lens-mode #'lsp-jt-lens-mode))
+(after! java-mode
+  (set-docsets! 'java-mode :add "Java"))
+#+end_src
 * IRC
 :PROPERTIES:
 :ID:       1c96e624-b94d-46dd-8e24-92dffb7a0685
