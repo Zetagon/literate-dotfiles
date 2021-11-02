@@ -24,12 +24,16 @@
 :PROPERTIES:
 :header-args: :noweb-ref emacs-notmuch
 :END:
+I don't want to accidentally mark an email as read. This ensures that I have to explicitly remove the ~unread~ tag.
+#+begin_src emacs-lisp
+(setq notmuch-show-mark-read-tags nil)
+#+end_src
 
-These are my saved searches. Any mail that is not deleted and ~notdone~ is in a inbox.
+These are my saved searches. Any mail that is not deleted and unread is in a inbox.
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-notmuch
 (setq notmuch-saved-searches
-      '((:name "inbox" :query "tag:notdone AND NOT tag:deleted NOT tag:gmail/Inbox" :key "i")
-        (:name "inbox Ordförande" :query "tag:notdone AND NOT tag:deleted AND tag:gmail/Inbox" :key "o")
+      '((:name "inbox" :query "tag:unread AND NOT tag:deleted NOT tag:gmail/Inbox" :key "i")
+        (:name "inbox Ordförande" :query "tag:unread AND NOT tag:deleted AND tag:gmail/Inbox" :key "o")
         (:name "unread" :query "tag:unread" :key "u")
         (:name "flagged" :query "tag:flagged" :key "f")
         (:name "sent" :query "tag:sent" :key "t")
@@ -41,8 +45,8 @@ These are my saved searches. Any mail that is not deleted and ~notdone~ is in a 
 
 When I have read a mail there are three cases:
 - I have not actually read the mail, in which case I leave it be
-- I have read the mail and done what I can do now, in which case I remove the ~notdone~ tag
-- I have read the mail and but there actions left to perform, in which case I capture it to my gtd system, and remove the ~notdone~ tag
+- I have read the mail and done what I can do now, in which case I remove the ~unread~ tag
+- I have read the mail and but there actions left to perform, in which case I capture it to my gtd system, and remove the ~unread~ tag
 
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (map!
@@ -51,10 +55,10 @@ When I have read a mail there are three cases:
  (:map notmuch-show-mode-map
    :n "D" #'evil-collection-notmuch-show-toggle-delete
 
-   :n "d" (λ! (notmuch-show-tag-all '("-notdone"))
+   :n "d" (λ! (notmuch-show-tag-all '("-unread"))
               (notmuch-show-next-thread-show)))
  (:map notmuch-tree-mode-map
-  :n "d" (λ! (notmuch-tree-tag-thread '("-notdone")))))
+  :n "d" (λ! (notmuch-tree-tag-thread '("-unread")))))
 #+END_SRC
 
 I want to run the following command when syncing:
@@ -156,7 +160,7 @@ other_email=dv-ordf@utn.se
 #		in the mail store.
 #
 [new]
-tags=unread;inbox;new;notdone;
+tags=unread;inbox;new;
 ignore=
 
 # Search configuration
