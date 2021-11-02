@@ -283,7 +283,7 @@ solution so far is to apply this patch.
        (:if (string= "sakura"
                      (system-name))
         mu4e)
-       (:if (string= "silencio"
+       (:if (string= "hako"
                      (system-name))
         notmuch)
        ;;(wanderlust +gmail)
@@ -416,8 +416,7 @@ I want to move my right hand less so I put this to reduce movement
 #+END_SRC
 
 #+begin_src emacs-lisp
-(map!
- :leader
+(:leader
  "i i" #'iedit-mode)
 #+end_src
 
@@ -434,7 +433,9 @@ I want to move my right hand less so I put this to reduce movement
  :i "M-/" #'hippie-expand)
 (setq hippie-expand-try-functions-list
       '(try-expand-all-abbrevs
+        try-expand-dabbrev-visible
         try-expand-dabbrev
+        try-expand-whole-kill
         try-expand-dabbrev-all-buffers
         try-expand-line
         try-complete-lisp-symbol-partially
@@ -1238,7 +1239,7 @@ items that are releveant to today.
   (let ((org-agenda-custom-commands
          '(("l" "Today"
             ((tags-todo "active" ((org-agenda-overriding-header "Active tasks")))
-             (org-ql-block '(and (tags "onnotebook")
+             (org-ql-block '(and (ltags "onnotebook")
                                  (not (done))))
              (agenda "" nil))))))
     (org-agenda nil "l")))
@@ -1434,7 +1435,7 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
                                           (browse-url "https://etidning.dn.se/")
                                           (el-secretario-activate-keymap)))
    (el-secretario-function-source :func
-                                  (lambda () (org-ql-search (org-agenda-files) '(and (tags "onnotebook")
+                                  (lambda () (org-ql-search (org-agenda-files) '(and (ltags "onnotebook")
                                                                                      (todo))
                                                :title
                                                (propertize "Mark tasks that are done in the notebook as done here too"
