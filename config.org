@@ -675,11 +675,24 @@ evil text objects/motions on avy targets.
    (cdr
     (ring-ref avy-ring 0)))
   t)
+
+(defvar my/evil-extract-count-keys nil)
+
+(defadvice! my/evil-extract-count (orig-fn keys)
+  "When an evil operation is called from avy `evil-extract-count'
+will get the last key given to avy as input. In order to behave
+normally we wrap the function so that we can give the input
+manually using a let-binding."
+  :around #'evil-extract-count
+  (funcall orig-fn
+           (or my/evil-extract-count-keys keys)))
+
 (defun my/avy-evil-delete (pt)
   (interactive)
   (save-excursion
     (goto-char pt)
-    (call-interactively #'evil-delete))
+    (let ((my/evil-extract-count-keys "d"))
+      (call-interactively #'evil-delete)))
   (select-window
    (cdr
     (ring-ref avy-ring 0)))
@@ -689,7 +702,8 @@ evil text objects/motions on avy targets.
   (interactive)
   (save-excursion
     (goto-char pt)
-    (call-interactively #'evil-yank))
+    (let ((my/evil-extract-count-keys "y"))
+      (call-interactively #'evil-yank)))
   (select-window
    (cdr
     (ring-ref avy-ring 0)))
