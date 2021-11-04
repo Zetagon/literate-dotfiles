@@ -570,7 +570,9 @@ evil text objects/motions on avy targets.
         #'my/avy-evil-delete)
   (setf (alist-get ?y avy-dispatch-alist)
         #'my/avy-evil-copy)
-  (setf (alist-get ?e avy-dispatch-alist)
+  (setf (alist-get ?c avy-dispatch-alist)
+        #'my/avy-evil-change)
+  (setf (alist-get ?a avy-dispatch-alist)
         #'my/avy-embark-act))
 
 #+end_src
@@ -621,6 +623,24 @@ manually using a let-binding."
    (cdr
     (ring-ref avy-ring 0)))
   t)
+
+(defvar my/avy-evil-change-marker nil
+  "The place where the user called ivy from.")
+
+(defun my/avy-evil-change (pt)
+  (interactive)
+  (setq my/avy-evil-change-marker (point-marker))
+  (goto-char pt)
+  (add-hook 'evil-insert-state-exit-hook #'my/avy-evil-change-h)
+  (call-interactively #'evil-change)
+  t)
+
+(defun my/avy-evil-change-h ()
+  (remove-hook 'evil-insert-state-exit-hook #'my/avy-evil-change-h)
+  (select-window
+   (cdr
+    (ring-ref avy-ring 0)))
+  (goto-char (marker-position my/avy-evil-change-marker)))
 #+end_src
 
 * Org-mode
