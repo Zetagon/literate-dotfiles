@@ -580,12 +580,13 @@ evil text objects/motions on avy targets.
 :END:
 #+begin_src emacs-lisp
 (defun my/avy-embark-act (pt)
-  (save-excursion
-    (goto-char pt)
-    (embark-act))
-  (select-window
-   (cdr
-    (ring-ref avy-ring 0)))
+  (unwind-protect
+      (save-excursion
+        (goto-char pt)
+        (embark-act))
+    (select-window
+     (cdr
+      (ring-ref avy-ring 0))))
   t)
 
 (defvar my/evil-extract-count-keys nil)
