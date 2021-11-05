@@ -17,8 +17,16 @@
     (mu4e-compose-signature . "---\Leo Okawa Ericson"))
   t)
 ;; I don't like threading by default. It makes it hard to work with longer email threads and pollutes my unread messages view
-(setq mu4e-headers-show-threads nil)
-(setq mu4e-view-auto-mark-as-read nil)
+(map!
+ :leader
+ :prefix-map ("o" . "open")
+ "m" (lambda ()
+       (interactive)
+       (setq mu4e-headers-show-threads t)
+       (setq mu4e-view-auto-mark-as-read nil)
+       (setq mu4e-headers-sort-direction 'ascending)
+       (setq mu4e-headers-include-related t)
+       (=mu4e)))
 #+end_src
 * Notmuch Emacs
 :PROPERTIES:
@@ -423,6 +431,13 @@ I am not sure which of these variables are correct, but they seem to be doing th
 (setq mail-envelope-from 'header)
 (setq mail-specify-envelope-from t)
 (setq message-sendmail-envelope-from 'header)
+(after! mu4e
+  (setq sendmail-program (executable-find "msmtp")
+        send-mail-function #'smtpmail-send-it
+        message-sendmail-f-is-evil t
+        message-sendmail-extra-arguments '("--read-envelope-from")
+        message-send-mail-function #'message-send-mail-with-sendmail))
+
 #+END_SRC
 #+BEGIN_SRC conf :tangle ~/.msmtprc
 #

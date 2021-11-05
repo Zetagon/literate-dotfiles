@@ -1272,6 +1272,17 @@ email there I capture the email and mark it as done.
 
  :desc "Next message" "]" #'notmuch-show-next-message
  :desc "Previous message" "[" #'notmuch-show-previous-message)
+(defvar my/secretary-mu4e-map (make-sparse-keymap))
+(map!
+ :map my/secretary-mu4e-map
+ :desc "next" "n" (cmd!
+                   (org-capture nil "m")
+                   (el-secretario-next-item))
+
+ :desc "Quit" "q" #'el-secretario-end-sesion
+ :desc "Mark message as done" "d" (cmd! (el-secretario-next-item))
+
+ :desc "Capture" "c" (cmd! (org-capture nil "f")))
 #+END_SRC
 **** TODOs
 :PROPERTIES:
@@ -1388,9 +1399,14 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
 
        (progn
          (require 'mu4e)
-         (setq mu4e-headers-show-threads nil)
          (el-secretario-mu4e-make-source
-          "flag:unread"))
+          "flag:unread"
+          (setq mu4e-headers-show-threads nil)
+          (lambda ()
+            (setq mu4e-headers-include-related nil)
+            (setq mu4e-headers-show-threads nil)
+            (setq mu4e-view-auto-mark-as-read t)
+            (setq mu4e-headers-sort-direction 'ascending))))
      (el-secretario-notmuch-make-source   "to:leo@relevant-information.com AND tag:unread AND NOT tag:deleted NOT tag:gmail/Inbox" #'my/secretary-notmuch-map)
      (el-secretario-notmuch-make-source   "tag:lists AND tag:unread AND NOT tag:deleted NOT tag:gmail/Inbox" #'my/secretary-notmuch-map)
      (el-secretario-notmuch-make-source   "tag:unread AND NOT tag:deleted NOT tag:gmail/Inbox" #'my/secretary-notmuch-map))
@@ -1430,6 +1446,10 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
                  "hako")
     (elfeed)
     (elfeed-update))
+  (when (string= (system-name)
+                "sakura")
+    (require 'mu4e)
+    (mu4e-update-mail-and-index t))
   (el-secretario-start-session (my/dailyreview-secretary)))
 
  #+END_SRC
