@@ -955,17 +955,6 @@ issue.
     (deactivate-mark)))
 (add-hook 'org-roam-buffer-prepare-hook #'my/org-unfill-buffer 't)
 #+END_SRC
-** Roam Server
-:PROPERTIES:
-:ID:       352cd483-dc34-4b1f-937d-06265b4d4b23
-:END:
-#+BEGIN_SRC emacs-lisp :noweb-ref emacs-packages
-(package! org-roam-server)
-#+END_SRC
-#+BEGIN_SRC emacs-lisp
-(use-package! org-roam-server
-  :defer t)
-#+END_SRC
 * Blog
 :PROPERTIES:
 :header-args: :tangle ~/.doom.d/config.el
