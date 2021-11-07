@@ -1049,7 +1049,8 @@ This packages allows org-ref notes to be org-roam files
     (setq org-ref-cite-onclick-function (lambda (x)  (org-ref-cite-hydra/body))))
   (when (featurep! :completion selectrum)
     ;; I have embark-act, so click enter needs to only go to the entry
-    (setq org-ref-cite-onclick-function (lambda (_) (org-ref-open-citation-at-point))))
+    (setq org-ref-cite-onclick-function (lambda (_) (org-ref-open-citation-at-point)))
+    (setq bibtex-actions-file-open-note-function 'bibtex-completion-edit-notes))
 
   (defun my/bibtex-completion-format-org-ref (keys)
     "Format org-ref citations for keys in KEYS."
