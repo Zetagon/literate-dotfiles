@@ -1381,7 +1381,7 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
 
    (el-secretario-function-source :func
                                   (lambda ()
-                                    (el-secretario-message--display-message-prompt "Go through todo journal!\nMove tasks marked with △ to org-mode")
+                                    (el-secretario-message-display-message-prompt "Go through todo journal!\nMove tasks marked with △ to org-mode")
                                     (el-secretario-activate-keymap)))
    (if (string= (system-name)
                 "sakura")
