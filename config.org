@@ -1401,7 +1401,7 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
          (require 'mu4e)
          (el-secretario-mu4e-make-source
           "flag:unread"
-          (setq mu4e-headers-show-threads nil)
+          nil
           (lambda ()
             (setq mu4e-headers-include-related nil)
             (setq mu4e-headers-show-threads nil)
