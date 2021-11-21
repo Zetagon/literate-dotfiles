@@ -16,7 +16,7 @@
 (org-export-define-backend 'pollen
   `((bold . ,(org-export-pollen-make-generic "bold"))
     (center-block . (lambda (_ contents _)
-                      (format "◊center{%s}")))
+                      (format "◊center{%s}" contents)))
     ;; (clock)
     ;; (code)
     (dynamic-block . ,(org-export-pollen-make-generic "dynamic-block"))
@@ -40,8 +40,8 @@
     (line-break . (lambda (&rest) "◊|line-break|"))
     (link . org-export-pollen-link)
     (node-property . org-org-export-node-property)
-    (paragraph . (lambda (_paragraph content  _info)
-                   content))
+    (paragraph . (lambda (_paragraph contents  _info)
+                   (format "◊p{%s}" contents)))
     ;; plain list
     (plain-text . (lambda (content _)
                     content))
@@ -49,7 +49,8 @@
     (property-drawer . org-export-pollen-property-drawer)
     (quote-block . ,(org-export-pollen-make-generic "quote-block"))
     ;; radio target
-    (section . ,(org-export-pollen-make-generic "section"))
+    ;; (section . ,(org-export-pollen-make-generic "section"))
+    (section . (lambda (_section contents _info) contents))
     (special-block (lambda (_special-block contents _info) contents))
     (statistics-cookie . org-export-pollen-statistics-cookie)
     (strike-through . ,(org-export-pollen-make-generic "strike-through"))
@@ -62,6 +63,8 @@
     (target . org-export-pollen-target)
     (timestamp . (lambda (timestamp _contents _info)
                    "◊timestamp{%s}" timestamp))
+    (template . (lambda (contents info)
+                  (format "#lang pollen\n%s" contents)))
     (underline . ,(org-export-pollen-make-generic "underline"))
     (verbatim . ,(org-export-pollen-make-generic "verbatim"))
     (verse-block . ,(org-export-pollen-make-generic "verse-block"))
@@ -77,7 +80,10 @@
 (defun org-export-pollen-footnote-reference (footnote-reference _contents info)
   "Transcode a FOOTNOTE-REFERENCE element from Org to Pollen.
 CONTENTS is nil.  INFO is a plist holding contextual information."
-  (format "◊footnote-reference[%s]" (org-export-get-footnote-number footnote-reference info)))
+  ;; (format "◊footnote-reference[%s]" (org-export-get-footnote-number footnote-reference info))
+  (format "◊footnote-reference[\"%s\"]{%s}"
+          (number-to-string  (org-export-get-footnote-number footnote-reference info))
+          (org-trim (org-export-data (org-export-get-footnote-definition footnote-reference info) info))))
 
 (defun org-export-pollen-inline-src-block (inline-src-block _contents info)
   "Transcode an INLINE-SRC-BLOCK element from Org to Pollen.
@@ -122,10 +128,11 @@ information."
 
 (defun org-export-pollen-headline (headline contents info)
   (let ((level (org-export-get-relative-level headline info)))
-    (format "◊h[%s]{%s}\n%s"
-            level
-            (plist-get (cl-second headline) :raw-value)
-            contents)))
+    (unless (org-element-property :footnote-section-p headline)
+        (format "◊h%s{%s}\n%s"
+                level
+                (plist-get (cl-second headline) :raw-value)
+                contents))))
 (defun org-export-pollen-statistics-cookie (statistics-cookie _contents _info)
   "Transcode a STATISTICS-COOKIE object from Org to Pollen.
 CONTENTS is nil.  INFO is a plist holding contextual information."
