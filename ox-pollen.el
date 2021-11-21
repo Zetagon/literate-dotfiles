@@ -97,7 +97,7 @@ contextual information."
   (format "◊italic{%s}" contents))
 
 (defun org-export-pollen-keyword(keyword _contents _info)
-  (format "◊keyword[%s]{%s}"
+  (format "◊define-meta[org-%s]{%s}"
           (org-element-property :key keyword)
           (org-element-property :value keyword)))
 
