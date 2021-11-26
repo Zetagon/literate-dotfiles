@@ -1753,6 +1753,16 @@ With a prefix argument, prompt for a new name to use for each file.
 :PROPERTIES:
 :ID:       37e1bb8c-b3f6-454d-bbfb-6e75e3078cc5
 :END:
+I'd rather want the result of evaluating expressions go directly to the repl buffer instead of being shown ephemerally in the modeline.
+#+begin_src emacs-lisp
+(after! racket-mode
+  (setf (alist-get 'racket-mode lispy-eval-alist)
+        '(le-racket (lambda (_)
+                      (let ((bounds (lispy--bounds-dwim)))
+                        (racket--send-region-to-repl (car bounds)
+                                                     (cdr bounds))
+                        "")))))
+#+end_src
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/init.el
 (after! lispyville
   (setq lispyville-key-theme
