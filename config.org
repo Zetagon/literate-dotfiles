@@ -18,6 +18,7 @@ Here are the files of my emacs config:
 <<emacs-packages>>
 (package! org-sidebar)
 (package! exwm)
+(package! piem :recipe (:local-repo "~/Programs/piem/" :nonrecursive t))
 (package! color-identifiers-mode :pin "75a837548b58d0ade286f32559e3d49bae844d6d")
 (package! elgantt :pin "be49f119bf09ff4ebe98c0ca3f1907191e3603d6"
   :recipe (:repo "https://github.com/legalnonsense/elgantt/"))
@@ -1964,6 +1965,19 @@ I want to be able to use org links with eww
 #+END_SRC
 
 
+* Piem
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
+#+begin_src emacs-lisp
+(after! piem
+  (setq piem-inboxes
+        '(("git"
+           :url "https://lists.sr.ht/~zetagon/el-secretario-devel"
+           :address "~zetagon/el-secretario-devel@lists.sr.ht"
+           :listid "~zetagon/el-secretario-devel.lists.sr.ht"
+           :coderepo "~/Documents/el-secretario"))))
+#+end_src
 * Further improvements
 ** TODO Multiple org-files for config
 It's possible to have multiple source files for org.
