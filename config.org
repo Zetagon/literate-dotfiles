@@ -37,7 +37,8 @@ Here are the files of my emacs config:
 ;;            :files (:defaults "*.el")))
 (package! el-secretario
   ;; :recipe (:local-repo "~/Documents/el-secretario")
-  :recipe (:repo "https://git.sr.ht/~zetagon/el-secretario")
+  :recipe (:repo "https://git.sr.ht/~zetagon/el-secretario"
+  	   :files ("*.el"))
   ;; :pin "b59941ea4b4f91cd4f5e4f00189d549149cfcbb2"
   )
 (package! ox-hugo)
@@ -334,7 +335,8 @@ Nameless mode is handy to hack in namespaces in elisp
 The flatwhite theme has a face that makes comments hard to read. This makes it much easier to read while making it distinct from normal text.
 #+begin_src emacs-lisp
 (custom-theme-set-faces! 'doom-flatwhite
-  '(font-lock-comment-face  :background "#fcf2bf") )
+  '(font-lock-comment-face  :background "#fcf2bf")
+  '(hi-yellow :background "#d9c6c3"))
 #+end_src
 * Keybindings
 :PROPERTIES:
@@ -1305,12 +1307,12 @@ a parent which is a todo).
       :desc "Activate task (and send to notebook)" "a" (cmd!
                                   (save-excursion
                                     (el-secretario-org-add-tag "onnotebook")
-                                    (el-secretario-space--reset)
+                                    (el-secretario-org-space--reset)
                                     (org-schedule nil "+7d")
                                     (el-secretario-next-item)))
 
       :desc "next (and spaced rep)" "n" (cmd!
-                                          (el-secretario-space-reschedule)
+                                          (el-secretario-org-space-reschedule)
                                           (el-secretario-next-item) )
       :desc "previous" "p" #'el-secretario-previous-item
       :desc "next" "RET" #'el-secretario-next-item
@@ -1326,7 +1328,7 @@ a parent which is a todo).
       :desc "TODO" "T" #'org-todo
       :desc "Link" "l" #'link-hint-open-link
       :desc "Schedule" "s" (cmd!
-                             (call-interactively #'el-secretario-space-schedule-and-reset)
+                             (call-interactively #'el-secretario-org-space-schedule-and-reset)
                              (el-secretario-next-item))
       :desc "Deadline" "d" #'org-deadline
       :desc "Delete visible" "D" (cmd! (delete-region (point-min) (point-max)))
@@ -1355,15 +1357,15 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
 (map!
  :map my/el-secretario-writing-map
  :desc "next (and spaced rep)" "n" (cmd!
-                                    (el-secretario-space-reschedule)
+                                    (el-secretario-org-space-reschedule)
                                     (el-secretario-next-item))
  :desc  "Link" "l" #'link-hint-open-link
  :desc "Schedule" "s" (cmd!
-                       (el-secretario-space-schedule-and-reset nil "-365d")
+                       (el-secretario-org-space-schedule-and-reset nil "-365d")
                        (el-secretario-next-item))
  :desc "Send to notebook" "a" (cmd!
                                (el-secretario-org-add-tag "onnotebook")
-                               (el-secretario-space--reset)
+                               (el-secretario-org-space--reset)
                                (el-secretario--next-source))
  :desc  "Delete visible" "D" (cmd! (delete-region (point-min) (point-max)))
  :desc  "Quit" "q" (cmd! (el-secretario-end-sesion)))
@@ -1398,7 +1400,6 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
                 "sakura")
 
        (progn
-         (require 'mu4e)
          (el-secretario-mu4e-make-source
           "flag:unread"
           nil
@@ -1436,7 +1437,7 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
     :keymap #'my/el-secretario-writing-map
     :shuffle-p t
     :tag-transitions '(("onnotebook" . ""))
-    :compare-fun #'el-secretario-space-compare-le)
+    :compare-fun #'el-secretario-org-space-compare-le)
    (el-secretario-function-source :func #'my/empty-remarkable-outbox)
   (el-secretario-function-source :func (lambda ()
                                          (shell-command "~/.doom.d/dropbox-backup.sh"))) ))
@@ -1476,7 +1477,7 @@ similar to [[id:7f9f4e8b-2d24-4a45-ab54-7ea22b0b52c7][Writing Inbox]] so I can r
                                  :keymap #'my/el-secretario-writing-map                                 :shuffle-p t
                                  :ids '("dc0de31b-24a5-49f9-add3-7af77ca19206" ;; Writing inbox's id
                                         )
-                                 :compare-fun #'el-secretario-space-compare-le))))
+                                 :compare-fun #'el-secretario-org-space-compare-le))))
 #+end_src
 
 ** Capturing

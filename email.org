@@ -353,7 +353,7 @@ IMAPAccount relevant-info
 # Address to connect to
 Host imap.mailbox.org
 User zetagon@mailbox.org
-PassCmd "pass Mail/mailbox"
+PassCmd "bash pass Mail/mailbox 2>  >(grep -v expired)"
 #
 # Use SSL
 SSLType IMAPS
@@ -478,7 +478,7 @@ host smtp.mailbox.org
 #tls_fingerprint 00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33
 
 # Envelope-from address
-from leo@relevant-information.com
+# from leo@relevant-information.com
 
 # Authentication. The password is given using one of five methods, see below.
 auth on
@@ -494,7 +494,7 @@ user zetagon@mailbox.org
 # Password method 2: Store the password in an encrypted file, and tell msmtp
 # which command to use to decrypt it. This is usually used with GnuPG, as in
 # this example. Usually gpg-agent will ask once for the decryption password.
-passwordeval "pass Mail/mailbox"
+passwordeval "bash pass Mail/mailbox 2>  >(grep -v expired)"
 
 # Password method 3: Store the password directly in this file. Usually it is not
 # a good idea to store passwords in plain text files. If you do it anyway, at
