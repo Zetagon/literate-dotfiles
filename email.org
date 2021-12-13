@@ -41,7 +41,6 @@ These are my saved searches. Any mail that is not deleted and unread is in a inb
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-notmuch
 (setq notmuch-saved-searches
       '((:name "inbox" :query "tag:unread AND NOT tag:deleted NOT tag:gmail/Inbox" :key "i")
-        (:name "inbox Ordförande" :query "tag:unread AND NOT tag:deleted AND tag:gmail/Inbox" :key "o")
         (:name "unread" :query "tag:unread" :key "u")
         (:name "flagged" :query "tag:flagged" :key "f")
         (:name "sent" :query "tag:sent" :key "t")
@@ -151,7 +150,6 @@ path=/home/leo/.mail
 [user]
 name=Leo Okawa Ericson
 primary_email=leo@relevant-information.com
-other_email=dv-ordf@utn.se
 
 # Configuration for "notmuch new"
 #
@@ -291,10 +289,6 @@ query = from:builds@travis-ci.com
 tags = -inbox
 message = "Skip inbox"
 
-[Filter.11]
-query = to:dv-ordf@utn.se
-tags = +ordf
-message = "Ordförande-mail"
 
 [MailMover]
 folders = relevant-info/INBOX relevant-info/INBOX.Rss
@@ -314,41 +308,6 @@ mkdir -p ~/.mail/gmail
 #+RESULTS:
 
 #+BEGIN_SRC conf :tangle ~/.mbsyncrc
-IMAPAccount gmail
-# Address to connect to
-Host imap.gmail.com
-User dv-ordf@utn.se
-PassCmd "pass Mail/ordf"
-#
-# Use SSL
-SSLType IMAPS
-# The following line should work. If get certificate errors, uncomment the two following lines and read the "Troubleshooting" section.
-CertificateFile /etc/ssl/certs/ca-certificates.crt
-#CertificateFile ~/.cert/imap.gmail.com.pem
-#CertificateFile ~/.cert/Equifax_Secure_CA.pem
-
-IMAPStore gmail-remote
-Account gmail
-
-MaildirStore gmail-local
-Subfolders Verbatim
-# The trailing "/" is important
-Path ~/.mail/gmail/
-Inbox ~/.mail/gmail/Inbox
-
-Channel gmail
-Master :gmail-remote:
-Slave :gmail-local:
-# Exclude everything under the internal [Gmail] folder, except the interesting folders
-Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail"
-# Or include everything
-#Patterns *
-# Automatically create missing mailboxes, both locally and on the server
-Create Both
-# Save the synchronization state files in the relevant directory
-SyncState *
-####
-
 IMAPAccount relevant-info
 # Address to connect to
 Host imap.mailbox.org
@@ -380,49 +339,6 @@ Create Both
 # Save the synchronization state files in the relevant directory
 SyncState *
 ####
-#+END_SRC
-** offlineimap
-I don't use offlineimap anymore, but here is the config.
-
-##+BEGIN_SRC conf :tangle ~/.offlineimaprc
-#+BEGIN_SRC conf :tangle no
-[general]
-# List of accounts to be synced, separated by a comma.
-accounts = relevant-info
-maxsyncaccounts = 2
-pythonfile = ~/.offlineimap.py
-
-[Account relevant-info]
-# Identifier for the local repository; e.g. the maildir to be synced via IMAP.
-localrepository = relevant-info-local
-# Identifier for the remote repository; i.e. the actual IMAP, usually non-local.
-remoterepository = relevant-info-remote
-postsynchook = /home/leo/dotfiles/offlineimap-post-sync.sh
-# autorefresh = 10 # If I want to let offlineimap running
-maxage = 62 # Only sync messages from the last two months
-
-[Repository relevant-info-local]
-# OfflineIMAP supports Maildir, GmailMaildir, and IMAP for local repositories.
-type = Maildir
-# Where should the mail be placed?
-localfolders = ~/.mail/relevant-info
-
-[Repository relevant-info-remote]
-# Remote repos can be IMAP or Gmail, the latter being a preconfigured IMAP.
-type = IMAP
-sslcacertfile = /etc/ssl/certs/ca-certificates.crt
-remotehost = imap.mailbox.org
-remoteuser = zetagon@mailbox.org
-remotepasseval = get_pass("mailbox")
-#+END_SRC
-
-OfflineIMAP doesn't support using pass by default so I have to use this file.
-
-#+BEGIN_SRC python :tangle ~/.offlineimap.py :shebang "#!/usr/bin/env python"
-from subprocess import check_output
-
-def get_pass(account):
-    return check_output("pass Mail/" + account, shell=True).splitlines()[0]
 #+END_SRC
 * Sending
 I have to set ~mail-specify-envelope-from~ to ~t~ for msmtp to use the address that I specify in the mail.
@@ -523,19 +439,5 @@ passwordeval "bash pass Mail/mailbox 2>  >(grep -v expired)"
 
 # # Set a default account
 account default : mailbox
-
-account ordf
-
-# Host name of the SMTP server
-host smtp.gmail.com
-
-# Envelope-from address
-from dv-ordf@utn.se
-
-# Authentication. The password is given using one of five methods, see below.
-auth on
-user dv-ordf@utn.se
-
-passwordeval "pass Mail/ordf"
 
 #+END_SRC
