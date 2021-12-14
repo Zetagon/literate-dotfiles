@@ -1704,7 +1704,8 @@ Put info manual on the side and src blocks on the other
   '(("^\\*info\\*" :slot 2 :vslot 2 :side left :width 85 :quit nil :height 0.50))
   '(("^\\*info\\*<2>" :slot 3 :vslot 2 :side left :width 85 :quit nil :height 0.50))
   '(("^\\*Org Src*" :slot 3 :side right :quit nil :width 0.5))
-  '(("*eww*" :ignore t)))
+  '(("*eww*" :ignore t))
+  '(("*notmuch" :ignore t)))
 #+end_src
 ** Remarkable
 Send files to a reMarkble tablet using curl
