@@ -16,6 +16,7 @@ Here are the files of my emacs config:
 #+CAPTION: packages.el declares which packages I want to install
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/packages.el
 <<emacs-packages>>
+(package! mailscripts)
 (package! org-sidebar)
 (package! exwm)
 (package! piem :recipe (:local-repo "~/Programs/piem/" :nonrecursive t))
