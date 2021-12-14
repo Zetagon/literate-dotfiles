@@ -1373,12 +1373,6 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
 #+end_src
 **** El Secretario
 #+BEGIN_SRC emacs-lisp
-(after! el-secretario
-  (require 'hercules)
-  (require 'el-secretario-keybindings)
-  (require 'el-secretario-space)
-  (require 'el-secretario-tasks)
-  )
 
 (defun my/dailyreview-secretary ()
   (list
