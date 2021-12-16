@@ -1969,7 +1969,7 @@ I want to be able to use org links with eww
 #+begin_src emacs-lisp
 (after! piem
   (setq piem-inboxes
-        '(("git"
+        '(("el-secretario"
            :url "https://lists.sr.ht/~zetagon/el-secretario-devel"
            :address "~zetagon/el-secretario-devel@lists.sr.ht"
            :listid "~zetagon/el-secretario-devel.lists.sr.ht"
@@ -1977,7 +1977,9 @@ I want to be able to use org links with eww
           ("piem"
            :url "https://inbox.kyleam.com/piem/"
            :address "piem@inbox.kyleam.com"
-           :coderepo "~/Programs/piem/"))))
+           :coderepo "~/Programs/piem/")))
+  (after! notmuch
+    (piem-notmuch-mode)))
 #+end_src
 I want to bring up the messages that pertain to the project I am in if any.
 #+begin_src emacs-lisp
