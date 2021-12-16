@@ -1972,7 +1972,26 @@ I want to be able to use org links with eww
            :url "https://lists.sr.ht/~zetagon/el-secretario-devel"
            :address "~zetagon/el-secretario-devel@lists.sr.ht"
            :listid "~zetagon/el-secretario-devel.lists.sr.ht"
-           :coderepo "~/Documents/el-secretario"))))
+           :coderepo "~/Documents/el-secretario")
+          ("piem"
+           :url "https://inbox.kyleam.com/piem/"
+           :address "piem@inbox.kyleam.com"
+           :coderepo "~/Programs/piem/"))))
+#+end_src
+I want to bring up the messages that pertain to the project I am in if any.
+#+begin_src emacs-lisp
+(defun my/open-piem-repo-mailing-list ()
+  "Open the mailing list associated with current project."
+  (interactive)
+  (require 'piem)
+  (let ((repo-path (unwind-protect (project-root (project-current))
+                     default-directory)))
+    (when-let ((inboxes (seq-filter (lambda (x)
+                                      (string= (plist-get (cdr x) :coderepo)
+                                               repo-path))
+                                    piem-inboxes)))
+      (notmuch-search (or (plist-get (cdr (car inboxes))  :listid)
+                          (plist-get (cdr (car inboxes))  :address))))))
 #+end_src
 * Further improvements
 ** TODO Multiple org-files for config
