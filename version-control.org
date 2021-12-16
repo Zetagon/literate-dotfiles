@@ -24,6 +24,8 @@ First some basic settings:
     smtpserveroption = --auto-from=off
     smtpserveroption = -f
     smtpserveroption = sourcehut@relevant-information.com
+	confirm = always
+
 #+end_src
 Here I have some aliases that I used before I used Magit.
 #+begin_src conf
