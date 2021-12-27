@@ -1306,12 +1306,13 @@ a parent which is a todo).
       ;; parent. Because ~el-secretario-org-narrow-to-highest-todo~ narrows so that
       ;; the highest todo is the first in
       ;; the buffer after narrowing, the follwing accomplishes that.
-      :desc "Activate task (and send to notebook)" "a" (cmd!
-                                  (save-excursion
-                                    (el-secretario-org-add-tag "onnotebook")
-                                    (el-secretario-org-space--reset)
-                                    (org-schedule nil "+7d")
-                                    (el-secretario-next-item)))
+      :desc "Activate task (and send to notebook)" "a"
+      (cmd!
+
+       (el-secretario-org-add-tag "onnotebook")
+       (el-secretario-org-space--reset)
+       (org-schedule nil "+7d")
+       (el-secretario-next-item))
 
       :desc "next (and spaced rep)" "n" (cmd!
                                           (el-secretario-org-space-reschedule)
