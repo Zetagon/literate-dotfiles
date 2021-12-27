@@ -1708,8 +1708,8 @@ Put info manual on the side and src blocks on the other
   '(("^\\*info\\*<2>" :slot 3 :vslot 2 :side left :width 85 :quit nil :height 0.50))
   '(("^\\*Org Src*" :slot 3 :side right :quit nil :width 0.5))
   '(("*eww*" :ignore t))
-  '(("*notmuch" :ignore t)
-    ("*subject" :ignore t)))
+  '(("\\*notmuch-*" :ignore t)
+    ("\\*subject*" :ignore t)))
 #+end_src
 ** Remarkable
 Send files to a reMarkble tablet using curl
@@ -2003,7 +2003,7 @@ I want to bring up the messages that pertain to the project I am in if any.
 #+begin_src emacs-lisp
 (after! nocs
   (require 'piem)
-  (setq nocs-sources piem-inboxes))
+  (setq nocs-contexts piem-inboxes))
 #+end_src
 * Further improvements
 ** TODO Multiple org-files for config
