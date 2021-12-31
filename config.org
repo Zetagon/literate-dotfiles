@@ -2005,6 +2005,23 @@ I want to bring up the messages that pertain to the project I am in if any.
   (require 'piem)
   (setq nocs-contexts piem-inboxes))
 #+end_src
+* Japanese Ebooks
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
+
+I use Koreader for reading ebooks which has good dictionary support. Therefore I
+don't need to have furigana on.
+#+begin_src emacs-lisp
+(defun my/remove-furigana ()
+  "Remove all furigana in the current html buffer."
+  (interactive)
+  (goto-char 0)
+  (while (re-search-forward "\\(<rp>.*?</rp>\\)\\|\\(<rt>.*?<rt>\\)"
+                            nil t)
+    (replace-match "" nil nil)))
+#+end_src
+
 * Further improvements
 ** TODO Multiple org-files for config
 It's possible to have multiple source files for org.
