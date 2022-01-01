@@ -2000,10 +2000,15 @@ I want to bring up the messages that pertain to the project I am in if any.
 #+end_src
 
 * nocs
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
 #+begin_src emacs-lisp
 (after! nocs
   (require 'piem)
   (setq nocs-contexts piem-inboxes))
+(map! :leader
+      "z" #'nocs-act)
 #+end_src
 * Japanese Ebooks
 :PROPERTIES:
