@@ -20,7 +20,7 @@ Here are the files of my emacs config:
 (package! org-sidebar)
 (package! exwm)
 (package! piem :recipe (:local-repo "~/Programs/piem/" :nonrecursive t))
-(package! nocs :recipe (:local-repo "~/Documents/nocs/" :nonrecursive t))
+(package! anchor :recipe (:local-repo "~/Documents/anchor/" :nonrecursive t))
 (package! color-identifiers-mode :pin "75a837548b58d0ade286f32559e3d49bae844d6d")
 (package! elgantt :pin "be49f119bf09ff4ebe98c0ca3f1907191e3603d6"
   :recipe (:repo "https://github.com/legalnonsense/elgantt/"))
@@ -1999,16 +1999,16 @@ I want to bring up the messages that pertain to the project I am in if any.
                           (plist-get (cdr (car inboxes))  :address))))))
 #+end_src
 
-* nocs
+* anchor
 :PROPERTIES:
 :header-args: :tangle ~/.doom.d/config.el
 :END:
 #+begin_src emacs-lisp
-(after! nocs
+(after! anchor
   (require 'piem)
-  (setq nocs-contexts piem-inboxes))
+  (setq anchor-contexts piem-inboxes))
 (map! :leader
-      "z" #'nocs-act)
+      "z" #'anchor-act)
 #+end_src
 * Japanese Ebooks
 :PROPERTIES:
