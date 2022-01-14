@@ -34,6 +34,7 @@ borg create                         \
     ::'{hostname}-{now}'            \
     ~/Documents/notes/              \
     ~/org/                           \
+    ~/Documents/accounting/                           \
     ~/Documents/Litteratur_Analys/
 
 backup_exit=$?
