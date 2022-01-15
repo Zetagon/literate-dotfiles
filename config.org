@@ -972,6 +972,19 @@ issue.
   (setq org-hugo-base-dir "~/Documents/blog/")
   (setq org-hugo-paired-shortcodes "alert"))
 #+end_src
+
+#+begin_src emacs-lisp
+(defun org-export-hugo-releinfo-footnote-reference (footnote-reference _contents info)
+  "Transcode a FOOTNOTE-REFERENCE element from Org to Pollen.
+CONTENTS is nil.  INFO is a plist holding contextual information."
+  ;; (format "◊footnote-reference[%s]" (org-export-get-footnote-number footnote-reference info))
+  (format "{{%% sidenote %%}} %s {{%% /sidenote %%}}"
+          (org-trim (org-export-data (org-export-get-footnote-definition footnote-reference info) info))))
+
+(after! ox-hugo
+  (org-export-define-derived-backend 'hugo-releinfo 'hugo
+    :translate-alist '((footnote-reference . org-export-hugo-releinfo-footnote-reference))))
+#+end_src
 * Journaling
 :PROPERTIES:
 :ID:       477c0408-c61d-48e9-9ca5-ada0ff511ca4
