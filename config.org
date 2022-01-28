@@ -1050,32 +1050,22 @@ This packages allows org-ref notes to be org-roam files
         org-ref-ref-types '("cref" "Cref" "ref" "eqref" "pageref" "nameref" "autoref")))
 #+END_SRC
 
-*** bibtex-completion
+*** citar
 :PROPERTIES:
 :ID:       07f30b8f-229a-4d73-ae8a-a9217e1ee2da
 :END:
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (after! org
   (setq org-cite-global-bibliography  '("~/Documents/notes/Zotero_articles.bib")))
-(after! bibtex-completion
-  (setq bibtex-completion-bibliography "~/Documents/notes/Zotero_articles.bib"
+(after! citar
+  (setq citar-bibliography "~/Documents/notes/Zotero_articles.bib"
         reftex-default-bibliography '("~/Documents/notes/Zotero_articles.bib")
-        bibtex-completion-library-path "~/Documents/notes/pdfs"
-        bibtex-completion-notes-path "~/Documents/notes/"
-        bibtex-completion-pdf-field "File")
+        citar-library-path "~/Documents/notes/pdfs"
+        citar-notes-path "~/Documents/notes/"
+        citar-pdf-field "File")
   (when (featurep! :completion ivy)
     (setq org-ref-cite-onclick-function (lambda (x)  (org-ref-cite-hydra/body))))
-  (when (featurep! :completion selectrum)
-    ;; I have embark-act, so click enter needs to only go to the entry
-    (setq org-ref-cite-onclick-function (lambda (_) (org-ref-open-citation-at-point)))
-    (setq bibtex-actions-file-open-note-function 'bibtex-completion-edit-notes))
 
-  (defun my/bibtex-completion-format-org-ref (keys)
-    "Format org-ref citations for keys in KEYS."
-    (s-join ", "
-            (--map (format "cite:%s" it) keys)))
-  (setf (alist-get 'org-mode bibtex-completion-format-citation-functions)
-        #'my/bibtex-completion-format-org-ref)
   (setq ivy-bibtex-default-action
         #'ivy-bibtex-insert-citation))
 (map!
@@ -1083,27 +1073,9 @@ This packages allows org-ref notes to be org-roam files
  (:when (featurep! :completion ivy)
   :n "nh" #'ivy-bibtex)
  (:when (featurep! :completion vertico)
-  :n "nh" #'bibtex-actions-insert-citation))
+  :n "nh" #'citar-insert-citation))
 #+END_SRC
 
-There seems to be issues with the embark actions in the bibtex-completion package. The which-key descriptions are from other keybindings. Mapping them manually seems to fix the issue.
-
-#+begin_src emacs-lisp
-(after! bibtex-completion
-  (map! :map bibtex-actions-map
-        :desc "Add pdf attachment" "t" 'bibtex-actions-add-pdf-attachment
-        :desc "Add pdf to library" "a" 'bibtex-actions-add-pdf-to-library
-        :desc "Insert bibtex entry" "b" 'bibtex-actions-insert-bibtex
-        :desc "Insert citation" "c" 'bibtex-actions-insert-citation
-        :desc "Insert key" "k" 'bibtex-actions-insert-key
-        :desc "Insert reference" "f" 'bibtex-actions-insert-reference
-        :desc "Open" "o" 'bibtex-actions-open
-        :desc "Open entry" "e" 'bibtex-actions-open-entry
-        :desc "Open notes" "l" 'bibtex-actions-open-link
-        :desc "Open notes" "n" 'bibtex-actions-open-notes
-        :desc "Open pdf" "p" 'bibtex-actions-open-pdf
-        :desc "Refresh" "r" 'bibtex-actions-refresh))
-#+end_src
 * Task management
 :PROPERTIES:
 :ID:       c8423be4-43b1-41b1-8b5b-4159a31e2edc
