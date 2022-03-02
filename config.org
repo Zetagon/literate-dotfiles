@@ -310,6 +310,17 @@ solution so far is to apply this patch.
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
 :END:
+Make deleting files safer
+#+begin_src emacs-lisp
+(setq delete-by-moving-to-trash t)
+#+end_src
+
+I want to get into the habit of using two spaces for sentences.
+
+#+begin_src emacs-lisp
+(setq sentence-end-double-space t)
+#+end_src
+
 #+begin_src emacs-lisp
 (setq doom-font (font-spec :family "Source Code Pro" :size 14))
 #+end_src
