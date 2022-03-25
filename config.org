@@ -1059,7 +1059,7 @@ This packages allows org-ref notes to be org-roam files
         org-ref-ref-types '("cref" "Cref" "ref" "eqref" "pageref" "nameref" "autoref")))
 #+END_SRC
 
-*** citar
+** citar
 :PROPERTIES:
 :ID:       07f30b8f-229a-4d73-ae8a-a9217e1ee2da
 :END:
@@ -1067,11 +1067,16 @@ This packages allows org-ref notes to be org-roam files
 (after! org
   (setq org-cite-global-bibliography  '("~/Documents/notes/Zotero_articles.bib")))
 (after! citar
-  (setq citar-bibliography "~/Documents/notes/Zotero_articles.bib"
+  (setq citar-bibliography '("~/Documents/notes/Zotero_articles.bib")
+        bibtex-completion-bibliography '("~/Documents/notes/Zotero_articles.bib")
+        org-cite-global-bibliography '("~/Documents/notes/Zotero_articles.bib")
         reftex-default-bibliography '("~/Documents/notes/Zotero_articles.bib")
-        citar-library-path "~/Documents/notes/pdfs"
-        citar-notes-path "~/Documents/notes/"
-        citar-pdf-field "File")
+        citar-library-paths '("~/Documents/notes/pdfs")
+        citar-notes-paths '("~/Documents/notes/")
+        org-cite-follow-processor 'citar
+        org-cite-activate-processor 'citar
+        citar-at-point-function 'embark-act
+        citar-open-note-function 'orb-citar-edit-note)
   (when (featurep! :completion ivy)
     (setq org-ref-cite-onclick-function (lambda (x)  (org-ref-cite-hydra/body))))
 
