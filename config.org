@@ -39,11 +39,9 @@ Here are the files of my emacs config:
 ;;   :recipe (:host github :repo"ymarco/auto-activating-snippets"
 ;;            :files (:defaults "*.el")))
 (package! el-secretario
-  ;; :recipe (:local-repo "~/Documents/el-secretario")
   :recipe (:repo "https://git.sr.ht/~zetagon/el-secretario"
-  	   :files ("*.el"))
-  ;; :pin "b59941ea4b4f91cd4f5e4f00189d549149cfcbb2"
-  )
+           :branch "develop"
+           :files ("*.el")))
 (package! ox-hugo)
 #+END_SRC
 
