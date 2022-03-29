@@ -1,5 +1,16 @@
 #+TITLE: Email
 #+PROPERTY: header-args :comments no :mkdirp yes :noweb yes :tangle no
+* Host address
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
+
+I'm not sure why I need to set this, but otherwise it uses my host machine for
+some things when sending email.
+
+#+begin_src emacs-lisp
+(setq mail-host-address "relevant-information.com")
+#+end_src
 * Mu4e
 :PROPERTIES:
 :header-args: :tangle ~/.doom.d/config.el
