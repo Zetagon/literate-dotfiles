@@ -2031,6 +2031,32 @@ don't need to have furigana on.
                             nil t)
     (replace-match "" nil nil)))
 #+end_src
+* Secret Service
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
+
+Keepassxc has the option to always "Confirm when passwords are retrieved by
+clients" when using Secret Service.  Emacs' dbus client can't handle that
+interface so I have to disable that feature.
+
+There is apparently a newer =secrets.el= that isn't in emacs27.2 that I got from https://github.com/hpfr/system/commit/26bd3fa602584bd4255750e218737dd07fb21cdd#diff-56e606900d3d58bb34c0fe9a7ab47b7b7694d23c43f687e8427b5cb3f83f23c7
+
+#+begin_src emacs-lisp :tangle ~/.doom.d/init.el
+(add-load-path! "backport")
+#+end_src
+
+#+begin_src emacs-lisp
+(require 'secrets)
+(setq auth-sources `(,(concat "secrets:" (system-name) "-keyring")
+                     "secrets:Default Database"
+                     ;; for keepassxc, this is whatever database is active (focused)
+                     default))
+#+end_src
+
+When using Keepassxc as a secret service backend for storing Magit Forge access
+tokens, I have to store =api.github.com= in the =host= attribute, and my
+username in the =user= attribute of the Keepassxc entry that stores the token.
 
 * Further improvements
 ** TODO Multiple org-files for config
