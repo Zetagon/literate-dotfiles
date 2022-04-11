@@ -295,7 +295,7 @@ solution so far is to apply this patch.
 #+END_SRC
 * Random settings
 :PROPERTIES:
-:header-args: :noweb-ref emacs-misc
+:header-args: :tangle ~/.doom.d/config.el
 :END:
 Make deleting files safer
 #+begin_src emacs-lisp
