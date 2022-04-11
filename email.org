@@ -323,7 +323,7 @@ IMAPAccount relevant-info
 # Address to connect to
 Host imap.mailbox.org
 User zetagon@mailbox.org
-PassCmd "bash pass Mail/mailbox 2>  >(grep -v expired)"
+PassCmd "secret-tool lookup account KPXC_SS"
 #
 # Use SSL
 SSLType IMAPS
@@ -421,7 +421,7 @@ user zetagon@mailbox.org
 # Password method 2: Store the password in an encrypted file, and tell msmtp
 # which command to use to decrypt it. This is usually used with GnuPG, as in
 # this example. Usually gpg-agent will ask once for the decryption password.
-passwordeval "bash pass Mail/mailbox 2>  >(grep -v expired)"
+passwordeval "secret-tool lookup account KPXC_SS"
 
 # Password method 3: Store the password directly in this file. Usually it is not
 # a good idea to store passwords in plain text files. If you do it anyway, at
