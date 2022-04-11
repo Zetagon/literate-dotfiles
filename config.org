@@ -276,9 +276,7 @@ solution so far is to apply this patch.
        (:if (string= "sakura"
                      (system-name))
         mu4e)
-       (:if (string= "hako"
-                     (system-name))
-        notmuch)
+       notmuch
        ;;(wanderlust +gmail)
 
        :app
