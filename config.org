@@ -881,7 +881,7 @@ This will capture to the first entry that has the tag \"foo\".
 (setq org-roam-capture-templates
       '(("d" "default" plain "%?"
          :if-new (file+head "%<%Y%m%d%H%M%S>.org"
-         "#+TITLE: ${title}\n#+Created: %t\n#+Time-stamp: <>\n")
+         "${title}\n#+Created: %t\n#+Time-stamp: <>\n")
          :unnarrowed t
          :immediate-finish t)
         ("t" "text" plain "%?"
