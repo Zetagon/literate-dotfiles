@@ -16,6 +16,7 @@ Here are the files of my emacs config:
 #+CAPTION: packages.el declares which packages I want to install
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/packages.el
 <<emacs-packages>>
+(package! org-roam-ui)
 (package! lexic
   :recipe (:local-repo "~/Programs/lexic/"))
 (package! mailscripts)
@@ -959,6 +960,22 @@ issue.
     (deactivate-mark)))
 (add-hook 'org-roam-buffer-prepare-hook #'my/org-unfill-buffer 't)
 #+END_SRC
+
+** org-roam-ui
+#+begin_src emacs-lisp
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
+#+end_src
 * Blog
 :PROPERTIES:
 :header-args: :tangle ~/.doom.d/config.el
