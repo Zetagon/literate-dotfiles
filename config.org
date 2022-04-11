@@ -2011,7 +2011,16 @@ I want to bring up the messages that pertain to the project I am in if any.
 #+begin_src emacs-lisp
 (after! anchor
   (require 'piem)
-  (setq anchor-contexts piem-inboxes))
+  (setq anchor-contexts (setq piem-inboxes
+                              '(("el-secretario"
+                                 :url "https://lists.sr.ht/~zetagon/el-secretario-devel"
+                                 :address "~zetagon/el-secretario-devel@lists.sr.ht"
+                                 :listid "~zetagon/el-secretario-devel.lists.sr.ht"
+                                 :projectile-project "el-secretario")
+                                ("piem"
+                                 :url "https://inbox.kyleam.com/piem/"
+                                 :address "piem@inbox.kyleam.com"
+                                 :projectile-project "piem")))))
 (map! :leader
       "z" #'anchor-act)
 #+end_src
