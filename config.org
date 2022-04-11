@@ -17,21 +17,9 @@ Here are the files of my emacs config:
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/packages.el
 <<emacs-packages>>
 (package! mailscripts)
-(package! org-sidebar)
-(package! exwm)
 (package! piem :recipe (:local-repo "~/Programs/piem/" :nonrecursive t))
 (package! anchor :recipe (:local-repo "~/Documents/anchor/" :nonrecursive t))
 (package! color-identifiers-mode :pin "75a837548b58d0ade286f32559e3d49bae844d6d")
-(package! elgantt :pin "be49f119bf09ff4ebe98c0ca3f1907191e3603d6"
-  :recipe (:repo "https://github.com/legalnonsense/elgantt/"))
-(package! brutalist-theme
-  :recipe (:repo "https://github.com/aparkerdavid/brutalist-theme/")
-  :pin "a291f9a520e5d5692d645a05880092a54cd30b2f")
-
-(package! org-fc
-  :pin "1d9d9e9d356b0c64ef8fc2710e5c63506e839049"
-  :recipe (:repo "https://git.sr.ht/~l3kn/org-fc"
-           :files (:defaults "awk" "demo.org")))
 ;; (package! auto-activating-snippets :recipe
 ;;   (:host github :repo "ymarco/auto-activating-snippets"
 ;;    :files (:defaults "*.el")))
@@ -1877,13 +1865,6 @@ This is the log configuration for the above function
 :PROPERTIES:
 :ID:       1c96e624-b94d-46dd-8e24-92dffb7a0685
 :END:
-#+BEGIN_SRC emacs-lisp :noweb-ref emacs-packages
-(package! weechat)
-#+END_SRC
-#+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
-(use-package! weechat
-  :commands (weechat-connect))
-#+END_SRC
 
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (after! circe
