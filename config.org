@@ -904,32 +904,6 @@ first 8 lines of the buffer.
 (setq time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")
 #+END_SRC
 
-In order to have org-roam-protocol working I need to setup emacsclient to handle the correct links.
-
-#+BEGIN_SRC nil :noweb-ref no :tangle ~/.local/share/applications/org-protocol.desktop
-[Desktop Entry]
-Name=Org-Protocol
-Exec=~/.nix-profile/bin/emacsclient  %u
-Icon=emacs-icon
-Type=Application
-Terminal=false
-MimeType=x-scheme-handler/org-protocol
-#+END_SRC
-
-And run this command for it to take effect
-#+BEGIN_SRC sh :noweb-ref <<setup-system>>
-xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(require 'org-roam-protocol)
-(setq org-roam-capture-ref-templates
-      '(("r" "ref" plain #'org-roam--capture-get-point "%?"
-        :file-name "%<%Y%m%d%H%M%S>"
-        :head "#+TITLE: ${title}\n#+Created: %t\n#+Time-stamp: <>\n#+ROAM_KEY: ${ref}\n\n%x"
-        :unnarrowed t)))
-#+END_SRC
-
 I don't want Scrapbook or the journal to be in the graph as i creates artificial connections.
 #+BEGIN_SRC emacs-lisp
 (setq org-roam-graph-exclude-matcher '("Scrapbook.org" "journal/"))
