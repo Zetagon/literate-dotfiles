@@ -1205,10 +1205,8 @@ This packages allows org-ref notes to be org-roam files
         #'ivy-bibtex-insert-citation))
 (map!
  :leader
- (:when (featurep! :completion ivy)
-  :n "nh" #'ivy-bibtex)
- (:when (featurep! :completion vertico)
-  :n "nh" #'citar-insert-citation))
+ ;; Open a file that is linked to the selected entry, e.g. links or files.
+ :n "nb" #'citar-open)
 #+END_SRC
 
 * Task management
