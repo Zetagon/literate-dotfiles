@@ -1193,6 +1193,7 @@ This packages allows org-ref notes to be org-roam files
         org-cite-global-bibliography '("~/Documents/notes/Zotero_articles.bib")
         reftex-default-bibliography '("~/Documents/notes/Zotero_articles.bib")
         citar-library-paths '("~/Documents/notes/pdfs")
+        citar-file-extensions '("pdf" "txt")
         citar-notes-paths '("~/Documents/notes/")
         org-cite-follow-processor 'citar
         org-cite-activate-processor 'citar
