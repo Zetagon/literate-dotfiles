@@ -1809,6 +1809,25 @@ I want ~j~ and ~k~ and other evil movements to treat soft-wrapped lines like nor
 (setq evil-respect-visual-line-mode t)
 #+END_SRC
 
+I don't like doom's default action for what to do after switching projects. I
+often don't know which file I want to open, and some projects I interact with
+differently.  If I want to open my org-roam notes in a project I don't want to
+use the normal find-file dialogue, I want to use org-roam's.  And for repos
+where it's available, I like opening magit status the first thing I do.
+
+#+begin_src emacs-lisp
+(defun my/switch-project-f (dir)
+  "Function to be used with `+workspaces-switch-project-function'."
+  (interactive)
+  (cond
+   ((or (equal dir "~/Documents/notes/")
+        (equal dir "~/Documents/notes/texter/"))
+    (org-roam-node-find))
+   ((magit-git-repo-p dir) (magit-status))
+   (t (doom-project-find-file dir))))
+(setq +workspaces-switch-project-function #'my/switch-project-f)
+#+end_src
+
 #+BEGIN_SRC emacs-lisp
 (push "~/.nix-profile/bin" tramp-remote-path)
 (push "/etc/profiles/per-user/leo/bin" tramp-remote-path)
