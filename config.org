@@ -1383,12 +1383,13 @@ email there I capture the email and mark it as done.
 (map!
  :map my/secretary-notmuch-map
  :desc "next" "n" (cmd!
-                   (notmuch-show-tag-all '("-unread"))
+                   (notmuch-show-archive-thread)
                    (org-capture nil "m")
                    (el-secretario-next-item))
 
  :desc "Quit" "q" #'el-secretario-end-sesion
- :desc "Mark message as done" "d" (cmd! (notmuch-show-tag-all '("-unread"))
+ :desc "Advance and Archive" "SPC" #'el-secretario-notmuch-advance-and-archive
+ :desc "Mark message as done" "d" (cmd! (notmuch-show-archive-thread)
                                         (el-secretario-next-item))
 
  :desc "Capture" "c" (cmd!
@@ -1521,9 +1522,6 @@ If no context is found, first prompt for a context with `completing-read`."
 
 (defun my/dailyreview-secretary ()
   (list
-   (el-secretario-function-source :func (lambda ()
-                                          (browse-url "https://etidning.dn.se/")
-                                          (el-secretario-activate-keymap)))
    (el-secretario-function-source :func
                                   (lambda () (org-ql-search (org-agenda-files) '(and (ltags "onnotebook")
                                                                                      (todo))
