@@ -1505,6 +1505,17 @@ I want a writing inbox like Andy https://notes.andymatuschak.org/z7yRMBXGc81KkUw
   (el-secretario-start-session
    my/el-secretario-writing-inbox-source))
 #+end_src
+
+#+begin_src emacs-lisp
+(defun anchor-act-writing-inbox ()
+  "Prompt the user for action and perform it on the current context.
+
+If no context is found, first prompt for a context with `completing-read`."
+  (interactive)
+  (anchor-act-on-org-query '(and (tags "onnotebook")
+                                            (todo))))
+#+end_src
+
 **** El Secretario
 #+BEGIN_SRC emacs-lisp
 
