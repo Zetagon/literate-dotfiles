@@ -320,16 +320,6 @@ I like being able to view documentation inside Emacs.
 (set-docsets! 'python-mode "Python 3")
 #+end_src
 
-Nameless mode is handy to hack in namespaces in elisp
-
-#+begin_src emacs-lisp
-(add-hook 'emacs-lisp-mode-hook #'nameless-mode)
-#+end_src
-
-#+begin_src emacs-lisp :tangle ~/.doom.d/packages.el
-(package! nameless :pin "a3a1ce3ec0c5724bcbfe553d831bd4f6b3fe863a")
-#+end_src
-
 The flatwhite theme has a face that makes comments hard to read. This makes it much easier to read while making it distinct from normal text.
 #+begin_src emacs-lisp
 (custom-theme-set-faces! 'doom-flatwhite
