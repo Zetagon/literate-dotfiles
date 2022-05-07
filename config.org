@@ -1093,6 +1093,16 @@ issue.
   (setq org-hugo-paired-shortcodes "alert"))
 #+end_src
 
+ox-hugo will pass the "noexport" tag to hugo, which breaks some of my blogging
+workflows.  The expected behaviour is to filter it out (since org-export should
+not export that heading).
+#+begin_src emacs-lisp
+(defun my/hugo--tag-processing-fn-remove-noexport (tag-list _info)
+  (seq-filter (lambda (x) (not (equal x "noexport")))
+              tag-list))
+(add-to-list 'org-hugo-tag-processing-functions #'my/hugo--tag-processing-fn-remove-noexport)
+#+end_src
+
 #+begin_src emacs-lisp
 (defun org-export-hugo-releinfo-footnote-reference (footnote-reference _contents info)
   "Transcode a FOOTNOTE-REFERENCE element from Org to Pollen.
