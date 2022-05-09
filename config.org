@@ -1092,18 +1092,47 @@ issue.
   (setq org-hugo-base-dir "~/Documents/blog/")
   (setq org-hugo-paired-shortcodes "alert"))
 #+end_src
+** Footnotes
+Use tufte-style sidenotes according to this website:
+https://www.gwern.net/Sidenotes.  I have the proper styling on my [[https://git.sr.ht/~zetagon/blog/tree/8325b1fc2041465f78f4b085c5d0353964c82963/themes/paper/static/style.css#L1][blog]].
+
+We can't output markdown inside sidenotes, since hugo won't convert it to html.
+Instead we export to html directly via a derived backend and ~org-export-data-with-backend~.
 
 #+begin_src emacs-lisp
-(defun org-export-hugo-releinfo-footnote-reference (footnote-reference _contents info)
-  "Transcode a FOOTNOTE-REFERENCE element from Org to Pollen.
+(defun my/id (&rest _f))
+(defun org-export-hugo-releinfo-sidenote-reference (footnote-reference _contents info)
+  "Transcode a FOOTNOTE-REFERENCE element from Org to HTML.
 CONTENTS is nil.  INFO is a plist holding contextual information."
-  ;; (format "◊footnote-reference[%s]" (org-export-get-footnote-number footnote-reference info))
-  (format "{{%% sidenote %%}} %s {{%% /sidenote %%}}"
-          (org-trim (org-export-data (org-export-get-footnote-definition footnote-reference info) info))))
+  (let ((id (org-export-get-footnote-number footnote-reference info)))
+    (format "<label for=\"%s\" class=\"margin-toggle sidenote-number\"> </label><input type=\"checkbox\" id=\"%s\" class=\"margin-toggle\"/> <span class=\"sidenote\"> %s </span>  "
+            id id
+            (org-trim (org-export-data-with-backend
+                       (org-export-get-footnote-definition footnote-reference info)
+                       'my-nested-hugo
+                       info)))))
 
-(after! ox-hugo
-  (org-export-define-derived-backend 'hugo-releinfo 'hugo
-    :translate-alist '((footnote-reference . org-export-hugo-releinfo-footnote-reference))))
+(org-export-define-derived-backend 'hugo-releinfo 'hugo
+  :translate-alist '((footnote-reference . org-export-hugo-releinfo-sidenote-reference)
+                     (footnote-definition . my/id)
+                     (footnote-section . my/id)))
+#+end_src
+
+I don't want nested sidenotes to perpetually be pushed to the right.  Therefore
+I define a new derived backend that's only used when transcoding the contents of
+the footnote.  This new backend has some extra css rules.
+
+#+begin_src emacs-lisp
+(defun org-export-hugo-releinfo-nested-footnote-reference (footnote-reference _contents info)
+  "Transcode a FOOTNOTE-REFERENCE element from Org to HTML.
+CONTENTS is nil.  INFO is a plist holding contextual information."
+  (let ((id (org-export-get-footnote-number footnote-reference info)))
+    (format "<label for=\"%s\" class=\"margin-toggle sidenote-number\"> </label><input type=\"checkbox\" id=\"%s\" class=\"margin-toggle\"/> <span class=\"sidenote\" style=\"margin-right: 50%%;margin-top: 2.3rem\"> %s </span>  "
+            id id
+            (org-trim (org-export-data (org-export-get-footnote-definition footnote-reference info) info)))))
+
+(org-export-define-derived-backend 'my-nested-hugo 'hugo-releinfo
+  :translate-alist '((footnote-reference . org-export-hugo-releinfo-nested-footnote-reference)))
 #+end_src
 * Journaling
 :PROPERTIES:
