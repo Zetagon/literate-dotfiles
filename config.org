@@ -1369,24 +1369,30 @@ Then when I go through my email during daily review if I can't complete the
 email there I capture the email and mark it as done.
 
 #+BEGIN_SRC emacs-lisp
-(defvar my/secretary-notmuch-map (make-sparse-keymap))
-(map!
- :map my/secretary-notmuch-map
- :desc "next" "n" (cmd!
-                   (notmuch-show-archive-thread)
-                   (org-capture nil "m")
-                   (el-secretario-next-item))
+(defvar my/secretary-notmuch-map
+  (let ((km (make-sparse-keymap)))
+    (define-key km
+      "n" `("next" . ,(cmd!
+                      (notmuch-show-archive-thread)
+                      (org-capture nil "m")
+                      (el-secretario-next-item))))
+    (define-key km
+      "d" `("Done" . ,(cmd!
+                      (notmuch-show-archive-thread)
+                      (el-secretario-next-item))))
+    (define-key km
+      "q" `("Quit" . el-secretario-end-sesion))
+    (define-key km
+      (kbd "SPC") '("Advance and Archive" . el-secretario-notmuch-advance-and-archive))
+    (define-key km
+      "c" `("Capture" . ,(cmd!
+                         (org-capture nil "f"))))
+    (define-key km
+      "]" `("Next message" . notmuch-show-next-message))
+    (define-key km
+      "[" `("Next message" . notmuch-show-previous-message))
+    km))
 
- :desc "Quit" "q" #'el-secretario-end-sesion
- :desc "Advance and Archive" "SPC" #'el-secretario-notmuch-advance-and-archive
- :desc "Mark message as done" "d" (cmd! (notmuch-show-archive-thread)
-                                        (el-secretario-next-item))
-
- :desc "Capture" "c" (cmd!
-                      (org-capture nil "f"))
-
- :desc "Next message" "]" #'notmuch-show-next-message
- :desc "Previous message" "[" #'notmuch-show-previous-message)
 (defvar my/secretary-mu4e-map (make-sparse-keymap))
 (map!
  :map my/secretary-mu4e-map
