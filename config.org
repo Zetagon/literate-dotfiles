@@ -1218,13 +1218,8 @@ Here are my agenda files:
 (setq org-agenda-files'("~/org/orgzly/Todo.org"
                         "~/org/orgzly/Inbox.org"
                         "~/org/orgzly/InboxComputer.org"
-                        "~/org/orgzly/Habits.org"
-                        "~/org/orgzly/Projects.org"
-                        "~/org/orgzly/begrepp.org"
-                        "~/org/orgzly/plan.org"
-                        "~/org/orgzly/Log.org"
-                        "~/org/orgzly/schema.org"
-                        "~/org/orgzly/Events.org"))
+                        "~/org/orgzly/writing-inbox.org"
+                        "~/org/orgzly/Projects.org"))
 #+END_SRC
 
 Here are my todo-keywords. NEXT is mostly there for legacy reasons.
