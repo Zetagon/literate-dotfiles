@@ -1105,7 +1105,7 @@ Instead we export to html directly via a derived backend and ~org-export-data-wi
   "Transcode a FOOTNOTE-REFERENCE element from Org to HTML.
 CONTENTS is nil.  INFO is a plist holding contextual information."
   (let ((id (org-export-get-footnote-number footnote-reference info)))
-    (format "<label for=\"%s\" class=\"margin-toggle sidenote-number\"> </label><input type=\"checkbox\" id=\"%s\" class=\"margin-toggle\"/> <span class=\"sidenote\"> %s </span>  "
+    (format "<label for=\"%s\" class=\"margin-toggle sidenote-number\"></label><span class=\"sidenote-surround-text\">(sidenote: </span><input type=\"checkbox\" id=\"%s\" class=\"margin-toggle\"/><span class=\"sidenote\">%s </span><span class=\"sidenote-surround-text\">)</span> "
             id id
             (org-trim (org-export-data-with-backend
                        (org-export-get-footnote-definition footnote-reference info)
