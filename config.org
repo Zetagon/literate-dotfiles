@@ -1116,6 +1116,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
   :translate-alist '((footnote-reference . org-export-hugo-releinfo-sidenote-reference)
                      (footnote-definition . my/id)
                      (footnote-section . my/id)))
+(setq org-hugo-backend 'hugo-releinfo)
 #+end_src
 
 I don't want nested sidenotes to perpetually be pushed to the right.  Therefore
