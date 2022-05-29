@@ -1867,7 +1867,7 @@ where it's available, I like opening magit status the first thing I do.
 
 I don't want the lines to be too long when writing using writeroom.
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
-(setq writeroom-width 50)
+(setq writeroom-width 0.08)
 #+END_SRC
 
 #+begin_src emacs-lisp
