@@ -71,17 +71,15 @@
   (setq consult-lean--candidates nil)
   (let* ((consult-lean--current-buffer (current-buffer))
          (user-choice (consult--read
-                       (lambda (action)
-                         (pcase-exhaustive action
-                           ('setup nil)
-                           ('destroy nil)
-                           ('flush nil)
-                           ('refresh nil)
-                           ('nil consult-lean--candidates)
-                           (stringp
-                            (when-let ((res (ignore-errors (consult-lean--definitions-builder action))))
-                              (setq consult-lean--candidates res))
-                            nil)))
+                       (thread-first (consult--async-sink)
+                                     (consult--async-refresh-immediate)
+                                     (consult-lean--make-async-source)
+                                     ;; causes `candidate' in
+                                     ;; `consult-lean--lookup' to not be
+                                     ;; updated.  It is unchanged after the
+                                     ;; command is first launched.
+                                     ;; (consult--async-throttle)
+                                     (consult--async-split))
                        :lookup #'consult-lean--lookup
                        :prompt "Definition: ")))
     (setq foo user-choice)
