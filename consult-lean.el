@@ -64,7 +64,7 @@
          (car (seq-drop-while (lambda (x)
                                 (not (string-equal selected
                                                    (substring-no-properties (car x)))))
-                              (consult-lean--definitions-builder input))))
+                              candidates)))
    :source))
 
 (defun consult-lean-definitions ()
