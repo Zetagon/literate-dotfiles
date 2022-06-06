@@ -57,13 +57,13 @@
        (funcall async action))
       (_ (funcall async action)))))
 
-(defun consult-lean--lookup (selected candidates _input _narrow)
+(defun consult-lean--lookup (selected candidates input _narrow)
   (plist-get
    (cdr
          (car (seq-drop-while (lambda (x)
                                 (not (string-equal selected
                                                    (substring-no-properties (car x)))))
-                              candidates)))
+                              (consult-lean--definitions-builder input))))
    :source))
 
 (defun consult-lean-definitions ()
