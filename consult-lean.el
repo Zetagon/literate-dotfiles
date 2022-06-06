@@ -57,19 +57,32 @@
        (funcall async action))
       (_ (funcall async action)))))
 
+(defun consult-lean--lookup (selected candidates _input _narrow)
+  (plist-get
+   (cdr
+         (car (seq-drop-while (lambda (x)
+                                (not (string-equal selected
+                                                   (substring-no-properties (car x)))))
+                              candidates)))
+   :source))
+
 (defun consult-lean-definitions ()
   (interactive)
   (setq consult-lean--candidates nil)
   (let* ((consult-lean--current-buffer (current-buffer))
          (user-choice (consult--read
-                       (thread-first (consult--async-sink)
-                                     ;; (consult--async-refresh-immediate)
-                                     (consult-lean--make-async-source)
-                                     ;; (consult--async-throttle)
-                                     ;; (consult--async-split)
-                                     )
-                       :lookup (lambda (selected candidates)
-                                (plist-get (alist-get user-choice consult-lean--candidates nil nil #'equal) :source) )
+                       (lambda (action)
+                         (pcase-exhaustive action
+                           ('setup nil)
+                           ('destroy nil)
+                           ('flush nil)
+                           ('refresh nil)
+                           ('nil consult-lean--candidates)
+                           (stringp
+                            (when-let ((res (ignore-errors (consult-lean--definitions-builder action))))
+                              (setq consult-lean--candidates res))
+                            nil)))
+                       :lookup #'consult-lean--lookup
                        :prompt "Definition: ")))
     (setq foo user-choice)
     (apply 'lean-find-definition-cont
