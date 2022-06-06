@@ -52,7 +52,8 @@
       ('nil consult-lean--candidates)
       ;; ('setup (funcall async action))
       (stringp
-       (when-let ((res (ignore-errors (consult-lean--definitions-builder action))))
+       (when-let ((res (and (not (string-empty-p action))
+                            (ignore-errors (consult-lean--definitions-builder action)))))
          (setq consult-lean--candidates res))
        (funcall async action))
       (_ (funcall async action)))))
@@ -78,7 +79,7 @@
                                      ;; `consult-lean--lookup' to not be
                                      ;; updated.  It is unchanged after the
                                      ;; command is first launched.
-                                     ;; (consult--async-throttle)
+                                     (consult--async-throttle)
                                      (consult--async-split))
                        :lookup #'consult-lean--lookup
                        :prompt "Definition: ")))
