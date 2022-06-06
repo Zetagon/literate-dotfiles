@@ -27,8 +27,6 @@
   "Lean Keybinding for helm-lean-definitions"
   :group 'lean-keybinding :type 'key-sequence)
 
-(defvar consult-lean--current-buffer nil)
-
 (defun helm-lean-definitions-format-candidate (c)
   `(,(format "%s : %s %s"
              (propertize (plist-get c :text) 'face font-lock-variable-name-face)
@@ -36,25 +34,23 @@
              (propertize (plist-get (plist-get c :source) :file) 'face font-lock-comment-face))
     . ,c))
 
-(defun consult-lean--definitions-builder (input)
-  (with-current-buffer consult-lean--current-buffer
+(defun consult-lean--definitions-builder (input buffer)
+  (with-current-buffer buffer
     (let* ((response (lean-server-send-synchronous-command 'search (list :query input)))
            (results (plist-get response :results))
            (results (-filter (lambda (c) (plist-get c :source)) results))
            (candidates (-map 'helm-lean-definitions-format-candidate results)))
       candidates)))
 
-(defvar consult-lean--candidates nil)
-
-(defun consult-lean--make-async-source (async)
+(defun consult-lean--make-async-source (async buffer)
   (lambda (action)
     (pcase-exhaustive action
-      ('nil consult-lean--candidates)
-      ;; ('setup (funcall async action))
+      ('nil (funcall async action))
       (stringp
        (when-let ((res (and (not (string-empty-p action))
-                            (ignore-errors (consult-lean--definitions-builder action)))))
-         (setq consult-lean--candidates res))
+                            (ignore-errors (consult-lean--definitions-builder action buffer)))))
+         (funcall async 'flush)
+         (funcall async res))
        (funcall async action))
       (_ (funcall async action)))))
 
@@ -69,21 +65,18 @@
 
 (defun consult-lean-definitions ()
   (interactive)
-  (setq consult-lean--candidates nil)
-  (let* ((consult-lean--current-buffer (current-buffer))
-         (user-choice (consult--read
-                       (thread-first (consult--async-sink)
-                                     (consult--async-refresh-immediate)
-                                     (consult-lean--make-async-source)
-                                     ;; causes `candidate' in
-                                     ;; `consult-lean--lookup' to not be
-                                     ;; updated.  It is unchanged after the
-                                     ;; command is first launched.
-                                     (consult--async-throttle)
-                                     (consult--async-split))
-                       :lookup #'consult-lean--lookup
-                       :prompt "Definition: ")))
-    (setq foo user-choice)
+  (let ((user-choice (consult--read
+                      (thread-first (consult--async-sink)
+                                    (consult--async-refresh-immediate)
+                                    (consult-lean--make-async-source (current-buffer))
+                                    ;; causes `candidate' in
+                                    ;; `consult-lean--lookup' to not be
+                                    ;; updated.  It is unchanged after the
+                                    ;; command is first launched.
+                                    (consult--async-throttle)
+                                    (consult--async-split))
+                      :lookup #'consult-lean--lookup
+                      :prompt "Definition: ")))
     (apply 'lean-find-definition-cont
            user-choice)))
 
