@@ -326,6 +326,11 @@ The flatwhite theme has a face that makes comments hard to read. This makes it m
   '(font-lock-comment-face  :background "#fcf2bf")
   '(hi-yellow :background "#d9c6c3"))
 #+end_src
+
+#+begin_src emacs-lisp
+(custom-theme-set-faces! 'doom-flatwhite
+  '(font-lock-type-face  :background "#f9e0c7"))
+#+end_src
 * Keybindings
 :PROPERTIES:
 :ID:       35c66993-c662-499d-a103-4e9355855aee
