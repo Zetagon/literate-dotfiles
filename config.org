@@ -1823,6 +1823,13 @@ A man is not dead while his name is still spoken.
   (setq mail-default-headers "X-Clacks-Overhead: GNU Terry Pratchett\n"))
 #+end_src
 
+#+begin_src emacs-lisp
+(setq whitespace-style '(face space-before-tab indentation tabs tab-mark trailing lines-tail))
+;; I use visual line mode to write in org-mode, so all paragraphs gets marked anywas
+(setq whitespace-global-modes '(prog-mode))
+(global-whitespace-mode)
+#+end_src
+
 I want to have some local variables and prefer to not have them ignored.
 #+begin_src emacs-lisp
 (setq-default enable-local-variables t)
