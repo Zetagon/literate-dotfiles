@@ -1085,6 +1085,38 @@ issue.
           org-roam-ui-open-on-start t))
 
 #+end_src
+** Dired Pile
+#+begin_src emacs-lisp
+(defvar-local my/dired-pile nil)
+(defun my/dired-pile-add ()
+  "TODO"
+  (interactive)
+  (let* ((node (org-roam-node-read))
+         (file (org-roam-node-file node)))
+    (if (derived-mode-p 'dired-mode)
+        (push node my/dired-pile)
+      (dired org-roam-directory)
+      (setq my/dired-pile (list node)))
+    (setq dired-directory
+          (cons org-roam-directory
+                (mapcar (-compose #'dired-make-relative #'org-roam-node-file)
+                        my/dired-pile)))
+    ;; We don't want to sort here, so that dired-directory matches with
+    ;; my/dired-pile
+    (setq dired-sort-inhibit t)
+    (revert-buffer)
+    (save-excursion
+      (goto-char (point-min))
+      (delete-all-overlays)
+      (dolist (node my/dired-pile)
+        (forward-line 1)
+        (goto-char (line-end-position))
+        (let* ((ov (make-overlay (point) (1- (point))))
+               (text (concat " -- " (org-roam-node-title node))))
+          (overlay-put ov 'after-string
+                       (propertize text 'face font-lock-comment-face)))))))
+
+#+end_src
 * Blog
 :PROPERTIES:
 :header-args: :tangle ~/.doom.d/config.el
