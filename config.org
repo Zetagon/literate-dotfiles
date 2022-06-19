@@ -1827,6 +1827,8 @@ A man is not dead while his name is still spoken.
 (setq whitespace-style '(face space-before-tab indentation tabs tab-mark trailing lines-tail))
 ;; I use visual line mode to write in org-mode, so all paragraphs gets marked anywas
 (setq whitespace-global-modes '(prog-mode))
+(setq global-hl-line-modes (seq-filter (lambda (x) (not (eq x 'text-mode)))
+                                       global-hl-line-modes))
 (global-whitespace-mode)
 #+end_src
 
