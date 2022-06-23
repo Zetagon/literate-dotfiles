@@ -415,6 +415,57 @@ I want to move my right hand less so I put this to reduce movement
  "i i" #'iedit-mode)
 #+end_src
 
+* org-pile
+This is too small for a package, so I'll put it here in my config instead.
+
+Essentially what it does is that it creates a scratchboard of sorts, where you
+can pile all the stuff you're working on.  Say you're working on a patch and so
+you need to keep track of the email you're working on.  Then you need to keep
+track of which code files are relevant.  And you have some notes lying around.
+
+Just add all of them to the pile, which is just a temporary org file and open
+them with ~org-pile-link-hint-open-link~.
+#+begin_src emacs-lisp
+(defvar org-pile-file "/tmp/pile.org")
+(defvar org-pile-buffer "*org-pile*")
+
+(defun org-pile-add ()
+  (interactive)
+  (let ((org-capture-templates `(("x" "pile" entry
+                                  (file ,org-pile-file)
+                                  "* %a" :immediate-finish t)))
+        (org-id-link-to-org-use-id 'create-if-interactive))
+    (org-capture nil "x")
+    (with-current-buffer (org-pile--get-buffer)
+      (save-buffer))))
+
+(defun org-pile-show ()
+  (interactive)
+  (pop-to-buffer (org-pile--get-buffer)))
+
+(defun org-pile-link-hint-open-link ()
+  "Open the pile and open one link."
+  (interactive)
+  (org-pile-show)
+  (call-interactively #'link-hint-open-link))
+
+(defun org-pile--get-buffer ()
+  (or (get-buffer org-pile-buffer)
+      (with-current-buffer (find-file-noselect org-pile-file)
+        (rename-buffer org-pile-buffer)
+        (current-buffer))))
+#+end_src
+
+Here are some Doom specific stuff
+
+#+begin_src emacs-lisp
+(set-popup-rule! org-pile-buffer :side 'left :width 0.2)
+
+(map! :leader
+      "o p"  #'org-pile-show
+      "p a" #'org-pile-add
+      "p l" #'org-pile-link-hint-open-link)
+#+end_src
 * Email
 ** Host address
 :PROPERTIES:
