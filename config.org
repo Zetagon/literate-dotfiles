@@ -433,7 +433,9 @@ them with ~org-pile-link-hint-open-link~.
   (interactive)
   (let ((org-capture-templates `(("x" "pile" entry
                                   (file ,org-pile-file)
-                                  "* %a" :immediate-finish t)))
+                                  "
+,* %a
+" :immediate-finish t)))
         (org-id-link-to-org-use-id 'create-if-interactive))
     (org-capture nil "x")
     (with-current-buffer (org-pile--get-buffer)
