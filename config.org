@@ -29,6 +29,7 @@ Here are the files of my emacs config:
 (package! el-secretario
   :recipe (:repo "https://git.sr.ht/~zetagon/el-secretario"
            :branch "develop"
+           :host nil
            :files ("*.el")))
 (package! ox-hugo)
 #+END_SRC
@@ -281,7 +282,7 @@ solution so far is to apply this patch.
        irc               ; how neckbeards socialize
        (:if (string= "hako"
                      (system-name))
-            rss +org)        ; emacs as an RSS reader
+            (rss +org))        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
 
        :config
