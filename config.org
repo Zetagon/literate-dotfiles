@@ -1531,6 +1531,33 @@ a parent which is a todo).
 (setq el-secretario-org-narrow-function #'el-secretario-org-narrow-to-highest-todo)
 #+END_SRC
 
+#+begin_src emacs-lisp
+(defadvice! el-secretario-org-space--increment ()
+  "Try an exponential increase in scheduling"
+  (unless (and el-secretario-org-space-increment-percentage
+             (<= el-secretario-org-space-increment-percentage (random 100)))
+    (let ((cap
+           (-some-> (org-entry-get (point)
+                                   "EL-SECRETARIO-DELTA-CAP")
+             string-to-number))
+          (reset-cap
+           (-some-> (org-entry-get (point)
+                                   "EL-SECRETARIO-DELTA-RESET-CAP")
+             string-to-number)))
+      (--> (org-entry-get (point)
+                          "EL-SECRETARIO-DELTA")
+        (or it "1")
+        (string-to-number it)
+        (if (and cap (>= it cap))
+            it
+          (* 2 it))
+        (if (and reset-cap (>= it reset-cap))
+            2
+          it)
+        (number-to-string it)
+        (org-set-property "EL-SECRETARIO-DELTA" it)))))
+#+end_src
+
 #+BEGIN_SRC emacs-lisp
 (defvar my/el-secretario-org-map (make-sparse-keymap))
 
