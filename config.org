@@ -1310,11 +1310,12 @@ This packages allows org-ref notes to be org-roam files
         org-cite-activate-processor 'citar
         citar-at-point-function 'embark-act
         citar-open-note-function 'orb-citar-edit-note)
+  ;; I want to open pdfs externally
+  (add-to-list 'citar-file-open-functions '("pdf" . citar-file-open-external))
   (when (featurep! :completion ivy)
-    (setq org-ref-cite-onclick-function (lambda (x)  (org-ref-cite-hydra/body))))
-
-  (setq ivy-bibtex-default-action
-        #'ivy-bibtex-insert-citation))
+    (setq org-ref-cite-onclick-function (lambda (x)  (org-ref-cite-hydra/body)))
+    (setq ivy-bibtex-default-action
+          #'ivy-bibtex-insert-citation)))
 (map!
  :leader
  ;; Open a file that is linked to the selected entry, e.g. links or files.
