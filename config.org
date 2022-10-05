@@ -416,6 +416,12 @@ I want to move my right hand less so I put this to reduce movement
  "i i" #'iedit-mode)
 #+end_src
 
+#+begin_src emacs-lisp
+(:map dired-mode-map
+       :n "C-<return>" (λ! (consult-file-externally (dired-get-file-for-visit)))
+       :n "C-RET" (λ! (consult-file-externally (dired-get-file-for-visit))))
+#+end_src
+
 * org-pile
 This is too small for a package, so I'll put it here in my config instead.
 
