@@ -1827,7 +1827,9 @@ The default volume is way too loud.
   (setq org-pomodoro-ticking-sound-args "--volume=30000")
   (setq org-pomodoro-start-sound-args "--volume=30000")
   (setq org-pomodoro-long-break-sound-args "--volume=30000")
-  (setq org-pomodoro-overtime-sound-args "--volume=30000"))
+  (setq org-pomodoro-overtime-sound-args "--volume=30000")
+  (setq org-pomodoro-finished-hook (λ! (org-notify "Break time!")))
+  (setq org-pomodoro-break-finished-hook (λ! (org-notify "Time to start again"))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-misc
