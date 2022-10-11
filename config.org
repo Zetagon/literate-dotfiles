@@ -1709,7 +1709,7 @@ If no context is found, first prompt for a context with `completing-read`."
    (el-secretario-org-make-source '(and (and (todo "TODO")
                                              (not (org-entry-blocked-p))
                                              (not (property "style" "habit"))
-                                             (or (scheduled :from 2)
+                                             (or (scheduled :to 2)
                                                  (deadline :to 14 :from 0) ))
                                         (not (tags "noreview")))
                                   '("~/org/orgzly/Todo.org"
