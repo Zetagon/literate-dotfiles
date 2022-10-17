@@ -1412,9 +1412,14 @@ items that are releveant to today.
         org-agenda-span 1)
   (let ((org-agenda-custom-commands
          '(("l" "Today"
-            ((tags-todo "active" ((org-agenda-overriding-header "Active tasks")))
-             (org-ql-block '(and (ltags "onnotebook")
-                                 (not (done))))
+
+            ((org-ql-block '(and (and (todo "TODO")
+                                      (not (org-entry-blocked-p))
+                                      (not (property "style" "habit"))
+                                      (deadline :to 14 :from 0))
+                                 (not (tags "noreview")))
+             ((org-ql-block-header "Deadlines"))              )
+             (tags-todo "onnotebook" ((org-agenda-overriding-header "Active tasks")))
              (agenda "" nil))))))
     (org-agenda nil "l")))
 #+END_SRC
