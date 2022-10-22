@@ -1404,14 +1404,13 @@ items that are relevant to today.
                                    :category "clean")
                                   (:name "Todos"
                                    :todo t))
-        org-agenda-dim-blocked-tasks 'invisible
+        org-agenda-dim-blocked-tasks t
         org-agenda-start-day "0d"
         org-agenda-span 1)
   (let ((org-agenda-custom-commands
          '(("l" "Today"
 
             ((org-ql-block '(and (and (todo "TODO")
-                                      (not (org-entry-blocked-p))
                                       (not (property "style" "habit"))
                                       (deadline :to 14 :from 0))
                                  (not (tags "noreview")))
