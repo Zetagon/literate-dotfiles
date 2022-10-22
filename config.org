@@ -85,9 +85,6 @@ This makes sure that I eww, man-pages and info manuals are linkable in org.
 ;; (use-package! latex-auto-activating-snippets)
 
 
-(use-package! elgantt
-  :defer t
-  :commands (elgantt-open))
 (setq doom-theme 'doom-flatwhite)
 <<emacs-misc>>
 #+END_SRC
@@ -251,7 +248,7 @@ solution so far is to apply this patch.
        (org +roam2 +pomodoro +journal noter +gnuplot)               ; organize your plain life in plain text
        ;;perl              ; write code no one else can comprehend
        ;;php               ; perl's insecure younger brother
-       plantuml          ; diagrams for confusing people more
+       ;; plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
        ;; python            ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
@@ -261,7 +258,7 @@ solution so far is to apply this patch.
        ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        ;;scala             ; java, but good
-       scheme            ; a fully conniving family of lisps
+       ;; scheme            ; a fully conniving family of lisps
        sh                ; she sells {ba,z,fi}sh shells on the C xor
        ;;sml
        ;;solidity          ; do you need a blockchain? No.
@@ -279,7 +276,7 @@ solution so far is to apply this patch.
 
        :app
        ;;calendar
-       irc               ; how neckbeards socialize
+       ;; irc               ; how neckbeards socialize
        (:if (string= "hako"
                      (system-name))
             (rss +org))        ; emacs as an RSS reader
@@ -1382,7 +1379,7 @@ I need these maps to be able to use jk in the agenda buffer properly
 :ID:       34efb1d3-ecb2-4f59-a8c8-90b58f14cdc0
 :END:
 ~my/today~ is the primary way I see what to do right now. It should only give
-items that are releveant to today.
+items that are relevant to today.
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (defun my/today ()
   (interactive)
@@ -1723,8 +1720,8 @@ If no context is found, first prompt for a context with `completing-read`."
                                   :keymap 'my/el-secretario-org-map)
    my/el-secretario-writing-inbox-source
    (el-secretario-function-source :func #'my/empty-remarkable-outbox)
-  (el-secretario-function-source :func (lambda ()
-                                         (shell-command "~/.doom.d/dropbox-backup.sh"))) ))
+   (el-secretario-function-source :func (lambda ()
+                                          (shell-command "~/.doom.d/dropbox-backup.sh"))) ))
 (defun my/el-secretario-daily-review ()
   (interactive)
   (when (string= (system-name)
