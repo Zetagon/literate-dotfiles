@@ -1419,6 +1419,12 @@ items that are relevant to today.
              (tags-todo "onnotebook" ((org-agenda-overriding-header "Active tasks")))
              (agenda "" nil))))))
     (org-agenda nil "l")))
+(defun my/deadlines ()
+  (interactive)
+  (org-ql-search org-agenda-files '(and (and (todo "TODO")
+                           (not (property "style" "habit"))
+                           (deadline :to 14 :from 0))
+                                        (not (tags "noreview")))))
 #+END_SRC
 
 #+RESULTS:
