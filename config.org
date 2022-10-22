@@ -1996,11 +1996,11 @@ where it's available, I like opening magit status the first thing I do.
 #+begin_src emacs-lisp
 (defun my/switch-project-f (dir)
   "Function to be used with `+workspaces-switch-project-function'."
-  (interactive)
   (cond
-   ((or (equal dir "~/Documents/notes/")
-        (equal dir "~/Documents/notes/texter/"))
+   ((equal dir "~/Documents/notes/")
     (org-roam-node-find))
+   ((equal dir "~/Documents/notes/texter/")
+    (org-roam-node-find nil "@texter "))
    ((magit-git-repo-p dir) (magit-status))
    (t (doom-project-find-file dir))))
 (setq +workspaces-switch-project-function #'my/switch-project-f)
