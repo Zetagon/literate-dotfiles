@@ -861,7 +861,7 @@ I want to use unique ID:s for linking to org notes. The default heading scheme
 is error prone, especially when editing headlines.
 #+BEGIN_SRC emacs-lisp
 (require 'org-id)
-(setq org-id-link-to-org-use-id t)
+(setq org-id-link-to-org-use-id 'create-if-interactive)
 #+END_SRC
 very lucky
 
