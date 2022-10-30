@@ -2343,6 +2343,28 @@ I want to bring up the messages that pertain to the project I am in if any.
 (map! :leader
       "z" #'anchor-act)
 #+end_src
+* Vterm
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
+#+begin_src emacs-lisp
+(after! vterm
+  (setq vterm-shell "/usr/bin/fish"))
+#+end_src
+** Message passing
+You can call elisp functions from vterm:
+https://github.com/akermu/emacs-libvterm#message-passing
+fish-side configuration: [[id:d06c3481-cc38-4e41-a65e-a9c57006a9ad][Fish functions]]
+#+begin_src emacs-lisp
+(after! vterm
+  (setf (alist-get "magit-status" vterm-eval-cmds nil nil #'equal)
+        '((lambda (path)
+            (magit-status path))))
+  (setf (alist-get "dired" vterm-eval-cmds nil nil #'equal)
+        '((lambda (dir)
+            (dired dir)))))
+#+end_src
+
 * Lexic
 :PROPERTIES:
 :header-args: :tangle ~/.doom.d/config.el

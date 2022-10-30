@@ -208,3 +208,49 @@ export PATH=$PATH:$ANDROID_HOME/tools
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 <<bashprofile>>
 #+END_SRC
+* Fish functions
+:PROPERTIES:
+:ID:       d06c3481-cc38-4e41-a65e-a9c57006a9ad
+:END:
+
+#+begin_src fish :tangle ~/.config/fish/functions/vterm_printf.fish
+function vterm_printf;
+    if begin; [  -n "$TMUX" ]  ; and  string match -q -r "screen|tmux" "$TERM"; end
+        # tell tmux to pass the escape sequences through
+        printf "\ePtmux;\e\e]%s\007\e\\" "$argv"
+    else if string match -q -- "screen*" "$TERM"
+        # GNU screen (screen, screen-256color, screen-256color-bce)
+        printf "\eP\e]%s\007\e\\" "$argv"
+    else
+        printf "\e]%s\e\\" "$argv"
+    end
+end
+#+end_src
+
+#+begin_src fish :header-args: :tangle ~/.config/fish/functions/vterm_cmd.fish
+function vterm_cmd --description 'Run an Emacs command among the ones been defined in vterm-eval-cmds.'
+    set -l vterm_elisp ()
+    for arg in $argv
+        set -a vterm_elisp (printf '"%s" ' (string replace -a -r '([\\\\"])' '\\\\\\\\$1' $arg))
+    end
+    vterm_printf '51;E'(string join '' $vterm_elisp)
+end
+#+end_src
+
+Commands:
+
+#+begin_src fish :header-args: :tangle ~/.config/fish/functions/d.fish
+function d
+    set -q argv[1]; or set argv[1] "."
+    vterm_cmd find-file (realpath "$argv")
+end
+#+end_src
+
+Magit status
+#+begin_src fish :header-args: :tangle ~/.config/fish/functions/mgs.fish
+function mgs
+    set -q argv[1]; or set argv[1] "."
+    vterm_cmd magit-status (realpath "$argv")
+end
+#+end_src
+
