@@ -1435,7 +1435,9 @@ items that are relevant to today.
 As an experiment, I'll try bringing up the agenda when I've been idle.  This
 should hopefully make me use it more.
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el
-(run-with-idle-timer 300 t #'my/today)
+(run-with-idle-timer 300 t (lambda ()
+                             (unless (org-clocking-p)
+                               (my/today))))
 #+end_src
 
 And this function is my way of deciding what to do when I have free time.
