@@ -1331,6 +1331,16 @@ This packages allows org-ref notes to be org-roam files
  :n "nb" #'citar-open)
 #+END_SRC
 
+If I put an url into the =ROAM_REFS= property any time I link to that url in org-roam I will get a cite backlink.  Therefore I want to add an url to every reference note if that field exists in the bibtex entry.  This advice shouls accomplish that.
+
+#+begin_src emacs-lisp
+(defadvice! my/citar-org-roam--create-capture-note-url-ref (citekey entry)
+  "Also add the url as a ref if possible."
+  :after #'citar-org-roam--create-capture-note
+  (when-let ((url (alist-get "url" entry nil nil #'string-equal)))
+    (org-roam-ref-add url)))
+#+end_src
+
 * Task management
 :PROPERTIES:
 :ID:       c8423be4-43b1-41b1-8b5b-4159a31e2edc
