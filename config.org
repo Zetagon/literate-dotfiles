@@ -1340,6 +1340,14 @@ If I put an url into the =ROAM_REFS= property any time I link to that url in org
   (when-let ((url (alist-get "url" entry nil nil #'string-equal)))
     (org-roam-ref-add url)))
 #+end_src
+** org-cite csl
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
+#+begin_src emacs-lisp
+(setq org-cite-csl-locales-dir "~/.doom.d/csl/"
+      org-cite-csl-styles-dir  "~/.doom.d/csl/")
+#+end_src
 
 * Task management
 :PROPERTIES:
