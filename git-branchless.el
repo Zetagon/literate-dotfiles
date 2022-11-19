@@ -6,6 +6,7 @@
 
 ;;; variables
 (defvar git-branchless-proc "*git-branchless*")
+(defvar git-branchless-smartlog-buffer "*git smartlog*")
 ;;; functions
 
 (defun my/git-smartlog-get-ref ()
@@ -26,7 +27,7 @@ Only works in the smartlog buffer."
   (interactive)
   (when-let ((ref (my/git-smartlog-get-ref)))
     (make-process :name "git-branchless"
-                  :stderr "*git-branchless-err*"
+                  :stderr git-branchless-proc
                   :command (list "git" "branchless" "switch" ref))
     (my/git-smartlog)))
 
@@ -34,10 +35,10 @@ Only works in the smartlog buffer."
   (interactive)
   (let ((inhibit-read-only t)
         (dir default-directory))
-    (with-current-buffer (get-buffer-create git-branchless-proc)
+    (with-current-buffer (get-buffer-create git-branchless-smartlog-buffer)
       (delete-region (point-min) (point-max))
       (setq-local default-directory dir)
-      (let ((process (start-process "git smartlog" git-branchless-proc "git" "branchless" "smartlog" "--color" "always")))
+      (let ((process (start-process "git smartlog" git-branchless-smartlog-buffer "git" "branchless" "smartlog" "--color" "always")))
         (set-process-sentinel process
                               (lambda (process _event)
                                 (with-current-buffer (process-buffer process)
