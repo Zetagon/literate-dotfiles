@@ -43,6 +43,13 @@ Only works in the smartlog buffer."
                                                                           (substring-no-properties x))))
                                                      candidates))))))
 
+(defun git-branchless-switch ()
+  (interactive) ;; TODO this could probably be made into an argument
+  (let ((hash (git-branchless-read-drafts)))
+    (call-process "git" nil git-branchless-proc nil
+                  "branchless" "switch" hash))
+  (git-branchless-smartlog))
+
 (defun git-branchless-smartlog-magit-log ()
   (interactive)
   (when-let ((ref (and (equal major-mode 'git-smartlog-mode)
