@@ -41,7 +41,16 @@ Only works in the smartlog buffer."
                                 (car (seq-drop-while (lambda (x)
                                                        (not (string-equal selected
                                                                           (substring-no-properties x))))
-                                                     candidates))))))
+                                                     candidates)))
+                      :state (lambda (action candidate)
+                               (when (equal action 'preview)
+                                 (let ((magit-display-buffer-function
+                                        (lambda (buf)
+                                          (pop-to-buffer buf )
+                                          (selected-window))))
+                                   (magit-show-commit
+                                    (get-text-property 1 :hash
+                                                       candidate))))))))
 
 (defun git-branchless-switch ()
   (interactive) ;; TODO this could probably be made into an argument
