@@ -6,7 +6,10 @@
 
 ;;; variables
 (defvar git-branchless-proc "*git-branchless*")
+
 (defvar git-branchless-smartlog-buffer "*git smartlog*")
+
+(defvar-local git-branchless-move-source-marker nil)
 ;;; functions
 
 (defun my/git-smartlog-get-ref ()
@@ -30,6 +33,20 @@ Only works in the smartlog buffer."
                   :stderr git-branchless-proc
                   :command (list "git" "branchless" "switch" ref))
     (my/git-smartlog)))
+
+(defun my/git-move ()
+  "WIP not tested yet"
+  (interactive)
+  (if-let ((src-marker git-branchless-move-source-marker))
+      (let ((src-ref (save-excursion
+                       (goto-char src-marker)
+                       (my/git-smartlog-get-ref)))
+            (dst-ref (my/git-smartlog-get-ref)))
+        (when (y-or-n-p (format "Run 'git move -s %s -d %s' ?" src-ref dst-ref))
+          (call-process "git" nil git-branchless-proc nil
+                        "move" "-s" src-ref "-d" dst-ref)))
+    (setq git-branchless-move-source-marker (point-marker))))
+
 (defun my/git-prev ()
   (interactive)
   (call-process "git" nil git-branchless-proc nil
