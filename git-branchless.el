@@ -12,7 +12,7 @@
 (defvar-local git-branchless-move-source-marker nil)
 ;;; functions
 
-(defun my/git-smartlog-get-ref ()
+(defun git-branchless-smartlog-get-ref ()
   "Get the ref for the commit at the current line.
 Only works in the smartlog buffer."
   (save-excursion
@@ -21,52 +21,52 @@ Only works in the smartlog buffer."
     (forward-char)
     (word-at-point t)))
 
-(defun my/git-smartlog-magit-log ()
+(defun git-branchless-smartlog-magit-log ()
   (interactive)
   (when-let ((ref (and (equal major-mode 'git-smartlog-mode)
-                       (my/git-smartlog-get-ref))))
+                       (git-branchless-smartlog-get-ref))))
     (magit-log-setup-buffer (list ref) nil '())))
 
-(defun my/git-smartlog-magit-show-commit ()
+(defun git-branchless-smartlog-magit-show-commit ()
   (interactive)
-  (magit-show-commit (my/git-smartlog-get-ref)))
+  (magit-show-commit (git-branchless-smartlog-get-ref)))
 
-(defun my/git-smartlog-switch ()
+(defun git-branchless-smartlog-switch ()
   (interactive)
   (when-let ((ref (and (equal major-mode 'git-smartlog-mode)
-                       (my/git-smartlog-get-ref))))
+                       (git-branchless-smartlog-get-ref))))
     (make-process :name "git-branchless"
                   :stderr git-branchless-proc
                   :command (list "git" "branchless" "switch" ref))
-    (my/git-smartlog)))
+    (git-branchless-smartlog)))
 
-(defun my/git-move ()
+(defun git-branchless-move ()
   "WIP not tested yet"
   (interactive)
   (when (equal major-mode 'git-smartlog-mode)
     (if-let ((src-marker git-branchless-move-source-marker))
         (let ((src-ref (save-excursion
                          (goto-char src-marker)
-                         (my/git-smartlog-get-ref)))
-              (dst-ref (my/git-smartlog-get-ref)))
+                         (git-branchless-smartlog-get-ref)))
+              (dst-ref (git-branchless-smartlog-get-ref)))
           (when (y-or-n-p (format "Run 'git move -s %s -d %s' ?" src-ref dst-ref))
             (call-process "git" nil git-branchless-proc nil
                           "move" "-s" src-ref "-d" dst-ref)))
       (setq git-branchless-move-source-marker (point-marker)))))
 
-(defun my/git-prev ()
+(defun git-branchless-prev ()
   (interactive)
   (call-process "git" nil git-branchless-proc nil
                 "prev")
-  (my/git-smartlog))
+  (git-branchless-smartlog))
 
-(defun my/git-next ()
+(defun git-branchless-next ()
   (interactive)
   (call-process "git" nil git-branchless-proc nil
                 "next")
-  (my/git-smartlog))
+  (git-branchless-smartlog))
 
-(defun my/git-smartlog ()
+(defun git-branchless-smartlog ()
   (interactive)
   (let ((inhibit-read-only t)
         (dir default-directory))
