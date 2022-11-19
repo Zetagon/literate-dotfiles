@@ -1,6 +1,5 @@
 ;;; git-branchless.el -*- lexical-binding: t; -*-
 
-(set-popup-rule! "*git smartlog*" :side 'left) w
 (define-derived-mode git-smartlog-mode shell-mode
   :interactive nil)
 
