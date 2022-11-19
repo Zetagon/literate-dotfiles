@@ -32,12 +32,18 @@ Only works in the smartlog buffer."
 
 (defun my/git-smartlog ()
   (interactive)
-  (let ((process (start-process "git smartlog" "*git smartlog*" "git" "branchless" "smartlog" "--color" "always")))
-    (with-current-buffer (process-buffer process)
-      (let ((inhibit-read-only t))
-        (delete-region (point-min) (point-max)))
-      (display-buffer (current-buffer))
-      (shell-mode)
-      (set-process-filter
-       process
-       #'comint-output-filter))))
+  (let ((inhibit-read-only t)
+        (dir default-directory))
+    (with-current-buffer (get-buffer-create git-branchless-proc)
+      (delete-region (point-min) (point-max))
+      (setq-local default-directory dir)
+      (let ((process (start-process "git smartlog" git-branchless-proc "git" "branchless" "smartlog" "--color" "always")))
+        (set-process-sentinel process
+                              (lambda (process _event)
+                                (with-current-buffer (process-buffer process)
+                                  (goto-char (point-min))
+                                  (search-forward "●" nil t))))
+        (set-process-filter process #'comint-output-filter))
+      (git-smartlog-mode)
+      (view-mode)
+      (display-buffer (current-buffer)))))
