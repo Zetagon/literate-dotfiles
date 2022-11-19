@@ -13,7 +13,7 @@
 Only works in the smartlog buffer."
   (save-excursion
     (beginning-of-line)
-    (re-search-forward "●\\|◯" (line-end-position) t)
+    (re-search-forward "◆\\|●\\|◯" (line-end-position) t)
     (forward-char)
     (word-at-point t)))
 
