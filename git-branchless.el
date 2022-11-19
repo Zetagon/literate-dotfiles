@@ -26,6 +26,10 @@ Only works in the smartlog buffer."
   (when-let ((ref (my/git-smartlog-get-ref)))
     (magit-log-setup-buffer (list ref) nil '())))
 
+(defun my/git-smartlog-magit-show-commit ()
+  (interactive)
+  (magit-show-commit (my/git-smartlog-get-ref)))
+
 (defun my/git-smartlog-switch ()
   (interactive)
   (when-let ((ref (my/git-smartlog-get-ref)))
