@@ -30,6 +30,17 @@ Only works in the smartlog buffer."
                   :stderr git-branchless-proc
                   :command (list "git" "branchless" "switch" ref))
     (my/git-smartlog)))
+(defun my/git-prev ()
+  (interactive)
+  (call-process "git" nil git-branchless-proc nil
+                "prev")
+  (my/git-smartlog))
+
+(defun my/git-next ()
+  (interactive)
+  (call-process "git" nil git-branchless-proc nil
+                "next")
+  (my/git-smartlog))
 
 (defun my/git-smartlog ()
   (interactive)
