@@ -65,6 +65,19 @@ Only works in the smartlog buffer."
                 "next")
   (git-branchless-smartlog))
 
+(defun git-branchless-restack ()
+  (interactive)
+  (call-process "git" nil git-branchless-proc nil
+                "restack")
+  (git-branchless-smartlog))
+
+(defun git-branchless-sync ()
+  (interactive)
+  (call-process "git" nil git-branchless-proc nil
+                "sync")
+  (git-branchless-smartlog))
+
+
 (defun git-branchless-smartlog ()
   (interactive)
   (let ((inhibit-read-only t)
