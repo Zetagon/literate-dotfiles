@@ -29,6 +29,19 @@ Only works in the smartlog buffer."
                     "branchless" "query" "draft() + main()"))
     (split-string (buffer-substring-no-properties (point-min) (point-max))
                   "\n" t)))
+(defun git-branchless-read-drafts ()
+  "Read a commit hash for a draft from the user."
+  (get-text-property 1 :hash
+                     (consult--read
+                      (cl-map 'list (lambda (raw annotated)
+                                      (propertize annotated :hash raw))
+                              (git-branchless-get-drafts 'raw)
+                              (git-branchless-get-drafts))
+                      :lookup (lambda (selected candidates input _narrow)
+                                (car (seq-drop-while (lambda (x)
+                                                       (not (string-equal selected
+                                                                          (substring-no-properties x))))
+                                                     candidates))))))
 
 (defun git-branchless-smartlog-magit-log ()
   (interactive)
