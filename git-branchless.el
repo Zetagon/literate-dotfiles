@@ -23,7 +23,8 @@ Only works in the smartlog buffer."
 
 (defun my/git-smartlog-magit-log ()
   (interactive)
-  (when-let ((ref (my/git-smartlog-get-ref)))
+  (when-let ((ref (and (equal major-mode 'git-smartlog-mode)
+                       (my/git-smartlog-get-ref))))
     (magit-log-setup-buffer (list ref) nil '())))
 
 (defun my/git-smartlog-magit-show-commit ()
@@ -32,7 +33,8 @@ Only works in the smartlog buffer."
 
 (defun my/git-smartlog-switch ()
   (interactive)
-  (when-let ((ref (my/git-smartlog-get-ref)))
+  (when-let ((ref (and (equal major-mode 'git-smartlog-mode)
+                       (my/git-smartlog-get-ref))))
     (make-process :name "git-branchless"
                   :stderr git-branchless-proc
                   :command (list "git" "branchless" "switch" ref))
@@ -41,15 +43,16 @@ Only works in the smartlog buffer."
 (defun my/git-move ()
   "WIP not tested yet"
   (interactive)
-  (if-let ((src-marker git-branchless-move-source-marker))
-      (let ((src-ref (save-excursion
-                       (goto-char src-marker)
-                       (my/git-smartlog-get-ref)))
-            (dst-ref (my/git-smartlog-get-ref)))
-        (when (y-or-n-p (format "Run 'git move -s %s -d %s' ?" src-ref dst-ref))
-          (call-process "git" nil git-branchless-proc nil
-                        "move" "-s" src-ref "-d" dst-ref)))
-    (setq git-branchless-move-source-marker (point-marker))))
+  (when (equal major-mode 'git-smartlog-mode)
+    (if-let ((src-marker git-branchless-move-source-marker))
+        (let ((src-ref (save-excursion
+                         (goto-char src-marker)
+                         (my/git-smartlog-get-ref)))
+              (dst-ref (my/git-smartlog-get-ref)))
+          (when (y-or-n-p (format "Run 'git move -s %s -d %s' ?" src-ref dst-ref))
+            (call-process "git" nil git-branchless-proc nil
+                          "move" "-s" src-ref "-d" dst-ref)))
+      (setq git-branchless-move-source-marker (point-marker)))))
 
 (defun my/git-prev ()
   (interactive)
