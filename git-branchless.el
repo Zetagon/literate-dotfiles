@@ -20,6 +20,16 @@ Only works in the smartlog buffer."
     (forward-char)
     (word-at-point t)))
 
+(defun git-branchless-get-drafts (&optional raw)
+  (with-temp-buffer
+    (if raw
+        (call-process "git" nil (current-buffer) nil
+                      "branchless" "query" "draft() + main()" "--raw")
+      (call-process "git" nil (current-buffer) nil
+                    "branchless" "query" "draft() + main()"))
+    (split-string (buffer-substring-no-properties (point-min) (point-max))
+                  "\n" t)))
+
 (defun git-branchless-smartlog-magit-log ()
   (interactive)
   (when-let ((ref (and (equal major-mode 'git-smartlog-mode)
