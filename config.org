@@ -2104,16 +2104,21 @@ With a prefix argument, prompt for a new name to use for each file.
 #+begin_src emacs-lisp
 (load! "~/Programs/git-branchless.el/git-branchless.el")
 (set-popup-rule! git-branchless-smartlog-buffer :side 'left :select t :width 0.3)
-(add-to-list 'evil-normal-state-modes 'git-branchless-smartlog-mode)
-(map! (:mode git-branchless-smartlog-mode
-       :n "L" #'git-branchless-smartlog-magit-log
-       :n "S" #'git-branchless-smartlog-switch
-       :n "RET" #'git-branchless-smartlog-magit-show-commit)
-      (:leader
+(add-to-list 'evil-emacs-state-modes 'git-branchless-smartlog-mode)
+(map! (:leader
        (:prefix "g"
                 "l" #'git-branchless-smartlog
                 "p" #'git-branchless-prev
                 "n" #'git-branchless-next)))
+#+end_src
+* LSP
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
+#+begin_src emacs-lisp
+(after! lsp-ui
+  (setq lsp-ui-doc-position 'top)
+  (setq lsp-ui-doc-show-with-cursor t))
 #+end_src
 * Lispy
 :PROPERTIES:
