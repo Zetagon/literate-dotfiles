@@ -1959,11 +1959,6 @@ Detta är bra för att då kan jag ha capture templates för att klocka in en mi
 (setq +latex-viewers '(okular))
 (setq TeX-master nil)
 #+END_SRC
-* PDF
-Use the same theme in pdfs as in the rest of emacs
-#+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
-(add-hook 'pdf-tools-enabled-hook #'pdf-view-midnight-minor-mode)
-#+END_SRC
 * Misc.
 :PROPERTIES:
 :header-args: :noweb-ref emacs-misc
