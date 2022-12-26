@@ -1285,7 +1285,7 @@ This packages allows org-ref notes to be org-roam files
   (setq org-ref-completion-library 'org-ref-ivy-cite)
   :config
   (setq org-ref-notes-directory "~/Documents/notes"
-        org-ref-default-bibliography '("~/Documents/notes/Zotero_articles.bib")
+        org-ref-default-bibliography '("~/Documents/notes/Zotero_articles.bib" "~/Documents/notes/mika-leo-notes/references.bib")
         org-ref-pdf-directory "~/Documents/notes/pdfs/"
         org-ref-default-ref-type "cref"
         org-ref-default-citation-link "autocite"
@@ -1300,12 +1300,12 @@ This packages allows org-ref notes to be org-roam files
 :END:
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/config.el
 (after! org
-  (setq org-cite-global-bibliography  '("~/Documents/notes/Zotero_articles.bib")))
+  (setq org-cite-global-bibliography  '("~/Documents/notes/Zotero_articles.bib" "~/Documents/notes/mika-leo-notes/references.bib")))
 (after! citar
-  (setq citar-bibliography '("~/Documents/notes/Zotero_articles.bib")
-        bibtex-completion-bibliography '("~/Documents/notes/Zotero_articles.bib")
-        org-cite-global-bibliography '("~/Documents/notes/Zotero_articles.bib")
-        reftex-default-bibliography '("~/Documents/notes/Zotero_articles.bib")
+  (setq citar-bibliography '("~/Documents/notes/Zotero_articles.bib" "~/Documents/notes/mika-leo-notes/references.bib")
+        bibtex-completion-bibliography '("~/Documents/notes/Zotero_articles.bib" "~/Documents/notes/mika-leo-notes/references.bib")
+        org-cite-global-bibliography '("~/Documents/notes/Zotero_articles.bib" "~/Documents/notes/mika-leo-notes/references.bib")
+        reftex-default-bibliography '("~/Documents/notes/Zotero_articles.bib" "~/Documents/notes/mika-leo-notes/references.bib")
         citar-library-paths '("~/Documents/notes/pdfs")
         citar-file-extensions '("pdf" "txt")
         citar-notes-paths '("~/Documents/notes/")
