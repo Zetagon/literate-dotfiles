@@ -1113,6 +1113,12 @@ I don't want Doom to open the roam buffer automatically
 (setq +org-roam-open-buffer-on-find-file nil)
 #+END_SRC
 
+I want to review the notes I write regularly.  This function brings up all the notes I created during the same month last year.  I have a todo item that el-secretario will bring up for me once a month [[id:f44132a2-a5a0-492e-91c7-497194bb21e6][here]].
+#+begin_src emacs-lisp
+(defun my/dired-files-from-last-year ()
+  (interactive)
+  (fd-dired "~/Documents/notes/" (ts-format "%Y%m" (ts-dec 'year 1 (ts-now)))))
+#+end_src
 
 ** org-roam-ui
 #+begin_src emacs-lisp
