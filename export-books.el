@@ -31,6 +31,7 @@ th {
 td{
     border-left: 1px solid;
     text-align: center;
+    border-bottom: 1px solid #c4c4c4;
 }
 
 td:empty, th:empty {
@@ -43,6 +44,7 @@ td:empty, th:empty {
 ")
       (dolist (heading headings)
         (let* ((plist (cadr heading))
+               ;; If level = 3 it's a part of a series
                (level (plist-get plist :level))
                (md-heading-marker (make-string (+ level 1)
                                                ?\#))
@@ -50,11 +52,14 @@ td:empty, th:empty {
                (author (plist-get plist :AUTHOR))
                (todo-type (plist-get plist :todo-type))
                (tags (mapcar #'org-no-properties (plist-get plist :tags))))
-          (insert "| " (if (equal todo-type 'todo)
-                           "☐"
-                         "🗹")
-                  " | " (or (when (>= level 3) "└─────►") author "") " | " (or title "")  " | "
-                  (or (string-join tags " ") "") " |\n")
+          (when (or (= level 2)
+                    ;; Only put completed works of a series
+                    (equal todo-type 'done))
+            (insert "| " (if (equal todo-type 'todo)
+                             "☐"
+                           "🗹")
+                    " | " (or (when (>= level 3) "└─────►") author "") " | " (or title "")  " | "
+                    (or (string-join tags " ") "") " |\n"))
           ;; (insert (concat (apply #'concat md-heading-marker " " title " " author " "
           ;;                        tags) "\n"))
           ))
