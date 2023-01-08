@@ -2099,6 +2099,42 @@ With a prefix argument, prompt for a new name to use for each file.
                 "p" #'git-branchless-prev
                 "n" #'git-branchless-next)))
 #+end_src
+* Emms
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
+
+#+begin_src emacs-lisp
+(after! emms
+  (setq emms-source-file-default-directory "~/Music/")
+  (setq emms-player-mpv-parameters
+        '("--quiet" "--really-quiet" "--no-video"
+          "--no-audio-display" "--force-window=no" "--vo=null"))
+  (setq emms-browser-covers #'emms-browser-cache-thumbnail-async)
+  (add-to-list 'emms-browser--covers-filename '("cover.jpg")))
+(map!
+ "<XF86Launch7>" #'=emms
+ :map emms-playlist-mode-map
+ :mn "b" #'emms-browser
+ :map emms-browser-mode-map
+ :mn "b" #'emms-playlist-mode-go)
+(defun =emms ()
+  "Activate (or switch to) `notmuch' in its workspace."
+  (interactive)
+  (condition-case-unless-debug e
+      (progn
+        (when (modulep! :ui workspaces)
+          (+workspace-switch "*emms*" t))
+        (if-let* ((win (cl-find-if (lambda (it) (string-match-p "^\\*emms" (buffer-name (window-buffer it))))
+                                   (doom-visible-windows))))
+            (select-window win)
+          (emms-browser))
+        (when (modulep! :ui workspaces)
+          (+workspace/display)))
+    ('error
+     ;; (+notmuch/quit)
+     (signal (car e) (cdr e)))))
+#+end_src
 * LSP
 :PROPERTIES:
 :header-args: :tangle ~/.doom.d/config.el
