@@ -2111,7 +2111,9 @@ With a prefix argument, prompt for a new name to use for each file.
         '("--quiet" "--really-quiet" "--no-video"
           "--no-audio-display" "--force-window=no" "--vo=null"))
   (setq emms-browser-covers #'emms-browser-cache-thumbnail-async)
-  (add-to-list 'emms-browser--covers-filename '("cover.jpg")))
+  (add-to-list 'emms-browser--covers-filename '("cover.jpg"))
+  ;; I don't think I will need any other player besides mpv
+ (setq emms-player-list '(emms-player-mpv)))
 (map!
  "<XF86Launch7>" #'=emms
  :map emms-playlist-mode-map
