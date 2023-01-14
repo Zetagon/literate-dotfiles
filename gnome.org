@@ -3,12 +3,13 @@
 Activating my keyboard preferences works in Gnome (but not in KDE :( )
 #+begin_src sh
 ~/dotfiles/keyboard.sh
+dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
 #+end_src
 
 I usually don't like animations in the desktop environment. Call it an
 occupational hazard for using tiling window managers for too long.
 #+begin_src sh
-gsettings set org.gnome.desktop.interface.enable-animations "false"
+gsettings set org.gnome.desktop.interface enable-animations "false"
 #+end_src
 
 Here is a command for grepping through all keybindings that use super. It is
@@ -16,6 +17,12 @@ very useful for when trying to find conflicting keybindings.
 #+begin_src sh
 gsettings list-recursively | grep -F "<Super>"
 #+end_src
+
+Window switching should be limited per workspace
+#+begin_src sh
+gsettings set org.gnome.shell.app-switcher current-workspace-only "true"
+#+end_src
+
 
 Pin a window to all workspaces
 #+begin_src sh
@@ -27,6 +34,9 @@ gsettings set org.gnome.mutter dynamic-workspaces false
 gsettings set org.gnome.desktop.wm.preferences num-workspaces 10
 
 gsettings set org.gnome.desktop.wm.keybindings close "['<Super><Shift>c']"
+# Remove toggle-message-tray from Super+m
+gsettings set org.gnome.shell.keybindings toggle-message-tray "['<Super>v']"
+gsettings set org.gnome.desktop.wm.keybindings toggle-maximized "['<Super>m']"
 
 gsettings set org.gnome.shell.extensions.dash-to-dock app-shift-hotkey-1 "[]"
 gsettings set org.gnome.shell.extensions.dash-to-dock app-shift-hotkey-2 "[]"
