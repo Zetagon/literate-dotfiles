@@ -2013,6 +2013,12 @@ I want the prompt for when I unlock my gpg key
 (after! epa (setq epa-pinentry-mode 'ask))
 #+END_SRC
 
+Pasting over text puts the deleted text in the kill ring by default.  This is
+annoying since it makes it difficult to paste over multiple things with the same
+text.
+#+begin_src emacs-lisp
+(setq evil-kill-on-visual-paste t)
+#+end_src
 
 I want ~j~ and ~k~ and other evil movements to treat soft-wrapped lines like normal lines.
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/init.el
