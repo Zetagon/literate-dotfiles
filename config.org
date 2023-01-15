@@ -32,6 +32,7 @@ Here are the files of my emacs config:
            :host nil
            :files ("*.el")))
 (package! ox-hugo)
+(package! engrave-faces)
 #+END_SRC
 
 ** Config
@@ -974,6 +975,14 @@ Some default classes I use:
 (add-to-list 'org-latex-packages-alist '("" "microtype"))
 #+end_src
 
+The [[https://github.com/tecosaur/engrave-faces][engrave-faces]] package allows the org-export to use an emacs theme for syntax
+highlighting of source blocks.
+#+begin_src emacs-lisp
+(setq org-latex-src-block-backend 'engraved)
+;; Modus Operandi seems to be a good theme for syntax highlighting in pdf
+;; documents
+(setq org-latex-engraved-theme 'modus-operandi)
+#+end_src
 
 
 ** Refiling
