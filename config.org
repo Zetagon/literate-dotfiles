@@ -1081,14 +1081,14 @@ This will capture to the first entry that has the tag \"foo\".
 #+BEGIN_SRC emacs-lisp
 (setq org-roam-capture-templates
       '(("d" "default" plain "%?"
-         :if-new (file+head "%<%Y%m%d%H%M%S>.org"
-         "${title}\n#+Created: %t\n#+Time-stamp: <>\n")
+         :if-new (file+head "%<%Y%m%d%H%M%S>--${slug}.org"
+         "#+title: ${title}\n#+Created: %t\n#+Time-stamp: <>\n")
          :unnarrowed t
          :immediate-finish t)
         ("t" "text" plain "%?"
          :if-new
          (file+head "texter/${slug}.org"
-                    "#+TITLE: ${title}\n#+Created: %t\n#+Time-stamp: <>\n#+hugo_publishdate: %t\n#+hugo_draft: true\n")
+                    "#+title: ${title}\n#+Created: %t\n#+Time-stamp: <>\n#+hugo_publishdate: %t\n#+hugo_draft: true\n")
          :unnarrowed t
          :immediate-finish t)))
 #+END_SRC
