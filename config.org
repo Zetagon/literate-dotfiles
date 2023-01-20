@@ -33,6 +33,9 @@ Here are the files of my emacs config:
            :files ("*.el")))
 (package! ox-hugo)
 (package! engrave-faces)
+(package! vulpea)
+(package! elfeed-tube)
+(package! mpv)
 #+END_SRC
 
 ** Config
@@ -2368,6 +2371,27 @@ I want to be able to use org links with eww
 #+begin_src emacs-lisp
 (after! elfeed-org
   (setq rmh-elfeed-org-files '("~/org/orgzly/feeds.org")))
+#+end_src
+** Elfeed-tube
+#+begin_src emacs-lisp
+(use-package! elfeed-tube
+  :after elfeed
+  :demand t
+  :config
+  (setq elfeed-tube-auto-save-p nil)
+  (setq elfeed-tube-auto-fetch-p t)
+  (elfeed-tube-setup)
+
+  :bind (:map elfeed-show-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)
+         :map elfeed-search-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)))
+(use-package! elfeed-tube-mpv
+  :bind (:map elfeed-show-mode-map
+              ("C-c C-f" . elfeed-tube-mpv-follow-mode)
+              ("C-c C-w" . elfeed-tube-mpv-where)))
 #+end_src
 * Org Indexcards
 :PROPERTIES:
