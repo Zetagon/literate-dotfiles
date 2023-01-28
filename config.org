@@ -1471,7 +1471,18 @@ should hopefully make me use it more.
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el
 (run-with-idle-timer 300 t (lambda ()
                              (unless (org-clocking-p)
-                               (my/today))))
+                               ;; On weekends review notes from the past month,
+                               (if (>= (ts-day-of-week-num (ts-now)) 6)
+                                   (el-secretario-start-session
+                                    (el-secretario-files-make-source
+                                     (el-secretario--shuffle
+                                      (directory-files "~/Documents/notes/" t
+                                                       (ts-format "%Y%m" (ts-dec 'month
+                                                                                 (if (= 1 (cl-random 10))
+                                                                                     2
+                                                                                   1)
+                                                                                 (ts-now)))))))
+                                 (my/today)))))
 #+end_src
 
 And this function is my way of deciding what to do when I have free time.
