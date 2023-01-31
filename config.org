@@ -2533,6 +2533,63 @@ https://github.com/tecosaur/lexic
   (lexic-search identifier nil nil t))
 
 #+end_src
+* Keeping pace on books
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
+
+Here's some code for when I need to read a book by some deadline.
+
+Use it like this:
+#+begin: pages-per-day :pages-done 140 :pages 958 :start "<2023-01-16>" :deadline "<2023-03-14 tis>"
+| Ideal pages per day    |         16 |
+| Ideal progress         |  240 pages |
+| Actual progress        |  140 pages |
+| Pace compared to ideal | -100 pages |
+| Pages left             |        818 |
+| Days left              |         42 |
+| Pages per day          |         19 |
+#+end
+
+#+begin_src emacs-lisp
+(defun my/ts-duration-days (start end)
+  (round (/ (ts-diff end start)
+            (* 60 60 24))))
+
+(defun my/calculate-pages-per-day (pages pages-done start deadline)
+  (let* ((total-range (my/ts-duration-days start deadline))
+         (ideal-pages-per-day (/ pages total-range))
+         (days-passed (my/ts-duration-days start (ts-now)))
+         (ideal-pages-done (* ideal-pages-per-day days-passed))
+         (current-pace (- pages-done ideal-pages-done))
+         (pages-left (- pages pages-done))
+         (days-left (my/ts-duration-days (ts-now) deadline))
+         (pages-per-day (/ pages-left days-left)))
+    (format "| Ideal pages per day | %s |
+| Ideal progress | %s pages|
+| Actual progress | %s pages |
+| Pace compared to ideal | %s pages |
+| Pages left | %s |
+| Days left | %s  |
+| Pages per day |  %s |"
+            ideal-pages-per-day
+            ideal-pages-done
+            pages-done
+            current-pace
+            pages-left
+            days-left
+            pages-per-day)))
+
+(defun org-dblock-write:pages-per-day (params)
+  (insert (my/calculate-pages-per-day (plist-get params :pages)
+                                      (plist-get params :pages-done)
+                                      (ts-parse (plist-get params :start))
+                                      (ts-parse (plist-get params :deadline))))
+  (org-table-align))
+
+#+end_src
+
+
 * Japanese Ebooks
 :PROPERTIES:
 :header-args: :tangle ~/.doom.d/config.el
