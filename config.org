@@ -2556,15 +2556,17 @@ Use it like this:
   (round (/ (ts-diff end start)
             (* 60 60 24))))
 
-(defun my/calculate-pages-per-day (pages pages-done start deadline)
+(defun my/calculate-pages-per-day (pages pages-done start deadline &optional days-per-week)
   (let* ((total-range (my/ts-duration-days start deadline))
+         (percent-days-reading (/ (or days-per-week 7) 7.0))
          (ideal-pages-per-day (/ pages total-range))
          (days-passed (my/ts-duration-days start (ts-now)))
-         (ideal-pages-done (* ideal-pages-per-day days-passed))
+         (ideal-pages-done (* ideal-pages-per-day days-passed percent-days-reading))
          (current-pace (- pages-done ideal-pages-done))
          (pages-left (- pages pages-done))
          (days-left (my/ts-duration-days (ts-now) deadline))
-         (pages-per-day (/ pages-left days-left)))
+         (pages-per-day (/ pages-left (* percent-days-reading
+                                         days-left))))
     (format "| Ideal pages per day | %s |
 | Ideal progress | %s pages|
 | Actual progress | %s pages |
@@ -2573,18 +2575,19 @@ Use it like this:
 | Days left | %s  |
 | Pages per day |  %s |"
             ideal-pages-per-day
-            ideal-pages-done
-            pages-done
-            current-pace
+            (round ideal-pages-done)
+            (round pages-done)
+            (round current-pace)
             pages-left
             days-left
-            pages-per-day)))
+            (round pages-per-day))))
 
 (defun org-dblock-write:pages-per-day (params)
   (insert (my/calculate-pages-per-day (plist-get params :pages)
                                       (plist-get params :pages-done)
                                       (ts-parse (plist-get params :start))
-                                      (ts-parse (plist-get params :deadline))))
+                                      (ts-parse (plist-get params :deadline))
+                                      (plist-get params :days-per-week)))
   (org-table-align))
 
 #+end_src
