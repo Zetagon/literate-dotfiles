@@ -1469,19 +1469,34 @@ items that are relevant to today.
 As an experiment, I'll try bringing up the agenda when I've been idle.  This
 should hopefully make me use it more.
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el
+(defun my/reflect-weekend ()
+  (interactive)
+  (el-secretario-start-session
+   (list
+    (el-secretario-org-roam-make-source
+     ;; Pick a random node that is tagged with TODO
+     ;; and review it first
+     (list
+      (org-roam-node-from-id
+       (car (el-secretario--shuffle
+             (mapcar #'car (org-roam-db-query [:select [node-id] :from tags
+                                               :where (= tag "TODO")])))))))
+
+    (el-secretario-files-make-source
+     (el-secretario--shuffle
+
+      (directory-files "~/Documents/notes/" t
+                       (ts-format "%Y%m" (ts-dec 'month
+                                                 (if (= 1 (cl-random 10))
+                                                     2
+                                                   1)
+                                                 (ts-now)))))))))
+
 (run-with-idle-timer 300 t (lambda ()
                              (unless (org-clocking-p)
                                ;; On weekends review notes from the past month,
                                (if (>= (ts-day-of-week-num (ts-now)) 6)
-                                   (el-secretario-start-session
-                                    (el-secretario-files-make-source
-                                     (el-secretario--shuffle
-                                      (directory-files "~/Documents/notes/" t
-                                                       (ts-format "%Y%m" (ts-dec 'month
-                                                                                 (if (= 1 (cl-random 10))
-                                                                                     2
-                                                                                   1)
-                                                                                 (ts-now)))))))
+                                   (my/reflect-weekend)
                                  (my/today)))))
 #+end_src
 
