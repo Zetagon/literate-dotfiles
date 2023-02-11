@@ -2563,12 +2563,14 @@ Here's some code for when I need to read a book by some deadline.
 Use it like this:
 #+begin: pages-per-day :pages-done 140 :pages 958 :start "<2023-01-16>" :deadline "<2023-03-14 tis>"
 | Ideal pages per day    |         16 |
-| Ideal progress         |  240 pages |
+| Ideal progress         |  416 pages |
 | Actual progress        |  140 pages |
-| Pace compared to ideal | -100 pages |
+| Pace compared to ideal | -276 pages |
 | Pages left             |        818 |
-| Days left              |         42 |
-| Pages per day          |         19 |
+| Days left              |         31 |
+| Pages per day          |         26 |
+| Current page           |        140 |
+| Next page              |        166 |
 #+end
 
 #+begin_src emacs-lisp
@@ -2586,21 +2588,26 @@ Use it like this:
          (pages-left (- pages pages-done))
          (days-left (my/ts-duration-days (ts-now) deadline))
          (pages-per-day (/ pages-left (* percent-days-reading
-                                         days-left))))
+                                         days-left)))
+         (pages-after-reading-today (round (+ pages-done pages-per-day))))
     (format "| Ideal pages per day | %s |
 | Ideal progress | %s pages|
 | Actual progress | %s pages |
 | Pace compared to ideal | %s pages |
 | Pages left | %s |
 | Days left | %s  |
-| Pages per day |  %s |"
+| Pages per day |  %s |
+| Current page | %s |
+| Next page | %s |"
             ideal-pages-per-day
             (round ideal-pages-done)
             (round pages-done)
             (round current-pace)
             pages-left
             days-left
-            (round pages-per-day))))
+            (round pages-per-day)
+            pages-done
+            pages-after-reading-today)))
 
 (defun org-dblock-write:pages-per-day (params)
   (insert (my/calculate-pages-per-day (plist-get params :pages)
