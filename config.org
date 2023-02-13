@@ -1487,7 +1487,9 @@ items that are relevant to today.
 #+END_SRC
 
 As an experiment, I'll try bringing up the agenda when I've been idle.  This
-should hopefully make me use it more.
+should hopefully make me use it more.  During the weekends I want to focus more
+on my org-roam notes, so then I will use el-secretario to bring up stuff to
+reflect back on.
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el
 (defun my/reflect-weekend ()
   (interactive)
@@ -1500,7 +1502,8 @@ should hopefully make me use it more.
       (org-roam-node-from-id
        (car (el-secretario--shuffle
              (mapcar #'car (org-roam-db-query [:select [node-id] :from tags
-                                               :where (= tag "TODO")])))))))
+                                               :where (or (= tag "TODO")
+                                                          (= tag "question"))])))))))
 
     (el-secretario-files-make-source
      (el-secretario--shuffle
