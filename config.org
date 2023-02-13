@@ -1268,6 +1268,26 @@ To integrate journaling with [[id:37471411-1f5f-4767-9588-6a47b2070075][Org-Roam
  :n "I" #'org-noter-insert-note-toggle-no-questions
  :n "i" #'org-noter-insert-note)
 #+END_SRC
+
+I have all my documents I want to annotate at the same place, named after the
+bibtex key so it's easy to fetch the correct document.
+#+begin_src emacs-lisp
+(defun my/noter-set-notes-property ()
+  "Set NOTER_DOCUMENT property to the correct pdf."
+  (interactive)
+  (let* ((ref (car (org-roam-node-refs  (org-roam-node-from-id (org-roam-id-at-point)))))
+         (extensions '(".pdf" ".epub" ".html") )
+         (paths
+          (seq-filter #'file-exists-p
+                      (mapcar (lambda (ext)
+                                (concat "../pdfs/" ref ext))
+                              extensions))))
+    (org-entry-put (point) "NOTER_DOCUMENT"
+                   (if (null (cdr paths))
+                       (car paths)
+                     (completing-read "Select file: "
+                                      paths)))))
+#+end_src
 * Bibliography managment
 I apparently need to set this in my bashrc
 #+BEGIN_SRC sh :noweb-ref bashprofile
