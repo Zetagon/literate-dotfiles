@@ -1143,6 +1143,12 @@ I want to review the notes I write regularly.  This function brings up all the n
                                                (ts-now)))))))
 #+end_src
 
+
+I'll also try visitng a random node on startup.
+#+begin_src emacs-lisp
+(add-to-list 'doom-init-ui-hook #'org-roam-node-random t)
+#+end_src
+
 ** org-roam-ui
 #+begin_src emacs-lisp
 (use-package! org-roam-ui
