@@ -1497,6 +1497,8 @@ should hopefully make me use it more.  During the weekends I want to focus more
 on my org-roam notes, so then I will use el-secretario to bring up stuff to
 reflect back on.
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el
+(load! "~/Documents/el-secretario/el-secretario-org-roam.el")
+
 (defun my/reflect-weekend ()
   (interactive)
   (el-secretario-start-session
