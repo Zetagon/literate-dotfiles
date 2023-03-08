@@ -2090,6 +2090,12 @@ I want ~j~ and ~k~ and other evil movements to treat soft-wrapped lines like nor
 (setq evil-respect-visual-line-mode t)
 (setq evil-kill-on-visual-paste nil)
 #+END_SRC
+This is needed for =up= and =down= to work as well.
+#+begin_src emacs-lisp
+(map!
+ :m "<up>" #'evil-previous-visual-line
+ :m "<down>" #'evil-next-visual-line)
+#+end_src
 
 I don't like doom's default action for what to do after switching projects. I
 often don't know which file I want to open, and some projects I interact with
