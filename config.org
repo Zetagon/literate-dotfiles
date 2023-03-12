@@ -2526,7 +2526,15 @@ I want to bring up the messages that pertain to the project I am in if any.
                                 ("piem"
                                  :url "https://inbox.kyleam.com/piem/"
                                  :address "piem@inbox.kyleam.com"
-                                 :projectile-project "piem")))))
+                                 :projectile-project "piem")
+                                ("anchor"))))
+  (defun my/doom-anchor-open-project ()
+    (interactive)
+    (let ((projectile-switch-project-action
+           (lambda ()
+             (funcall +workspaces-switch-project-function default-directory))))
+      (anchor-open-project)))
+  (define-key anchor-map (kbd "p") #'my/doom-anchor-open-project))
 (map! :leader
       "z" #'anchor-act)
 #+end_src
