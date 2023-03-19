@@ -32,6 +32,7 @@ Here are the files of my emacs config:
            :host nil
            :files ("*.el")))
 (package! ox-hugo)
+(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate"))
 (package! engrave-faces)
 (package! vulpea)
 (package! elfeed-tube)
@@ -1391,6 +1392,13 @@ If I put an url into the =ROAM_REFS= property any time I link to that url in org
       org-cite-csl-styles-dir  "~/.doom.d/csl/")
 #+end_src
 
+#+begin_src emacs-lisp
+(after! oc
+  (setq org-cite-activate-processor 'csl-activate))
+(after! org-cite-csl-activate
+  (setq org-cite-csl-activate-use-citar-cache t))
+(add-hook 'org-mode-hook (lambda () (cursor-sensor-mode 1)))
+#+end_src
 * Task management
 :PROPERTIES:
 :ID:       c8423be4-43b1-41b1-8b5b-4159a31e2edc
