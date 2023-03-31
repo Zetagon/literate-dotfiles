@@ -2063,6 +2063,12 @@ A man is not dead while his name is still spoken.
 #+end_src
 
 #+begin_src emacs-lisp
+(after! dired-x
+  (setq dired-omit-files (concat ".+\\.sdr\\|"
+                                 dired-omit-files)))
+#+end_src
+​
+#+begin_src emacs-lisp
 (setq whitespace-style '(face space-before-tab indentation tabs tab-mark trailing lines-tail))
 ;; I use visual line mode to write in org-mode, so all paragraphs gets marked anywas
 (setq whitespace-global-modes '(prog-mode))
