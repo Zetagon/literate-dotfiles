@@ -1415,7 +1415,7 @@ I use [[https://github.com/alphapapa/org-ql][Org-QL]] [[https://github.com/alpha
 Here are my agenda files:
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-org-mode
 (setq org-agenda-files'("~/org/orgzly/Todo.org"
-                        "~/org/orgzly/Inbox.org"
+                        "~/org/orgzly/PhoneInbox.org"
                         "~/org/orgzly/InboxComputer.org"
                         "~/org/orgzly/writing-inbox.org"
                         "~/org/orgzly/Projects.org"))
@@ -1784,6 +1784,36 @@ If no context is found, first prompt for a context with `completing-read`."
   (anchor-act-on-org-query '(and (tags "onnotebook")
                                             (todo))))
 #+end_src
+**** Sync phone inbox
+I use Syncthing to sync my org files, which means that it's pretty messy to deal
+with my phone inbox because there would always be conflicts.  This should fix
+this by copying all the new unprocessed parts of the inbox file to a copy.  Then
+all processing happens in the copy so that no modifications happen on the file
+that the phone touches.
+#+begin_src emacs-lisp
+(defvar my/inbox-max-point nil)
+(defun my/sync-inbox ()
+  (interactive)
+  ;; Load cache
+  (setq my/inbox-max-point
+        (ignore-errors
+          (with-temp-buffer
+            (insert-file-contents  "~/.emacs.d/.local/cache/my-inbox-max-pos")
+            ;; this will blow up if the contents of the file aren't
+            ;; lisp data structures
+            (read (buffer-string)))))
+
+  (with-current-buffer (find-file-noselect "~/org/orgzly/Inbox.org")
+    (let ((new-inbox (buffer-substring (or my/inbox-max-point (point-min)) (point-max))))
+      (with-current-buffer (find-file-noselect "~/org/orgzly/PhoneInbox.org")
+        (goto-char (point-max))
+        (insert new-inbox)))
+    (setq my/inbox-max-point  (point-max))
+
+    ;; Save cache
+    (with-temp-file "~/.emacs.d/.local/cache/my-inbox-max-pos"
+      (insert (prin1-to-string my/inbox-max-point)))))
+#+end_src
 
 **** El Secretario
 #+BEGIN_SRC emacs-lisp
@@ -1822,7 +1852,7 @@ If no context is found, first prompt for a context with `completing-read`."
                   "hako")
      (el-secretario-elfeed-make-source "@2-month-ago +unread"))
    (el-secretario-org-make-source nil '("~/org/orgzly/InboxComputer.org"
-                                        "~/org/orgzly/Inbox.org"))
+                                        "~/org/orgzly/PhoneInbox.org"))
    (el-secretario-org-make-source '(and (todo "WAITING")
                                         (not (scheduled :from 2)))
                                   '("~/org/orgzly/Todo.org"
@@ -1843,6 +1873,7 @@ If no context is found, first prompt for a context with `completing-read`."
                                           (shell-command "~/.doom.d/dropbox-backup.sh"))) ))
 (defun my/el-secretario-daily-review ()
   (interactive)
+  (my/sync-inbox)
   (when (string= (system-name)
                  "hako")
     (elfeed)
