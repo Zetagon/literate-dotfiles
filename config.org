@@ -2092,6 +2092,13 @@ A man is not dead while his name is still spoken.
   (setq mail-default-headers "X-Clacks-Overhead: GNU Terry Pratchett\n"))
 #+end_src
 
+When playing something with emms the modeline gets filled up with too much stuff
+that I can't see if I have clocked in to a heading or not.  I therefore have
+that info displayed in the frame title instead.
+#+begin_src emacs-lisp
+(setq frame-title-format '("%b - Doom Emacs - " mode-line-misc-info))
+#+end_src
+
 #+begin_src emacs-lisp
 (after! dired-x
   (setq dired-omit-files (concat ".+\\.sdr\\|"
