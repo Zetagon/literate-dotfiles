@@ -989,6 +989,16 @@ highlighting of source blocks.
 #+end_src
 
 
+Sometimes I want to have a specific buffer open all the time, and open other files in other windows (e.g. when clicking on links).
+
+#+begin_src emacs-lisp
+(defun my/toggle-window-dedication ()
+  "Toggles window dedication in the selected window."
+  (interactive)
+  (set-window-dedicated-p (selected-window)
+     (not (window-dedicated-p (selected-window)))))
+#+end_src
+
 ** Refiling
 #+begin_src emacs-lisp
 (defun my/org-refile-to-monthly-review ()
