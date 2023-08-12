@@ -1155,23 +1155,23 @@ I want to review the notes I write regularly.  This function brings up all the n
 #+end_src
 
 #+begin_src emacs-lisp
+(defun my/take-needles (ns lst)
+  (let ((rest lst)
+        ret)
+    (dolist (n ns)
+      (setq rest (seq-drop rest n))
+      (push (car rest) ret))
+    (reverse ret)))
+
 (defun my/review-sorted ()
   (interactive)
-  (dired "~/Documents/notes" "-t -hl --group-directories-first")
-  (dired-mark-files-regexp ".*\\.org$")
-  (dired-toggle-marks)
-  (dired-do-kill-lines)
-  (goto-line 3)
-  (dolist (n '(1 2 3 5 10 50 100 300 600 1000))
-    (dired-mark nil)
-    (forward-line n))
-  (dired-mark nil)
-
-  (let ((files (dired-get-marked-files)))
-    (kill-buffer)
+  (let ((nodes (mapcar #'cdr
+                       (my/take-needles '(1 1 1 2 2 3 3 5 10 10 10 50 100 300 600 1000)
+                                        (org-roam-node-read--completions
+                                         nil
+                                         #'org-roam-node-read-sort-by-file-mtime)))))
     (el-secretario-start-session
-     (el-secretario-files-make-source
-      files))))
+     (el-secretario-org-roam-make-source nodes))))
 #+end_src
 
 I'll also try visitng a random node on startup.
