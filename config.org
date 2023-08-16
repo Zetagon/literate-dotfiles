@@ -1236,7 +1236,7 @@ I'll also try visitng a random node on startup.
   :after ox
   :config
   (setq org-hugo-base-dir "~/Documents/blog/")
-  (setq org-hugo-paired-shortcodes "alert"))
+  (setq org-hugo-paired-shortcodes "alert notetocssless spoiler"))
 #+end_src
 ** Footnotes
 Use tufte-style sidenotes according to this website:
