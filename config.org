@@ -1166,7 +1166,7 @@ I want to review the notes I write regularly.  This function brings up all the n
 (defun my/review-sorted ()
   (interactive)
   (let ((nodes (mapcar #'cdr
-                       (my/take-needles '(1 1 1 2 2 3 3 5 10 10 10 50 100 300 600 1000)
+                       (my/take-needles '(0 1 1 1 2 2 3 3 5 10 10 10 50 100 300 600 1000)
                                         (org-roam-node-read--completions
                                          nil
                                          #'org-roam-node-read-sort-by-file-mtime)))))
