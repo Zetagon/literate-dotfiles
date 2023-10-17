@@ -2262,6 +2262,19 @@ With a prefix argument, prompt for a new name to use for each file.
       (dired-do-delete)))
   (el-secretario-activate-keymap))
 #+end_src
+** git
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
+
+#+begin_src emacs-lisp
+(defun my/sourcehut-magit-add-remote ()
+  (interactive)
+  (magit-remote-add (completing-read "remote: " (list "fork" "origin"))
+                    (completing-read "url: " (list (concat "git@git.sr.ht:~zetagon/"
+                                                           (file-name-nondirectory (directory-file-name (magit-toplevel)))))
+                                     nil nil  "git@git.sr.ht:~zetagon/")))
+#+end_src
 ** git-branchless
 :PROPERTIES:
 :header-args: :tangle ~/.doom.d/config.el
