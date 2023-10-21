@@ -1396,9 +1396,15 @@ This packages allows org-ref notes to be org-roam files
   :no-require
   :config (citar-org-roam-mode))
 
+(after! citar-org-roam
+  (defun my/citar-open-roam ()
+    (interactive)
+    (citar-open (org-roam-node-refs (org-roam-node-at-point)))))
+
 (map!
  :leader
  ;; Open a file that is linked to the selected entry, e.g. links or files.
+ :n "nB" #'citar-open-roam
  :n "nb" #'citar-open)
 #+END_SRC
 
