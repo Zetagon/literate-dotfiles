@@ -1553,6 +1553,7 @@ reflect back on.
        (car (el-secretario--shuffle
              (mapcar #'car (org-roam-db-query [:select [node-id] :from tags
                                                :where (or (= tag "TODO")
+                                                          (= tag "outline")
                                                           (= tag "question"))])))))))
 
     (el-secretario-files-make-source
@@ -1568,11 +1569,10 @@ reflect back on.
 (run-with-idle-timer 300 t (lambda ()
                              (unless (org-clocking-p)
                                ;; On weekends review notes from the past month,
-                               (if (>=
+                               (if (>
                                     ;; Make weeks start at mondays
-                                    (mod (- (ts-day-of-week-num
-                                             (ts-adjust 'day -1 (ts-now))) 1)
-                                         7)
+                                    (ts-day-of-week-num
+                                     (ts-adjust 'day -1 (ts-now)))
                                     5)
                                    (my/reflect-weekend)
                                  (my/today)))))

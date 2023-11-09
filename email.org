@@ -38,6 +38,7 @@ path=/home/leo/.mail
 [user]
 name=Leo Okawa Ericson
 primary_email=leo@relevant-information.com
+other_email=git@relvant-information.com
 
 # Configuration for "notmuch new"
 #
