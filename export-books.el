@@ -43,15 +43,14 @@ td:empty, th:empty {
 |--|---|---|---|
 ")
       (dolist (heading headings)
-        (let* ((plist (cadr heading))
-               ;; If level = 3 it's a part of a series
-               (level (plist-get plist :level))
+        (let* (;; If level = 3 it's a part of a series
+               (level (org-element-property :level heading))
                (md-heading-marker (make-string (+ level 1)
                                                ?\#))
-               (title (plist-get plist :raw-value))
-               (author (plist-get plist :AUTHOR))
-               (todo-type (plist-get plist :todo-type))
-               (tags (mapcar #'org-no-properties (plist-get plist :tags))))
+               (title (org-element-property :raw-value heading))
+               (author (org-element-property :AUTHOR heading))
+               (todo-type (org-element-property :todo-type heading))
+               (tags (mapcar #'org-no-properties (org-element-property :tags heading))))
           (when (or (= level 2)
                     ;; Only put completed works of a series
                     (equal todo-type 'done))
@@ -64,10 +63,7 @@ td:empty, th:empty {
           ;;                        tags) "\n"))
           ))
       (save-buffer))))
-(org-element-type
- (car (org-element-property :AUTHOR
-                            (car (org-ql-select my/book-file '(and (todo "TODO" "DONE")
-                                                                   (heading "2001")))))))
+
 
 (defun my/region-to-author-property ()
   (interactive)
