@@ -13,6 +13,7 @@ Here are the files of my emacs config:
 #+CAPTION: packages.el declares which packages I want to install
 #+BEGIN_SRC emacs-lisp :tangle ~/.doom.d/packages.el
 <<emacs-packages>>
+(package! consult-recoll :pin "ba68d052d9479aeaa5dda15a57a2c070df7d9bca")
 (package! org-roam-ui)
 (package! lexic
   :recipe (:local-repo "~/Programs/lexic/"))
@@ -2294,6 +2295,16 @@ With a prefix argument, prompt for a new name to use for each file.
                 "l" #'git-branchless-smartlog
                 "p" #'git-branchless-prev
                 "n" #'git-branchless-next)))
+#+end_src
+** recoll
+:PROPERTIES:
+:header-args: :tangle ~/.doom.d/config.el
+:END:
+
+I'm trying out recoll for my searching my notes.
+#+begin_src emacs-lisp
+(map! :leader
+      "s n" (λ! (consult-recoll--open (consult-recoll--search "mime:text/x-orgmode "))))
 #+end_src
 * Emms
 :PROPERTIES:
