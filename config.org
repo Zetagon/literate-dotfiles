@@ -1950,7 +1950,11 @@ similar to [[id:7f9f4e8b-2d24-4a45-ab54-7ea22b0b52c7][Writing Inbox]] so I can r
 
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-org-mode
 (setq org-capture-templates
-        '(("x" "Scrapbook with clipboard" entry (file+datetree "~/Documents/notes/scrapbook.org")
+        '(("x" "Scrapbook with clipboard" entry (file "~/Documents/notes/commonplace-book.org")
+           "* %?
+%x
+")
+          ("c" "Link inbox with clipboard" entry (file "~/org/orgzly/link-inbox.org")
            "* %?
 %x
 ")
