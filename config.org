@@ -1287,15 +1287,13 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 (setq org-publish-project-alist
       '(("micro-blog"
          :author ""
-         :base-directory "~/Documents/blog/content/org/"
+         :email "git@relevant-information.com"
+         :base-directory "~/Documents/blog/content/micro-blog/"
          :base-extension "org"
-         :publishing-function ((lambda (plist filename pub-dir)
-                                 (org-publish-org-to 'hugo filename ".md" plist pub-dir))
-                               org-rss-publish-to-rss)
-         :publishing-directory "~/Documents/blog/content/rss"
+         :publishing-function org-rss-publish-to-rss
+         :publishing-directory "~/Documents/blog/static/micro-blog"
          :section-numbers nil
          :with-toc nil
-         :hugo-custom-front-matter ":tags \"\" :title \"Link Blog\" :comments false :useDate false"
          )))
 
 #+end_src
