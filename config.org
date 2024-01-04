@@ -1282,6 +1282,25 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 (org-export-define-derived-backend 'my-nested-hugo 'hugo-releinfo
   :translate-alist '((footnote-reference . org-export-hugo-releinfo-nested-footnote-reference)))
 #+end_src
+** Link-blog
+#+begin_src emacs-lisp
+(setq org-publish-project-alist
+      '(("micro-blog"
+         :author ""
+         :base-directory "~/Documents/blog/content/org/"
+         :base-extension "org"
+         :publishing-function ((lambda (plist filename pub-dir)
+                                 (org-publish-org-to 'hugo filename ".md" plist pub-dir))
+                               org-rss-publish-to-rss)
+         :publishing-directory "~/Documents/blog/content/rss"
+         :section-numbers nil
+         :with-toc nil
+         :hugo-custom-front-matter ":tags \"\" :title \"Link Blog\" :comments false :useDate false"
+         )))
+
+#+end_src
+
+
 * Journaling
 :PROPERTIES:
 :ID:       477c0408-c61d-48e9-9ca5-ada0ff511ca4
