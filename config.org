@@ -1175,9 +1175,20 @@ I want to review the notes I write regularly.  This function brings up all the n
      (el-secretario-org-roam-make-source nodes))))
 #+end_src
 
-I'll also try visitng a random node on startup.
+
+** Dailes
 #+begin_src emacs-lisp
-(add-to-list 'doom-init-ui-hook #'org-roam-node-random t)
+(setq! org-roam-dailies-capture-templates '(("d" "default" entry "* %?" :target (file+head "%<%Y/%m/%d>.org" "#+title: %<%Y-%m-%d>"))))
+#+end_src
+
+I'll also try doing a daily each day on start up
+#+begin_src emacs-lisp
+(add-to-list 'doom-init-ui-hook (lambda ()
+                                  (progn
+                                    (org-roam-dailies-goto-today)
+                                    (split-window)
+                                    (my/review-sorted 1)))
+             t)
 #+end_src
 
 ** org-roam-ui
