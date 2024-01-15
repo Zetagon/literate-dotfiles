@@ -1105,6 +1105,12 @@ This will capture to the first entry that has the tag \"foo\".
          (file+head "texter/${slug}.org"
                     "#+title: ${title}\n#+Created: %t\n#+Time-stamp: <>\n#+hugo_publishdate: %t\n#+hugo_draft: true\n")
          :unnarrowed t
+         :immediate-finish t)
+        ("b" "blog" plain "%?"
+         :if-new
+         (file+head "weblog/%<%Y-%m-%d>-${slug}.org"
+                    "#+title: ${title}\n#+Created: %t\n#+Time-stamp: <>\n#+hugo_publishdate: %t\n")
+         :unnarrowed t
          :immediate-finish t)))
 #+END_SRC
 
@@ -1294,23 +1300,17 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
   :translate-alist '((footnote-reference . org-export-hugo-releinfo-nested-footnote-reference)))
 #+end_src
 ** Link-blog
-#+begin_src emacs-lisp :tangle ~/.doom.d/packages.el
-(package! ox-rss)
-#+end_src
 #+begin_src emacs-lisp
 (setq org-publish-project-alist
-      '(("micro-blog"
+      '(("weblog"
          :author ""
          :email ""
-         :base-directory "~/Documents/blog/micro-blog/"
+         :base-directory "~/Documents/notes/weblog/"
+         :recursive t
          :base-extension "org"
          :publishing-function ((lambda (plist filename pub-dir)
-                                 (org-publish-org-to 'hugo-releinfo filename ".md" plist  "~/Documents/blog/content/micro-blog"))
-                               org-rss-publish-to-rss)
-         :publishing-directory"~/Documents/blog/static/micro-blog"
-         :html-link-home "https://a-blog-with.relevant-information.com/micro-blog/"
-         :section-numbers nil
-         :with-toc "1")))
+                                  (org-publish-org-to 'hugo-releinfo filename ".md" plist pub-dir)))
+         :publishing-directory"~/Documents/blog/content/weblog")))
 
 
 #+end_src
