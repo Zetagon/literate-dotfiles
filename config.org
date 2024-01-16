@@ -1490,11 +1490,11 @@ Here are my agenda files:
                         "~/org/orgzly/Projects.org"))
 #+END_SRC
 
-Here are my todo-keywords. NEXT is mostly there for legacy reasons.
+Here are my todo-keywords. NEXT is used in dailies to signify that it was postponed to the next day
 
 #+BEGIN_SRC emacs-lisp :noweb-ref emacs-org-mode
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "WAITING" "PROJ(p)" "|" "DONE(d!)" "CANCELLED(c@)")))
+      '((sequence "TODO(t)" "WAITING" "PROJ(p)" "|" "NEXT(n)" "DONE(d!)" "CANCELLED(c@)")))
 #+END_SRC
 
 ** Keymaps
