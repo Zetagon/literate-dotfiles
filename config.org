@@ -952,7 +952,7 @@ Enable "type writer mode" (the cursor is always at the center of the screen) in 
 (add-hook! 'writeroom-mode-hook
   (if writeroom-mode
       (add-hook 'post-command-hook #'my/recenter nil t)
-    (remove-hook 'post-command-hook #'my/recenter nil t)))
+    (remove-hook 'post-command-hook #'my/recenter t)))
 #+end_src
 
 Sometimes I want to use the koma-script document classes. For that I need this:
