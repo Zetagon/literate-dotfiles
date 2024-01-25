@@ -685,12 +685,14 @@ I have one double-key for org-roam links, and one for elisp functions and variab
                  #'helpful--variable-p))))
 
 (my/define-double-key my/org-roam-node-insert #'org-roam-node-insert)
+(my/define-double-key my/citar-insert-citation #'citar-insert-citation)
 (my/define-double-key my/insert-function/double-key #'my/insert-function)
 (my/define-double-key my/insert-variable/double-key #'my/insert-variable)
 
 
 
 (map! (:map org-mode-map
+       :i "{" #'my/citar-insert-citation
        :i "[" #'my/org-roam-node-insert)
       (:map emacs-lisp-mode-map
        :i "." #'my/insert-variable/double-key
