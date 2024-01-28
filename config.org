@@ -989,6 +989,7 @@ highlighting of source blocks.
 ;; Modus Operandi seems to be a good theme for syntax highlighting in pdf
 ;; documents
 (setq org-latex-engraved-theme 'modus-operandi)
+(after! ox-html (require 'engrave-faces))
 #+end_src
 
 
@@ -1281,7 +1282,8 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
              (org-blackfriday-footnote-reference footnote-reference _contents info)))))
 
 (org-export-define-derived-backend 'hugo-releinfo 'hugo
-  :translate-alist '((footnote-reference . org-export-hugo-releinfo-sidenote-reference)))
+  :translate-alist '((footnote-reference . org-export-hugo-releinfo-sidenote-reference)
+                     (src-block . org-html-src-block)))
 (setq org-hugo-backend 'hugo-releinfo)
 #+end_src
 
