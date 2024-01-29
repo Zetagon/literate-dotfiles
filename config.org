@@ -1192,12 +1192,23 @@ I want to review the notes I write regularly.  This function brings up all the n
 
 I'll also try doing a daily each day on start up
 #+begin_src emacs-lisp
-(add-to-list 'doom-init-ui-hook (lambda ()
-                                  (progn
-                                    (org-roam-dailies-goto-today)
-                                    (split-window)
-                                    (my/review-sorted 1)))
-             t)
+(add-to-list 'doom-init-ui-hook 'org-roam-dailies-goto-today t)
+#+end_src
+
+I maintain an index over my dailies (and other things).  It is something I want
+to access often and quickly, so I bind it to the Fn key on my Thinkpad.
+
+#+begin_src emacs-lisp
+
+(defun my/toggle-index ()
+  (interactive)
+  (if-let ((win (get-buffer-window (find-file-noselect "~/Documents/notes/20201104205912.org"))))
+      (delete-window win)
+    (select-window
+     (display-buffer-in-side-window (find-file-noselect "~/Documents/notes/20201104205912.org") '((side . left))))))
+
+
+(map! :n "<WakeUp>" #'my/toggle-index)
 #+end_src
 
 ** org-roam-ui
