@@ -2650,6 +2650,8 @@ I want to be able to use org links with eww
            :url "https://inbox.kyleam.com/piem/"
            :address "piem@inbox.kyleam.com"
            :coderepo "~/Programs/piem/")))
+  (setq piem-notmuch-extract-patch-executable "~/.emacs.d/.local/straight/repos/mailscripts/notmuch-extract-patch")
+  (setq piem-am-ready-mbox-functions #'piem-notmuch-extract-patch-am-ready-mbox)
   (after! notmuch
     (piem-notmuch-mode)))
 #+end_src
