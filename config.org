@@ -1268,7 +1268,7 @@ to access often and quickly, so I bind it to the Fn key on my Thinkpad.
   :after ox
   :config
   (setq org-hugo-base-dir "~/Documents/blog/")
-  (setq org-hugo-paired-shortcodes "alert notetocssless spoiler"))
+  (setq org-hugo-paired-shortcodes "%alert %notetocssless %spoiler %verse"))
 #+end_src
 ** Footnotes
 Use tufte-style sidenotes according to this website:
