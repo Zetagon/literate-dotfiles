@@ -494,6 +494,12 @@ some things when sending email.
 :PROPERTIES:
 :header-args: :noweb-ref emacs-notmuch
 :END:
+Doom does some honestly stupid shit with notmuch windows.  This should undo that:
+#+begin_src emacs-lisp
+(set-popup-rule! "^\\*notmuch-hello" :ignore)
+(set-popup-rule! "^\\*subject:" :ignore t)
+#+end_src
+
 I don't want to accidentally mark an email as read. This ensures that I have to explicitly remove the ~unread~ tag.
 #+begin_src emacs-lisp
 (setq notmuch-show-mark-read-tags nil)
