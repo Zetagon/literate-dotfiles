@@ -2,6 +2,10 @@
 :ID:       d5a495d0-3a3e-420d-b686-51c2ceee4817
 :END:
 #+PROPERTY: header-args :comments no :mkdirp yes :noweb yes :tangle no
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el
+;; -*- lexical-binding:t -*-
+#+end_src
+
 * Setup
 In order to setup the system, this needs to be run
 #+BEGIN_SRC sh
@@ -1179,16 +1183,26 @@ I want to review the notes I write regularly.  This function brings up all the n
       (push (car rest) ret))
     (reverse ret)))
 
-(defun my/review-sorted ()
-  (interactive)
+(defun my/review-sorted (n)
+  (interactive "p")
   (let ((nodes (mapcar #'cdr
                        (my/take-needles '(0 1 1 1 2 2 3 3 5 10 10 10 50 100 300 600 1000)
-                                        (org-roam-node-read--completions
-                                         nil
-                                         #'org-roam-node-read-sort-by-file-mtime)))))
-    (el-secretario-start-session
+                                        (seq-drop (org-roam-node-read--completions
+                                                   (my/org-roam-filter-away-tag "index")
+                                                   #'org-roam-node-read-sort-by-file-mtime)
+                                                  (- n 1))))))
+   (el-secretario-start-session
      (el-secretario-org-roam-make-source nodes))))
 #+end_src
+** Helper functions
+#+begin_src emacs-lisp
+(defun my/org-roam-filter-away-tag (tag-name)
+    (lambda (node)
+      (not (member tag-name (org-roam-node-tags node)))))
+
+(defun my/org-roam-filter-for-tag (tag-name)
+    (lambda (node)
+        (member tag-name (org-roam-node-tags node))))
 
 
 ** Dailes
