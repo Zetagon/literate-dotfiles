@@ -1207,7 +1207,7 @@ I want to review the notes I write regularly.  This function brings up all the n
 
 ** Dailes
 #+begin_src emacs-lisp
-(setq! org-roam-dailies-capture-templates '(("d" "default" entry "* %?" :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n* TODO Look at the day's agenda\n [[elisp:(my/today)]] \n* TODO look at previous day's todos\n\n* TODO index previous day's notes\n\n\n* TODO Go through calendar of tomorrow and add tasks as appropriate \n* Previous notes\n [[elisp:(progn (my/review-sorted 3) nil)]]"))))
+(setq! org-roam-dailies-capture-templates '(("d" "default" entry "* %?" :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n* TODO Look at the day's agenda\n [[elisp:(my/today)]] \n* TODO look at previous day's todos\n\n* TODO index previous day's notes\n [[elisp:(org-roam-dailies-goto-previous-note 3)]]\n\n\n* TODO Go through calendar of tomorrow and add tasks as appropriate \n* Previous notes\n [[elisp:(progn (my/review-sorted 3) nil)]]"))))
 #+end_src
 
 I'll also try doing a daily each day on start up
