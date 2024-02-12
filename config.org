@@ -1116,13 +1116,13 @@ This will capture to the first entry that has the tag \"foo\".
         ("t" "text" plain "%?"
          :if-new
          (file+head "texter/${slug}.org"
-                    "#+title: ${title}\n#+Created: %t\n#+hugo_publishdate: %t\n#+hugo_draft: true\n")
+                    "#+title: ${title}\n#+Created: %t\n#+hugo_publishdate: %t\n#+hugo_draft: true\n\n @@hugo:{{< rawhtml >}}@@\n#+include: \"~/Documents/blog/themes/paper/layouts/partials/webring.html\" export html\n@@hugo:{{</ rawhtml >}}@@")
          :unnarrowed t
          :immediate-finish t)
         ("b" "blog" plain "%?"
          :if-new
          (file+head "weblog/%<%Y-%m-%d>-${slug}.org"
-                    "#+title: ${title}\n#+Created: %t\n#+hugo_publishdate: %t\n")
+                    "#+title: ${title}\n#+Created: %t\n#+hugo_publishdate: %t\n\n@@hugo:{{< rawhtml >}}@@\n#+include: \"~/Documents/blog/themes/paper/layouts/partials/webring.html\" export html\n@@hugo:{{</ rawhtml >}}@@ ")
          :unnarrowed t
          :immediate-finish t)))
 #+END_SRC
