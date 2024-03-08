@@ -1246,7 +1246,8 @@ They get recognized by embark like this:
             `(symbol
               ,(match-string 1 str)
               ,start . ,end))))))
- (add-to-list 'embark-target-finders 'my/diary-tag)
+(after! embark
+ (add-to-list 'embark-target-finders 'my/diary-tag))
 #+end_src
 
 And then you can search for them with the built in grep interface.  Use
