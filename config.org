@@ -695,6 +695,7 @@ I have one double-key for org-roam links, and one for elisp functions and variab
                  #'helpful--variable-p))))
 
 (my/define-double-key my/org-roam-node-insert #'org-roam-node-insert)
+(my/define-double-key my/insert-diary-tag-double-key #'my/insert-diary-tag)
 (my/define-double-key my/citar-insert-citation #'citar-insert-citation)
 (my/define-double-key my/insert-function/double-key #'my/insert-function)
 (my/define-double-key my/insert-variable/double-key #'my/insert-variable)
@@ -703,6 +704,7 @@ I have one double-key for org-roam links, and one for elisp functions and variab
 
 (map! (:map org-mode-map
        :i "{" #'my/citar-insert-citation
+       :i "#" #'my/insert-diary-tag-double-key
        :i "[" #'my/org-roam-node-insert)
       (:map emacs-lisp-mode-map
        :i "." #'my/insert-variable/double-key
@@ -1248,6 +1250,24 @@ They get recognized by embark like this:
               ,start . ,end))))))
 (after! embark
  (add-to-list 'embark-target-finders 'my/diary-tag))
+#+end_src
+
+The tags can be inserted with this command
+
+#+begin_src emacs-lisp
+(defun my/insert-diary-tag ()
+  (interactive)
+  (let* ((tags (with-temp-buffer
+                 (insert-file-contents "~/Documents/notes/daily/tags")
+                 (split-string (buffer-string) "\n" t)))
+         (selected-tag (completing-read "tag: " tags)))
+    (unless (member selected-tag tags)
+      (with-temp-buffer
+        (insert-file-contents "~/Documents/notes/daily/tags")
+        (goto-char (point-max))
+        (insert selected-tag "\n")
+        (write-file "~/Documents/notes/daily/tags")))
+    (insert "#" selected-tag)))
 #+end_src
 
 And then you can search for them with the built in grep interface.  Use
