@@ -1205,7 +1205,7 @@ I want to review the notes I write regularly.  This function brings up all the n
 (defun my/org-roam-filter-for-tag (tag-name)
     (lambda (node)
         (member tag-name (org-roam-node-tags node))))
-
+#+end_src
 
 ** Dailes
 #+begin_src emacs-lisp
