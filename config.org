@@ -1273,10 +1273,9 @@ The tags can be inserted with this command
 And then you can search for them with the built in grep interface.  Use
 ~next-error~ and ~previous~ error to cycle through the results.
 #+begin_src emacs-lisp
-(defun my/grep-find ()
-  (interactive)
-  (let ((query (completing-read "" '()))
-        (file-name (file-name-nondirectory (buffer-file-name)))
+(defun my/grep (query)
+  (interactive "sQuery: ")
+  (let ((file-name (file-name-nondirectory (buffer-file-name)))
         (line-number (line-number-at-pos))
         my/grep-find-buffer
         (grep-setup-hook (cons
@@ -1284,7 +1283,7 @@ And then you can search for them with the built in grep interface.  Use
                             (setq my/grep-find-buffer (current-buffer)))
                           grep-setup-hook)))
     (grep-compute-defaults)
-    (grep-find (format "find . -type f -exec grep --color=auto --after-context=2 -nH --null -e  '%s' \\{\\} +" query))
+    (grep (format "grep --color=auto --after-context=2 -nH --null -e '%s' *.org" query))
 
     ;; Go to the location of the word at point so that the search results don't
     ;; start at the beginning or the end
@@ -1297,9 +1296,8 @@ And then you can search for them with the built in grep interface.  Use
                       t)
       (compile-goto-error))))
 
-
 (map! :map embark-general-map
-      "C G" #'my/grep-find)
+      "C G" #'my/grep)
 #+end_src
 
 I also made a new link type to easily link to tags from outside the dailies directory
