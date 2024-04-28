@@ -287,9 +287,7 @@ solution so far is to apply this patch.
        :app
        ;;calendar
        ;; irc               ; how neckbeards socialize
-       (:if (string= "hako"
-                     (system-name))
-            (rss +org))        ; emacs as an RSS reader
+       (rss +org)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
 
        :config
@@ -2884,6 +2882,77 @@ https://github.com/tecosaur/lexic
   (lexic-search identifier nil nil t))
 
 #+end_src
+* Curated Podcast feeds
+I listen to a lot of podcasts, and sometimes some of those episodes are really good.  Here is some code so that I can create an RSS feed of podcast episodes I like:
+
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el
+(defun my/add-podcast-to-curated-list ()
+  (interactive)
+  (let* ((filename "~/Documents/blog/curated-podcast-episodes.json")
+         (curator-description (read-from-minibuffer "Add a description as the curator: "))
+         (s (json-encode
+             (list
+              (cons 'title
+                    (format "%s: %s"
+                            (elfeed-feed-title (elfeed-entry-feed elfeed-show-entry))
+                            (elfeed-entry-title elfeed-show-entry)))
+              (cons 'description
+                    (let ((description (elfeed-deref (elfeed-entry-content elfeed-show-entry)))
+                          (feed-url (elfeed-feed-url (elfeed-entry-feed elfeed-show-entry))))
+                      (concat
+                       (format "<a href=\"%s\">Subscribe to this podcast</a><br><br>"
+                               feed-url)
+                       (and (not (string-empty-p curator-description))
+                            (format "<h2>Curator's description</h2><p>%s</p>"
+                                    curator-description))
+                       (format "<h2>Original description</h2>: %s"
+                               description))))
+              (cons 'link  (elfeed-entry-link elfeed-show-entry))
+              (cons 'enclosure  (or (car (elfeed-entry-enclosures elfeed-show-entry))
+                                    (user-error "no enclosure!")))
+              (cons 'date (ts-format "%Y-%m-%d" (ts-now)))))))
+    (with-temp-buffer
+      (insert s "\n")
+      (write-region (point-min) (point-max) filename t))
+    (shell-command "python3 ~/.local/bin/create-curated-podcast-feed.py")))
+#+end_src
+
+#+begin_src python :eval never-export  :tangle ~/.local/bin/create-curated-podcast-feed.py
+#!/usr/bin/env python3
+import json
+import PyRSS2Gen as RSS2
+import datetime
+from urllib.parse import urljoin, urlparse
+
+
+with open("/home/leo/Documents/blog/curated-podcast-episodes.json") as file:
+        f = reversed(list(file))
+items = []
+for entry in f:
+        feed = json.loads(entry)
+        enclosure_link = feed["enclosure"][0]
+        enclosure_link = urljoin(enclosure_link, urlparse(enclosure_link).path)  # 'http://example.com/'
+        items.append(
+                RSS2.RSSItem(
+                        title = feed["title"],
+                        link = feed["link"],
+                        description = feed["description"],
+                        enclosure = RSS2.Enclosure(enclosure_link,  feed["enclosure"][1],  feed["enclosure"][2]) ,
+                        guid = RSS2.Guid("https://a-blog-with.relevant-information.com/" + feed["link"], False),
+                        pubDate = feed["date"]),
+        )
+
+
+rss = RSS2.RSS2(
+        title = "Relevant Podcasts",
+        link = "localhost",
+        description = "A selection of podcast episodes I like",
+        lastBuildDate = datetime.datetime.now(),
+        items = items)
+
+rss.write_xml(open("/home/leo/Documents/blog/static/curated-podcast-episodes.xml", "w"), "utf-8")
+#+end_src
+
 * Keeping pace on books
 :PROPERTIES:
 :header-args: :tangle ~/.doom.d/config.el
