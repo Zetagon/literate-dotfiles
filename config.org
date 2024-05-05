@@ -2908,6 +2908,7 @@ I listen to a lot of podcasts, and sometimes some of those episodes are really g
                        (format "<h2>Original description</h2>: %s"
                                description))))
               (cons 'link  (elfeed-entry-link elfeed-show-entry))
+              (cons 'guid  (cdr (elfeed-entry-id elfeed-show-entry)))
               (cons 'enclosure  (or (car (elfeed-entry-enclosures elfeed-show-entry))
                                     (user-error "no enclosure!")))
               (cons 'date (ts-format "%Y-%m-%d" (ts-now)))))))
@@ -2938,14 +2939,14 @@ for entry in f:
                         link = feed["link"],
                         description = feed["description"],
                         enclosure = RSS2.Enclosure(enclosure_link,  feed["enclosure"][1],  feed["enclosure"][2]) ,
-                        guid = RSS2.Guid("https://a-blog-with.relevant-information.com/" + feed["link"], False),
+                        guid = RSS2.Guid("https://a-blog-with.relevant-information.com/" + feed["guid"], False),
                         pubDate = feed["date"]),
         )
 
 
 rss = RSS2.RSS2(
         title = "Relevant Podcasts",
-        link = "localhost",
+        link = "https://a-blog-with.relevant-information.com/",
         description = "A selection of podcast episodes I like",
         lastBuildDate = datetime.datetime.now(),
         items = items)
