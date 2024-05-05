@@ -2913,6 +2913,7 @@ I listen to a lot of podcasts, and sometimes some of those episodes are really g
                                     (user-error "no enclosure!")))
               (cons 'date (let ((system-time-locale "en_US.UTF-8"))
                             (format-time-string "%a, %d %m %Y %H:%M %z")))))))
+    (elfeed-show-tag 'curated)
     (with-temp-buffer
       (insert s "\n")
       (write-region (point-min) (point-max) filename t))
