@@ -2911,7 +2911,8 @@ I listen to a lot of podcasts, and sometimes some of those episodes are really g
               (cons 'guid  (cdr (elfeed-entry-id elfeed-show-entry)))
               (cons 'enclosure  (or (car (elfeed-entry-enclosures elfeed-show-entry))
                                     (user-error "no enclosure!")))
-              (cons 'date (ts-format "%Y-%m-%d" (ts-now)))))))
+              (cons 'date (let ((system-time-locale "en_US.UTF-8"))
+                            (format-time-string "%a, %d %m %Y %H:%M %z")))))))
     (with-temp-buffer
       (insert s "\n")
       (write-region (point-min) (point-max) filename t))
