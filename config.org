@@ -2905,7 +2905,7 @@ I listen to a lot of podcasts, and sometimes some of those episodes are really g
                        (and (not (string-empty-p curator-description))
                             (format "<h2>Curator's description</h2><br><p>%s</p>"
                                     curator-description))
-                       (format "<h2>Original description</h2><br>: %s"
+                       (format "<h2>Original description</h2><br>%s"
                                description))))
               (cons 'link  (elfeed-entry-link elfeed-show-entry))
               (cons 'guid  (cdr (elfeed-entry-id elfeed-show-entry)))
