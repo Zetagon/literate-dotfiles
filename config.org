@@ -326,9 +326,13 @@ I like being able to view documentation inside Emacs.
 (set-docsets! 'python-mode "Python 3")
 #+end_src
 
-The flatwhite theme has a face that makes comments hard to read. This makes it much easier to read while making it distinct from normal text.
+The flatwhite and modus-operandi themes have a face that makes comments hard to read. This makes it much easier to read while making it distinct from normal text.
 #+begin_src emacs-lisp
 (custom-theme-set-faces! 'doom-flatwhite
+  '(font-lock-comment-face  :background "#fcf2bf")
+  '(hi-yellow :background "#d9c6c3"))
+
+(custom-theme-set-faces! 'modus-operandi
   '(font-lock-comment-face  :background "#fcf2bf")
   '(hi-yellow :background "#d9c6c3"))
 #+end_src
