@@ -698,7 +698,7 @@ I have one double-key for org-roam links, and one for elisp functions and variab
 
 (my/define-double-key my/org-roam-node-insert #'org-roam-node-insert)
 (my/define-double-key my/insert-diary-tag-double-key #'my/insert-diary-tag)
-(my/define-double-key my/citar-insert-citation #'citar-insert-citation)
+(my/define-double-key my/citar-insert-citation (cmd!! #'citar-insert-citation '(4)))
 (my/define-double-key my/insert-function/double-key #'my/insert-function)
 (my/define-double-key my/insert-variable/double-key #'my/insert-variable)
 
