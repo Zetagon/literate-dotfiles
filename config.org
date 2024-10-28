@@ -1216,7 +1216,7 @@ I want to review the notes I write regularly.  This function brings up all the n
           (file+head "%<%Y-%m-%d>.org"
                      "#+title: %<%Y-%m-%d>
 ,#+begin_src sh :results output raw
-python3 ~/Documents/anki-rss/anki_rss.py -n
+python3 ~/Documents/anki-rss/anki_rss.py -n | sed 's/\\//g'
 ,#+end_src
 
 ,* TODO Look at the day's agenda
