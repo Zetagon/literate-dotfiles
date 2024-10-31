@@ -1326,6 +1326,50 @@ I also made a new link type to easily link to tags from outside the dailies dire
                                     (format "find daily/ -type f -exec grep -A 2 --color=auto -nH --null -e \\#%s \{\} +"
                                             tag))))
 #+end_src
+*** Anki
+The following command sends the region to Anki.  There I will ruminate on the notes, and when I'm done I can suspend the card.  Using anki-rss, the suspended cards are harvested to be processed into daily notes again.
+#+begin_src emacs-lisp
+(defun my/send-region-to-anki ()
+  (interactive)
+  (let* ((json (json-encode `((action . "addNote")
+                              (version . 6)
+                              (params
+                               (note
+                                (deckName . "Feeds")
+                                (modelName . "Feed entry")
+                                (fields
+                                 (Title . ,(concat
+                                            "Note created from org-mode on "
+                                            (format-time-string
+                                             "%Y-%m-%d-%H:%M:%S"
+                                             (current-time))))
+                                 (notes . ,(let* ((s (buffer-substring-no-properties
+                                                      (region-beginning)
+                                                      (region-end)))
+                                                  (linked-s (if-let ((file (buffer-file-name)))
+                                                                (concat s
+                                                                        (format "\n\n[[file:%s]]" file))
+                                                              s)))
+                                             (if (equal major-mode 'org-mode)
+                                                 (org-export-string-as linked-s
+                                                                       'html
+                                                                       t)
+                                               linked-s)))
+                                 (id . ,(format-time-string
+                                         "%Y-%m-%d-%H:%M:%S"
+                                         (current-time))))
+                                (options
+                                 (allowDuplicate . :json-false)
+                                 (duplicateScope . "deck")
+                                 (duplicateScopeOptions
+                                  (deckName . "Default")
+                                  (checkChildren . :json-false)
+                                  (checkAllModels . :json-false))))))))
+         (url-request-data json))
+    (url-retrieve "http://127.0.0.1:8765"
+                  (lambda (status &rest cbargs)
+                    (message status)))))
+#+end_src
 ** org-roam-ui
 #+begin_src emacs-lisp
 (use-package! org-roam-ui
