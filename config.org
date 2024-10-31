@@ -1234,6 +1234,9 @@ python3 ~/Documents/anki-rss/anki_rss.py -n | sed 's/\\//g'
 I'll also try doing a daily each day on start up
 #+begin_src emacs-lisp
 (add-to-list 'doom-init-ui-hook 'org-roam-dailies-goto-today t)
+(require 'midnight)
+(remove-hook 'midnight-hook 'clean-buffer-list)
+(add-hook 'midnight-hook #'org-roam-dailies-goto-today)
 #+end_src
 
 I maintain an index over my dailies (and other things).  It is something I want
