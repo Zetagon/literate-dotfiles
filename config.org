@@ -1365,10 +1365,25 @@ The following command sends the region to Anki.  There I will ruminate on the no
                                   (deckName . "Default")
                                   (checkChildren . :json-false)
                                   (checkAllModels . :json-false))))))))
-         (url-request-data json))
-    (url-retrieve "http://127.0.0.1:8765"
-                  (lambda (status &rest cbargs)
-                    (message status)))))
+         (response (request-response-data
+                    (request "http://127.0.0.1:8765"
+                      :parser #'json-read
+                      :sync t
+                      :data json))))
+    (pcase response
+      (`((result . ,result)
+         (error . ,response-error))
+       (if response-error
+           (message "error: %s" response-error)
+
+         (kill-region (region-beginning)
+                      (region-end))
+         (insert (format "
+,#+begin_src sh :results org
+anki-rss --extract-specific-note %s
+,#+end_src
+"
+                         result)))))))
 #+end_src
 ** org-roam-ui
 #+begin_src emacs-lisp
