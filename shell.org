@@ -254,3 +254,89 @@ function mgs
 end
 #+end_src
 
+
+#+begin_src fish :tangle ~/.config/fish/functions/fish_right_prompt.fish
+# based on astronaut's right prompt
+function fish_right_prompt
+    set -g __fish_git_prompt_showdirtystate 1
+    set -g __fish_git_prompt_showuntrackedfiles 1
+    set -g __fish_git_prompt_showupstream informative
+    set -g __fish_git_prompt_showcolorhints 1
+    set -g __fish_git_prompt_use_informative_chars 1
+    # Unfortunately this only works if we have a sensible locale
+    string match -qi "*.utf-8" -- $LANG $LC_CTYPE $LC_ALL
+    and set -g __fish_git_prompt_char_dirtystate \U1F4a9
+    set -g __fish_git_prompt_char_untrackedfiles "?"
+
+    # The git prompt's default format is ' (%s)'.
+    # We don't want the leading space.
+    set -l vcs (fish_vcs_prompt '%s' 2>/dev/null)
+
+    # stacked git
+    if stg top &> /dev/null
+        set -f stg (set_color red)(stg series -e --short=0)(set_color normal) "|"
+    else
+        set -f stg ""
+    end
+
+    set -l d (set_color brgrey)(date "+%R")(set_color normal)
+
+    set -l duration "$cmd_duration$CMD_DURATION"
+    if test $duration -gt 100
+        set duration (math $duration / 1000)s
+    else
+        set duration
+    end
+
+    set -l vcs2 (string join "" "(" $stg $vcs ")")
+
+    set_color normal
+
+    string join " " --  $duration $vcs2  $d
+end
+#+end_src
+
+#+begin_src sh :tangle ~/.config/fish/functions/fish_prompt.fish
+
+# name: Simple Pythonista
+# author: davbo
+
+# modified to display status like the "informative" prompt
+
+
+function fish_prompt
+    set -l last_pipestatus $pipestatus
+    set -lx __fish_last_status $status # Export for __fish_print_pipestatus.
+
+    if not set -q VIRTUAL_ENV_DISABLE_PROMPT
+        set -g VIRTUAL_ENV_DISABLE_PROMPT true
+    end
+    set_color yellow
+    printf '%s' $USER
+    set_color normal
+    printf ' at '
+
+    set_color magenta
+    echo -n (prompt_hostname)
+    set_color normal
+    printf ' in '
+
+    set_color $fish_color_cwd
+    printf '%s' (prompt_pwd)
+    set_color normal
+
+    # Line 2
+    echo
+
+    set -l status_color (set_color $fish_color_status)
+    set -l statusb_color (set_color --bold $fish_color_status)
+    set -l pipestatus_string (__fish_print_pipestatus "[" "]" "|" "$status_color" "$statusb_color" $last_pipestatus)
+    printf "%s" $pipestatus_string
+    
+    if test -n "$VIRTUAL_ENV"
+        printf "(%s) " (set_color blue)(basename $VIRTUAL_ENV)(set_color normal)
+    end
+    printf '↪ '
+    set_color normal
+end
+#+end_src
