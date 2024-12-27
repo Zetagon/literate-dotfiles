@@ -1255,6 +1255,7 @@ to access often and quickly, so I bind it to the Fn key on my Thinkpad.
 (map! :n "<WakeUp>" #'my/toggle-index)
 #+end_src
 
+*** diary tags
 I have a system for tags in my diary.  These I find useful for fragmentary thoughts that span multiple days.  Often I think about similar topics a lot, and indexing them is annoying and ineffective.
 
 They get recognized by embark like this:
